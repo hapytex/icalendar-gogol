@@ -2,7 +2,7 @@ name:                icalendar-gogol
 version:             0.1.0.0
 -- synopsis:
 -- description:
-homepage:            https://github.com/KommuSoft/icalendar-gogol#readme
+homepage:            https://github.com/hapytex/icalendar-gogol#readme
 license:             BSD3
 license-file:        LICENSE
 author:              Willem Van Onsem
@@ -24,4 +24,4 @@ library
 
 source-repository head
   type:     git
-  location: https://github.com/KommuSoft/icalendar-gogol
+  location: https://github.com/hapytex/icalendar-gogol
