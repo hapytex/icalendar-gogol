@@ -6,26 +6,36 @@ module Network.Google.AppsCalendar.Converter (
 
 import Control.Lens.Setter(ASetter, set)
 
+import Data.Maybe(isNothing)
 import Data.Text(Text, pack)
 import Data.Text.Lazy(toStrict)
 import qualified Data.Text.Lazy as TL
+import Data.Time.LocalTime(LocalTime, localTimeToUTC, utc)
 
 import Network.Google.AppsCalendar.Types(
     Event, event
-  , eCreated, eDescription, eHTMLLink, eLocation, eStatus, eSummary, eTransparency, eUpdated
+  , EventDateTime, eventDateTime
+  , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eLocation, eStatus, eStart, eSummary, eTransparency, eUpdated
+  , edtDate, edtDateTime, edtTimeZone
   )
+import Network.Google.Prelude(Day, UTCTime)
 import Network.URI(URI, uriToString)
 
 import Text.ICalendar.Types(
-    VEvent(veCreated, veDescription, veLastMod, veLocation, veStatus, veSummary, veTransp, veUrl)
+    VEvent(veCreated, veDescription, veDTEndDuration, veDTStart, veLastMod, veLocation, veStatus, veSummary, veTransp, veUrl)
   , Created(createdValue)
+  , DateTime(FloatingDateTime, UTCDateTime, ZonedDateTime)
   , Description(descriptionValue)
+  , DurationProp
+  , DTStart(DTStartDate, DTStartDateTime)
+  , DTEnd(DTEndDate, DTEndDateTime)
   , EventStatus(CancelledEvent, ConfirmedEvent, TentativeEvent)
   , LastModified(lastModifiedValue)
   , Location(locationValue)
   , Summary(summaryValue)
   , TimeTransparency(Opaque, Transparent)
   , URL(urlValue)
+  , dateValue
   )
 
 _showURI :: URI -> ShowS
@@ -42,6 +52,31 @@ eventStatusToText TentativeEvent {} = "tentative"
 transparencyToText :: TimeTransparency -> Text
 transparencyToText Opaque {} = "opaque"
 transparencyToText Transparent {} = "transparent"
+
+mkEventDateTime :: Maybe Day -> Maybe UTCTime -> Maybe Text -> EventDateTime
+mkEventDateTime md mut mtz = set edtTimeZone mtz (set edtDateTime mut (set edtDate md eventDateTime))
+
+localTimeToUtc :: LocalTime -> UTCTime
+localTimeToUtc = localTimeToUTC utc
+
+convertDateTime :: DateTime -> EventDateTime
+convertDateTime (UTCDateTime u) = mkEventDateTime Nothing (Just u) Nothing
+convertDateTime (ZonedDateTime lt t) = mkEventDateTime Nothing (Just (localTimeToUtc lt)) (Just (toStrict t))
+convertDateTime (FloatingDateTime lt) = mkEventDateTime Nothing (Just (localTimeToUtc lt)) Nothing
+
+convertDTStart :: Maybe Text -> DTStart -> EventDateTime
+convertDTStart tz = go
+    where go (DTStartDate d _) = mkEventDateTime (Just (dateValue d)) Nothing tz
+          go (DTStartDateTime d _) = convertDateTime d
+
+convertEndDuration :: Maybe Text -> Either DTEnd DurationProp -> EventDateTime
+convertEndDuration tz (Left de) = convertDTEnd tz de
+convertEndDuration _ (Right _) = undefined
+
+convertDTEnd :: Maybe Text -> DTEnd -> EventDateTime
+convertDTEnd tz = go
+    where go (DTEndDate d _) = mkEventDateTime (Just (dateValue d)) Nothing tz
+          go (DTEndDateTime d _) = convertDateTime d
 
 _setSimple :: ASetter s t u b -> (a -> b) -> a -> s -> t
 _setSimple s f ev = set s (f ev)
@@ -76,5 +111,26 @@ setCreated = _setFunctor eCreated veCreated createdValue
 setTransparency :: VEvent -> Event -> Event
 setTransparency = _setSimple eTransparency (transparencyToText . veTransp)
 
+setStart :: VEvent -> Event -> Event
+setStart = _setFunctor eStart veDTStart (convertDTStart Nothing)
+
+setEnd :: VEvent -> Event -> Event
+setEnd = _setFunctor eEnd veDTEndDuration (convertEndDuration Nothing)
+
+setEndTimeUnspecified :: VEvent -> Event -> Event
+setEndTimeUnspecified = _setSimple eEndTimeUnspecified (isNothing . veDTEndDuration)
+
 convert :: VEvent -> Event
-convert ev = foldr ($ ev) event [setDescription, setSummary, setLocation, setUpdated, setHTMLLink, setStatus, setCreated, setTransparency]
+convert ev = foldr ($ ev) event [
+    setCreated
+  , setDescription
+  , setEnd
+  , setEndTimeUnspecified
+  , setHTMLLink
+  , setLocation
+  , setStart
+  , setStatus
+  , setSummary
+  , setTransparency
+  , setUpdated
+  ]
