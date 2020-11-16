@@ -15,14 +15,16 @@ import Data.Time.LocalTime(LocalTime, localTimeToUTC, utc)
 import Network.Google.AppsCalendar.Types(
     Event, event
   , EventDateTime, eventDateTime
-  , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eLocation, eStatus, eStart, eSummary, eTransparency, eUpdated
+  , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eLocation, eStatus, eStart, eSummary, eTransparency, eUpdated, eVisibility
   , edtDate, edtDateTime, edtTimeZone
   )
 import Network.Google.Prelude(Day, UTCTime)
 import Network.URI(URI, uriToString)
 
 import Text.ICalendar.Types(
-    VEvent(veCreated, veDescription, veDTEndDuration, veDTStart, veLastMod, veLocation, veStatus, veSummary, veTransp, veUrl)
+    VEvent(veClass, veCreated, veDescription, veDTEndDuration, veDTStart, veLastMod, veLocation, veStatus, veSummary, veTransp, veUrl)
+  , Class(Class)
+  , ClassValue(Confidential, Public)
   , Created(createdValue)
   , DateTime(FloatingDateTime, UTCDateTime, ZonedDateTime)
   , Description(descriptionValue)
@@ -78,6 +80,12 @@ convertDTEnd tz = go
     where go (DTEndDate d _) = mkEventDateTime (Just (dateValue d)) Nothing tz
           go (DTEndDateTime d _) = convertDateTime d
 
+convertClass :: Class -> Text
+convertClass (Class cv _) = go cv
+    where go Public = "public"
+          go Confidential = "confidential"
+          go _ = "private"
+
 _setSimple :: ASetter s t u b -> (a -> b) -> a -> s -> t
 _setSimple s f ev = set s (f ev)
 
@@ -120,6 +128,9 @@ setEnd = _setFunctor eEnd veDTEndDuration (convertEndDuration Nothing)
 setEndTimeUnspecified :: VEvent -> Event -> Event
 setEndTimeUnspecified = _setSimple eEndTimeUnspecified (isNothing . veDTEndDuration)
 
+setVisibility :: VEvent -> Event -> Event
+setVisibility = _setSimple eVisibility (convertClass . veClass)
+
 convert :: VEvent -> Event
 convert ev = foldr ($ ev) event [
     setCreated
@@ -133,4 +144,5 @@ convert ev = foldr ($ ev) event [
   , setSummary
   , setTransparency
   , setUpdated
+  , setVisibility
   ]
