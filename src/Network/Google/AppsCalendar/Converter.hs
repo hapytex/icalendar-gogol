@@ -7,22 +7,26 @@ module Network.Google.AppsCalendar.Converter (
 import Control.Lens.Setter(ASetter, set)
 
 import Data.Maybe(isNothing)
+import qualified Data.Set as S
 import Data.Text(Text, pack)
 import Data.Text.Lazy(toStrict)
 import qualified Data.Text.Lazy as TL
 import Data.Time.LocalTime(LocalTime, localTimeToUTC, utc)
 
+import Network.Google.AppsCalendar.Converter.ICalFormat(
+    IsProperty(valueToText)
+  )
 import Network.Google.AppsCalendar.Types(
     Event, event
   , EventDateTime, eventDateTime
-  , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eLocation, eStatus, eStart, eSummary, eTransparency, eUpdated, eVisibility
+  , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eLocation, eOriginalStartTime, eRecurrence, eStatus, eStart, eSummary, eTransparency, eUpdated, eVisibility
   , edtDate, edtDateTime, edtTimeZone
   )
 import Network.Google.Prelude(Day, UTCTime)
 import Network.URI(URI, uriToString)
 
 import Text.ICalendar.Types(
-    VEvent(veClass, veCreated, veDescription, veDTEndDuration, veDTStart, veLastMod, veLocation, veStatus, veSummary, veTransp, veUrl)
+    VEvent(veClass, veCreated, veDescription, veDTEndDuration, veDTStart, veLastMod, veLocation, veRRule, veStatus, veSummary, veTransp, veUrl)
   , Class(Class)
   , ClassValue(Confidential, Public)
   , Created(createdValue)
@@ -131,6 +135,12 @@ setEndTimeUnspecified = _setSimple eEndTimeUnspecified (isNothing . veDTEndDurat
 setVisibility :: VEvent -> Event -> Event
 setVisibility = _setSimple eVisibility (convertClass . veClass)
 
+setOriginalStartTime :: VEvent -> Event -> Event
+setOriginalStartTime = _setFunctor eOriginalStartTime veDTStart (convertDTStart Nothing)
+
+setRecurrence :: VEvent -> Event -> Event
+setRecurrence  = _setSimple eRecurrence (map valueToText . S.toList . veRRule)
+
 convert :: VEvent -> Event
 convert ev = foldr ($ ev) event [
     setCreated
@@ -139,10 +149,12 @@ convert ev = foldr ($ ev) event [
   , setEndTimeUnspecified
   , setHTMLLink
   , setLocation
+  , setOriginalStartTime
   , setStart
   , setStatus
   , setSummary
   , setTransparency
   , setUpdated
   , setVisibility
+  , setRecurrence
   ]
