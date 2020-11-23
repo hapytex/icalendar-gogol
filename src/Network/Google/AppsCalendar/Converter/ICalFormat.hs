@@ -221,7 +221,7 @@ instance IsProperty RRule where
     printProperty (RRule rRuleValue rRuleOther) = ln (prop "RRULE" rRuleOther >> printValue rRuleValue)
 
 instance ToParam DateTime where
-    toParam dt@ZonedDateTime {} = [("TZID", [(NoQuotes, (toStrict (dateTimeZone dt)))])]
+    toParam dt@ZonedDateTime {} = [("TZID", [(NoQuotes, toStrict (dateTimeZone dt))])]
     toParam _ = []
 
 instance ToParam ExDate where
