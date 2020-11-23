@@ -3,7 +3,7 @@
 module Network.Google.AppsCalendar.Converter.ICalFormat (
     IsValue(printValue)
   , ContentPrinter, EncodingFunctions(..), prop
-  , IsProperty(valueToText)
+  , IsProperty(propertyToText)
   ) where
 
 import Control.Arrow ((&&&))
@@ -23,7 +23,7 @@ import Control.Monad.RWS (
 import Data.CaseInsensitive (original)
 import Data.Char(ord)
 import Data.List(intersperse)
-import Data.Set (Set)
+import Data.Set (Set, maxView)
 import Data.Text (Text, pack, toUpper)
 import qualified Data.Text as T
 import Data.Text.Lazy (toStrict)
@@ -35,11 +35,16 @@ import Data.Text.Lazy.Builder(
 
 import Text.ICalendar.Types (
     Date(dateValue)
-  , DateTime(FloatingDateTime, UTCDateTime, ZonedDateTime, dateTimeUTC, dateTimeFloating)
+  , DateTime(FloatingDateTime, UTCDateTime, ZonedDateTime, dateTimeUTC, dateTimeFloating, dateTimeZone)
+  , Duration(DurationDate, DurationTime, DurationWeek)
+  , ExDate(ExDates, ExDateTimes)
   , OtherParam(OtherParam)
   , OtherParams(OtherParams)
+  , Period(PeriodDates, PeriodDuration)
   , Recur(recurByDay, recurByHour, recurByMinute, recurByMonth, recurByMonthDay, recurBySecond, recurBySetPos, recurByWeekNo, recurByYearDay, recurFreq, recurInterval, recurUntilCount, recurWkSt)
+  , RDate(RDateDates, RDateDateTimes, RDatePeriods, rDateDates, rDateDateTimes, rDatePeriods, rDateOther)
   , RRule(RRule)
+  , Sign(Positive, Negative)
   , Weekday(Friday, Monday, Saturday, Sunday, Thursday, Tuesday, Wednesday)
   )
 
@@ -83,11 +88,11 @@ ln = (>> newline)
 param :: (Text, [(Quoting, Text)]) -> ContentPrinter ()
 param (n, xs) = putc ';' >> out n >> putc '=' >> paramVals xs
 
-paramVals :: [(Quoting, Text)] -> ContentPrinter ()
+paramVals :: Foldable f => f (Quoting, Text) -> ContentPrinter ()
 paramVals = printN paramVal
 
-printN :: (a -> ContentPrinter ()) -> [a] -> ContentPrinter ()
-printN m = sequence_ . intersperse (putc ',') . map m
+printN :: Foldable f => (a -> ContentPrinter ()) -> f a -> ContentPrinter ()
+printN m = sequence_ . intersperse (putc ',') . foldr ((:) . m) []
 
 printNWeekday :: Either (Int, Weekday) Weekday -> ContentPrinter ()
 printNWeekday (Left (n, w)) = printShow n >> printValue w
@@ -99,7 +104,7 @@ printShow = out . pack . show
 printShowUpper :: Show a => a -> ContentPrinter ()
 printShowUpper = out . toUpper . pack . show
 
-printShowN :: Show a => [a] -> ContentPrinter ()
+printShowN :: (Foldable f, Show a) => f a -> ContentPrinter ()
 printShowN = printN printShow
 
 paramVal :: (Quoting, Text) -> ContentPrinter ()
@@ -111,8 +116,8 @@ class IsValue a where
 
 class IsProperty a where
     printProperty :: a -> ContentPrinter ()
-    valueToText :: a -> Text
-    valueToText x = (\(_, _, y) -> toStrict (toLazyText y)) $ runRWS (printProperty x) (EncodingFunctions singleton utf8Len) 0
+    propertyToText :: a -> Text
+    propertyToText x = (\(_, _, y) -> toStrict (toLazyText y)) $ runRWS (printProperty x) (EncodingFunctions singleton utf8Len) 0
 
 class ToParam a where
     toParam :: a -> [(Text, [(Quoting, Text)])]
@@ -127,22 +132,39 @@ recurPartNonEmpty = recurPart null
 recurShowNonEmpty :: Show b => Text -> (a -> [b]) -> a -> ContentPrinter ()
 recurShowNonEmpty = recurPartNonEmpty printShowN
 
-formattingTime :: FormatTime t => String -> t -> String
-formattingTime = formatTime defaultTimeLocale
+formattingTime :: FormatTime t => String -> t -> ContentPrinter ()
+formattingTime fmt = out . pack . formatTime defaultTimeLocale fmt
 
 printUTCTime :: UTCTime -> ContentPrinter ()
-printUTCTime = out . pack . formattingTime "%C%y%m%dT%H%M%SZ"
+printUTCTime = formattingTime "%C%y%m%dT%H%M%SZ"
 
 instance IsValue Date where
-    printValue = out . pack . formattingTime "%C%y%m%d" . dateValue
+    printValue = formattingTime "%C%y%m%d" . dateValue
 
 instance IsValue DateTime where
-    printValue dt@FloatingDateTime {} = out . pack . formattingTime "%C%y%m%dT%H%M%S" . dateTimeFloating $ dt
-    printValue dt@UTCDateTime {} = printUTCTime . dateTimeUTC $ dt
-    printValue dt@ZonedDateTime {} = out . pack . formattingTime "%C%y%m%dT%H%M%S" . dateTimeFloating $ dt
+    printValue dt@FloatingDateTime {} = (formattingTime "%C%y%m%dT%H%M%S" . dateTimeFloating) dt
+    printValue dt@UTCDateTime {} = (printUTCTime . dateTimeUTC) dt
+    printValue dt@ZonedDateTime {} = (formattingTime "%C%y%m%dT%H%M%S" . dateTimeFloating) dt
+
+
+_printDurationHms :: Int -> Int -> Int -> ContentPrinter ()
+_printDurationHms h m s = putc 'T' >> printShow h >> putc 'H' >> printShow m >> putc 'M' >> printShow s >> putc 'S'
+
+_printDurationSign :: Sign -> ContentPrinter ()
+_printDurationSign Positive = putc 'P'
+_printDurationSign Negative = putc '-' >> putc 'P'
+
+instance IsValue Duration where
+    printValue (DurationDate sg d h m s) = _printDurationSign sg >> printShow d >> putc 'D' >> _printDurationHms h m s
+    printValue (DurationTime sg h m s) = _printDurationSign sg >> _printDurationHms h m s
+    printValue (DurationWeek sg w) = _printDurationSign sg >> printShow w >> putc 'W'
 
 instance (IsValue a, IsValue b) => IsValue (Either a b) where
     printValue = either printValue printValue
+
+instance IsValue Period where
+    printValue (PeriodDates f t) = printValue f >> putc '/' >> printValue t
+    printValue (PeriodDuration f d) = printValue f >> putc '/' >> printValue d
 
 instance IsValue Recur where
     printValue r = do
@@ -171,6 +193,11 @@ instance IsValue Weekday where
               go Friday = "FR"
               go Saturday = "SA"
 
+instance IsValue RDate where
+    printValue r@RDateDates {} = printN printValue (rDateDates r)
+    printValue r@RDateDateTimes {} = printN printValue (rDateDateTimes r)
+    printValue r@RDatePeriods {} = printN printValue (rDatePeriods r)
+
 instance IsProperty a => IsProperty (Set a) where
     printProperty = mapM_ printProperty
 
@@ -180,12 +207,47 @@ instance IsProperty a => IsProperty (Maybe a) where
 instance (IsProperty a, IsProperty b) => IsProperty (Either a b) where
     printProperty = either printProperty printProperty
 
+instance IsProperty ExDate where
+    printProperty exd = ln $ do
+        prop "EXDATE" exd
+        case exd of
+             ExDates e _ -> printN printValue e
+             ExDateTimes e _ -> printN printValue e
+
+instance IsProperty RDate where
+    printProperty r = ln $ prop "RDATE" r >> printValue r
+
 instance IsProperty RRule where
     printProperty (RRule rRuleValue rRuleOther) = ln (prop "RRULE" rRuleOther >> printValue rRuleValue)
+
+instance ToParam DateTime where
+    toParam dt@ZonedDateTime {} = [("TZID", [(NoQuotes, (toStrict (dateTimeZone dt)))])]
+    toParam _ = []
+
+instance ToParam ExDate where
+    toParam (ExDates _ o) = ("VALUE", [(NoQuotes, "DATE")]) : toParam o
+    toParam (ExDateTimes s o) = toParam o <> toParam (fst <$> maxView s)
+
+instance ToParam a => ToParam (Maybe a) where
+    toParam = maybe [] toParam
 
 instance ToParam OtherParams where
     toParam (OtherParams l) = fromOP <$> S.toList l
       where fromOP (OtherParam x y) = (toStrict (original x), (Optional,) . toStrict <$> y)
+
+instance ToParam Period where
+    toParam (PeriodDates x _) = toParam x
+    toParam (PeriodDuration x _) = toParam x
+
+instance ToParam RDate where
+    toParam r@RDateDates {} = ("VALUE", [(NoQuotes, "DATE")]) : toParam (rDateOther r)
+    toParam r@RDatePeriods {} = ("VALUE", [(NoQuotes, "PERIOD")]) : toParam (rDateOther r) ++ toParam (fst <$> maxView (rDatePeriods r))
+    toParam r@RDateDateTimes {} = toParam (rDateDateTimes r) <> toParam (rDateOther r)
+
+instance ToParam a => ToParam (Set a) where
+    toParam s = case maxView s of
+        Nothing -> []
+        Just (x, _) -> toParam x
 
 prop :: ToParam a => Text -> a -> ContentPrinter ()
 prop b x = do

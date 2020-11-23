@@ -7,14 +7,14 @@ module Network.Google.AppsCalendar.Converter (
 import Control.Lens.Setter(ASetter, set)
 
 import Data.Maybe(isNothing)
-import qualified Data.Set as S
+-- import qualified Data.Set(Set)
 import Data.Text(Text, pack)
 import Data.Text.Lazy(toStrict)
 import qualified Data.Text.Lazy as TL
 import Data.Time.LocalTime(LocalTime, localTimeToUTC, utc)
 
 import Network.Google.AppsCalendar.Converter.ICalFormat(
-    IsProperty(valueToText)
+    IsProperty(propertyToText)
   )
 import Network.Google.AppsCalendar.Types(
     Event, event
@@ -26,7 +26,7 @@ import Network.Google.Prelude(Day, UTCTime)
 import Network.URI(URI, uriToString)
 
 import Text.ICalendar.Types(
-    VEvent(veClass, veCreated, veDescription, veDTEndDuration, veDTStart, veLastMod, veLocation, veRRule, veStatus, veSummary, veTransp, veUrl)
+    VEvent(veClass, veCreated, veDescription, veDTEndDuration, veDTStart, veExDate, veLastMod, veLocation, veRDate, veRRule, veStatus, veSummary, veTransp, veUrl)
   , Class(Class)
   , ClassValue(Confidential, Public)
   , Created(createdValue)
@@ -138,8 +138,14 @@ setVisibility = _setSimple eVisibility (convertClass . veClass)
 setOriginalStartTime :: VEvent -> Event -> Event
 setOriginalStartTime = _setFunctor eOriginalStartTime veDTStart (convertDTStart Nothing)
 
+_collectRecurrenceItems :: (Foldable f, IsProperty a) => [Text] -> f a -> [Text]
+_collectRecurrenceItems = foldr ((:) . propertyToText)
+
+_collectRecurrences :: VEvent -> [Text]
+_collectRecurrences ve = _collectRecurrenceItems (_collectRecurrenceItems (_collectRecurrenceItems [] (veExDate ve)) (veRDate ve)) (veRRule ve)
+
 setRecurrence :: VEvent -> Event -> Event
-setRecurrence  = _setSimple eRecurrence (map valueToText . S.toList . veRRule)
+setRecurrence  = _setSimple eRecurrence _collectRecurrences
 
 convert :: VEvent -> Event
 convert ev = foldr ($ ev) event [
