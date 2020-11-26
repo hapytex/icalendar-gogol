@@ -19,14 +19,16 @@ import Network.Google.AppsCalendar.Converter.ICalFormat(
 import Network.Google.AppsCalendar.Types(
     Event, event
   , EventDateTime, eventDateTime
-  , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eLocation, eOriginalStartTime, eRecurrence, eStatus, eStart, eSummary, eTransparency, eUpdated, eVisibility
+  , EventOrganizer, eventOrganizer, eoDisplayName, eoId, eoEmail, eoSelf
+  , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eLocation, eOrganizer, eOriginalStartTime, eRecurrence, eStatus, eStart, eSummary, eTransparency, eUpdated, eVisibility
   , edtDate, edtDateTime, edtTimeZone
   )
 import Network.Google.Prelude(Day, UTCTime)
 import Network.URI(URI, uriToString)
 
 import Text.ICalendar.Types(
-    VEvent(veClass, veCreated, veDescription, veDTEndDuration, veDTStart, veExDate, veLastMod, veLocation, veRDate, veRRule, veStatus, veSummary, veTransp, veUrl)
+    VEvent(veClass, veCreated, veDescription, veDTEndDuration, veDTStart, veOrganizer, veExDate, veLastMod, veLocation, veRDate, veRRule, veStatus, veSummary, veTransp, veUrl)
+  , CalAddress
   , Class(Class)
   , ClassValue(Confidential, Public)
   , Created(createdValue)
@@ -35,6 +37,7 @@ import Text.ICalendar.Types(
   , DurationProp
   , DTStart(DTStartDate, DTStartDateTime)
   , DTEnd(DTEndDate, DTEndDateTime)
+  , Organizer(Organizer)
   , EventStatus(CancelledEvent, ConfirmedEvent, TentativeEvent)
   , LastModified(lastModifiedValue)
   , Location(locationValue)
@@ -47,8 +50,11 @@ import Text.ICalendar.Types(
 _showURI :: URI -> ShowS
 _showURI = uriToString id
 
+_textURI :: URI -> Text
+_textURI = pack . flip _showURI ""
+
 _textURL :: URL -> Text
-_textURL = pack . flip _showURI "" . urlValue
+_textURL = _textURI . urlValue
 
 eventStatusToText :: EventStatus -> Text
 eventStatusToText CancelledEvent {} = "cancelled"
@@ -58,6 +64,14 @@ eventStatusToText TentativeEvent {} = "tentative"
 transparencyToText :: TimeTransparency -> Text
 transparencyToText Opaque {} = "opaque"
 transparencyToText Transparent {} = "transparent"
+
+organizerToEventOrganizer :: Organizer -> EventOrganizer
+organizerToEventOrganizer (Organizer email cn dir sentBy _ _) = set eoId tcn (set eoDisplayName tcn (set eoSelf (isOrganizerSelf sentBy email) (set eoEmail (Just (_textURI email)) eventOrganizer)))
+    where tcn = toStrict <$> cn
+
+isOrganizerSelf :: Maybe CalAddress -> CalAddress -> Bool
+isOrganizerSelf Nothing = const True
+isOrganizerSelf ~(Just em) = (em ==)
 
 mkEventDateTime :: Maybe Day -> Maybe UTCTime -> Maybe Text -> EventDateTime
 mkEventDateTime md mut mtz = set edtTimeZone mtz (set edtDateTime mut (set edtDate md eventDateTime))
@@ -147,6 +161,9 @@ _collectRecurrences ve = _collectRecurrenceItems (_collectRecurrenceItems (_coll
 setRecurrence :: VEvent -> Event -> Event
 setRecurrence  = _setSimple eRecurrence _collectRecurrences
 
+setOrganizer :: VEvent -> Event -> Event
+setOrganizer = _setFunctor eOrganizer veOrganizer organizerToEventOrganizer
+
 convert :: VEvent -> Event
 convert ev = foldr ($ ev) event [
     setCreated
@@ -155,6 +172,7 @@ convert ev = foldr ($ ev) event [
   , setEndTimeUnspecified
   , setHTMLLink
   , setLocation
+  , setOrganizer
   , setOriginalStartTime
   , setStart
   , setStatus

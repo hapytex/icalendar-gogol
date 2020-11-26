@@ -36,7 +36,7 @@ Target side:
  - [ ] eGuestsCanSeeOtherGuests
  - [ ] eHangoutLink
  - [X] eDescription
- - [ ] eOrganizer
+ - [X] eOrganizer
 
 Source side:
  - [ ] veDTStamp :: DTStamp
@@ -48,7 +48,7 @@ Source side:
  - [ ] veGeo :: Maybe Geo
  - [X] veLastMod :: Maybe LastModified
  - [X] veLocation :: Maybe Location
- - [ ] veOrganizer :: Maybe Organizer
+ - [X] veOrganizer :: Maybe Organizer
  - [ ] vePriority :: Priority
  - [ ] veSeq :: Sequence
  - [X] veStatus :: Maybe EventStatus
