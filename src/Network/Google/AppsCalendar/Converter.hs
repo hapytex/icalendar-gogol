@@ -6,6 +6,7 @@ module Network.Google.AppsCalendar.Converter (
 
 import Control.Lens.Setter(ASetter, set)
 
+import Data.Int(Int32)
 import Data.Maybe(isNothing)
 -- import qualified Data.Set(Set)
 import Data.Text(Text, pack)
@@ -20,14 +21,14 @@ import Network.Google.AppsCalendar.Types(
     Event, event
   , EventDateTime, eventDateTime
   , EventOrganizer, eventOrganizer, eoDisplayName, eoId, eoEmail, eoSelf
-  , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eLocation, eOrganizer, eOriginalStartTime, eRecurrence, eStatus, eStart, eSummary, eTransparency, eUpdated, eVisibility
+  , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eLocation, eOrganizer, eOriginalStartTime, eRecurrence, eSequence, eStatus, eStart, eSummary, eTransparency, eUpdated, eVisibility
   , edtDate, edtDateTime, edtTimeZone
   )
 import Network.Google.Prelude(Day, UTCTime)
 import Network.URI(URI, uriToString)
 
 import Text.ICalendar.Types(
-    VEvent(veClass, veCreated, veDescription, veDTEndDuration, veDTStart, veOrganizer, veExDate, veLastMod, veLocation, veRDate, veRRule, veStatus, veSummary, veTransp, veUrl)
+    VEvent(veClass, veCreated, veDescription, veDTEndDuration, veDTStart, veOrganizer, veExDate, veLastMod, veLocation, veRDate, veRRule, veSeq, veStatus, veSummary, veTransp, veUrl)
   , CalAddress
   , Class(Class)
   , ClassValue(Confidential, Public)
@@ -41,6 +42,7 @@ import Text.ICalendar.Types(
   , EventStatus(CancelledEvent, ConfirmedEvent, TentativeEvent)
   , LastModified(lastModifiedValue)
   , Location(locationValue)
+  , Sequence(Sequence)
   , Summary(summaryValue)
   , TimeTransparency(Opaque, Transparent)
   , URL(urlValue)
@@ -55,6 +57,10 @@ _textURI = pack . flip _showURI ""
 
 _textURL :: URL -> Text
 _textURL = _textURI . urlValue
+
+sequenceToInt :: Sequence -> Maybe Int32
+sequenceToInt (Sequence 0 _) = Nothing
+sequenceToInt (Sequence s _) = Just (fromInteger s)
 
 eventStatusToText :: EventStatus -> Text
 eventStatusToText CancelledEvent {} = "cancelled"
@@ -164,6 +170,9 @@ setRecurrence  = _setSimple eRecurrence _collectRecurrences
 setOrganizer :: VEvent -> Event -> Event
 setOrganizer = _setFunctor eOrganizer veOrganizer organizerToEventOrganizer
 
+setSequence :: VEvent -> Event -> Event
+setSequence = _setSimple eSequence (sequenceToInt . veSeq)
+
 convert :: VEvent -> Event
 convert ev = foldr ($ ev) event [
     setCreated
@@ -174,6 +183,7 @@ convert ev = foldr ($ ev) event [
   , setLocation
   , setOrganizer
   , setOriginalStartTime
+  , setSequence
   , setStart
   , setStatus
   , setSummary

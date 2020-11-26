@@ -23,7 +23,7 @@ Target side:
  - [ ] eGuestsCanInviteOthers
  - [X] eRecurrence
  - [/] eGadget
- - [ ] eSequence
+ - [X] eSequence
  - [ ] eICalUId
  - [X] eEnd
  - [ ] eAttendeesOmitted
@@ -50,7 +50,7 @@ Source side:
  - [X] veLocation :: Maybe Location
  - [X] veOrganizer :: Maybe Organizer
  - [ ] vePriority :: Priority
- - [ ] veSeq :: Sequence
+ - [X] veSeq :: Sequence
  - [X] veStatus :: Maybe EventStatus
  - [X] veSummary :: Maybe Summary
  - [X] veTransp :: TimeTransparency
