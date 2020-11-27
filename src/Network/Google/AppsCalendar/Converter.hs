@@ -10,6 +10,7 @@ import Data.Int(Int32)
 import Data.Maybe(isNothing)
 -- import qualified Data.Set(Set)
 import Data.Text(Text, pack)
+import Data.Text.Encoding.Base32.Hex(encodeBase32)
 import Data.Text.Lazy(toStrict)
 import qualified Data.Text.Lazy as TL
 import Data.Time.LocalTime(LocalTime, localTimeToUTC, utc)
@@ -21,14 +22,14 @@ import Network.Google.AppsCalendar.Types(
     Event, event
   , EventDateTime, eventDateTime
   , EventOrganizer, eventOrganizer, eoDisplayName, eoId, eoEmail, eoSelf
-  , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eLocation, eOrganizer, eOriginalStartTime, eRecurrence, eSequence, eStatus, eStart, eSummary, eTransparency, eUpdated, eVisibility
+  , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eId, eLocation, eOrganizer, eOriginalStartTime, eRecurrence, eSequence, eStatus, eStart, eSummary, eTransparency, eUpdated, eVisibility
   , edtDate, edtDateTime, edtTimeZone
   )
 import Network.Google.Prelude(Day, UTCTime)
 import Network.URI(URI, uriToString)
 
 import Text.ICalendar.Types(
-    VEvent(veClass, veCreated, veDescription, veDTEndDuration, veDTStart, veOrganizer, veExDate, veLastMod, veLocation, veRDate, veRRule, veSeq, veStatus, veSummary, veTransp, veUrl)
+    VEvent(veClass, veCreated, veDescription, veDTEndDuration, veDTStart, veOrganizer, veExDate, veLastMod, veLocation, veRDate, veRRule, veSeq, veStatus, veSummary, veTransp, veUID, veUrl)
   , CalAddress
   , Class(Class)
   , ClassValue(Confidential, Public)
@@ -45,6 +46,7 @@ import Text.ICalendar.Types(
   , Sequence(Sequence)
   , Summary(summaryValue)
   , TimeTransparency(Opaque, Transparent)
+  , UID(uidValue)
   , URL(urlValue)
   , dateValue
   )
@@ -173,6 +175,9 @@ setOrganizer = _setFunctor eOrganizer veOrganizer organizerToEventOrganizer
 setSequence :: VEvent -> Event -> Event
 setSequence = _setSimple eSequence (sequenceToInt . veSeq)
 
+setId :: VEvent -> Event -> Event
+setId = _setSimple eId (Just . encodeBase32 . toStrict . uidValue . veUID)
+
 convert :: VEvent -> Event
 convert ev = foldr ($ ev) event [
     setCreated
@@ -191,4 +196,5 @@ convert ev = foldr ($ ev) event [
   , setUpdated
   , setVisibility
   , setRecurrence
+  , setId
   ]

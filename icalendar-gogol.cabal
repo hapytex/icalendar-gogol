@@ -20,6 +20,7 @@ library
     , Network.Google.AppsCalendar.Converter.ICalFormat
   build-depends:
       base >= 4.7 && < 5
+    , base32
     , case-insensitive
     , containers
     , gogol-apps-calendar
