@@ -22,6 +22,8 @@ import Network.Google.AppsCalendar.Types(
     Event, event
   , EventDateTime, eventDateTime
   , EventOrganizer, eventOrganizer, eoDisplayName, eoId, eoEmail, eoSelf
+  , EventReminder, eventReminder, erMethod, erMinutes
+  , EventReminders, eventReminders, erOverrides
   , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eId, eLocation, eOrganizer, eOriginalStartTime, eRecurrence, eSequence, eStatus, eStart, eSummary, eTransparency, eUpdated, eVisibility
   , edtDate, edtDateTime, edtTimeZone
   )
@@ -48,6 +50,7 @@ import Text.ICalendar.Types(
   , TimeTransparency(Opaque, Transparent)
   , UID(uidValue)
   , URL(urlValue)
+  , VAlarm
   , dateValue
   )
 
@@ -72,6 +75,12 @@ eventStatusToText TentativeEvent {} = "tentative"
 transparencyToText :: TimeTransparency -> Text
 transparencyToText Opaque {} = "opaque"
 transparencyToText Transparent {} = "transparent"
+
+alarmToReminder :: VAlarm -> EventReminder
+alarmToReminder _ = eventReminder
+
+alarmsToEventReminders :: Foldable f => f VAlarm -> EventReminders
+alarmsToEventReminders s = set erOverrides (foldr ((:) . alarmToReminder) [] s) eventReminders
 
 organizerToEventOrganizer :: Organizer -> EventOrganizer
 organizerToEventOrganizer (Organizer email cn dir sentBy _ _) = set eoId tcn (set eoDisplayName tcn (set eoSelf (isOrganizerSelf sentBy email) (set eoEmail (Just (_textURI email)) eventOrganizer)))
@@ -185,6 +194,7 @@ convert ev = foldr ($ ev) event [
   , setEnd
   , setEndTimeUnspecified
   , setHTMLLink
+  , setId
   , setLocation
   , setOrganizer
   , setOriginalStartTime
@@ -196,5 +206,4 @@ convert ev = foldr ($ ev) event [
   , setUpdated
   , setVisibility
   , setRecurrence
-  , setId
   ]

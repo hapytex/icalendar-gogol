@@ -28,7 +28,7 @@ Target side:
  - [X] eEnd
  - [ ] eAttendeesOmitted
  - [ ] eSource
- - [ ] eId
+ - [X] eId
  - [X] eHTMLLink
  - [X] eUpdated
  - [/] eColorId
@@ -40,7 +40,7 @@ Target side:
 
 Source side:
  - [ ] veDTStamp :: DTStamp
- - [ ] veUID :: UID
+ - [X] veUID :: UID
  - [X] veClass :: Class
  - [X] veDTStart :: Maybe DTStart
  - [X] veCreated :: Maybe Created
