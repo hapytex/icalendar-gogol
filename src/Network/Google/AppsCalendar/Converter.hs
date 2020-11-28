@@ -38,7 +38,8 @@ import Text.ICalendar.Types(
   , Created(createdValue)
   , DateTime(FloatingDateTime, UTCDateTime, ZonedDateTime)
   , Description(descriptionValue)
-  , DurationProp
+  , Duration(DurationDate, DurationTime, DurationWeek)
+  , DurationProp(durationValue)
   , DTStart(DTStartDate, DTStartDateTime)
   , DTEnd(DTEndDate, DTEndDateTime)
   , Organizer(Organizer)
@@ -50,7 +51,7 @@ import Text.ICalendar.Types(
   , TimeTransparency(Opaque, Transparent)
   , UID(uidValue)
   , URL(urlValue)
-  , VAlarm
+  , VAlarm(VAlarmEmail, vaDuration)
   , dateValue
   )
 
@@ -77,7 +78,19 @@ transparencyToText Opaque {} = "opaque"
 transparencyToText Transparent {} = "transparent"
 
 alarmToReminder :: VAlarm -> EventReminder
-alarmToReminder _ = eventReminder
+alarmToReminder va = set erMinutes (durationToMinutes . durationValue <$> vaDuration va) (alarmToReminder' va)
+
+alarmToReminder' :: VAlarm -> EventReminder
+alarmToReminder' (VAlarmEmail _ _ _ _ _ _ _ _ _) = set erMethod (Just "email") eventReminder
+alarmToReminder' _ = set erMethod (Just "popup") eventReminder
+
+hmsToMinutes :: Int -> Int -> Int -> Int32
+hmsToMinutes h m s = 60*fromIntegral h + fromIntegral m + fromIntegral (fromEnum (s >= 30))
+
+durationToMinutes :: Duration -> Int32
+durationToMinutes (DurationDate _ d h m s) = 1440 * fromIntegral d + hmsToMinutes h m s
+durationToMinutes (DurationTime _ h m s) = hmsToMinutes h m s
+durationToMinutes (DurationWeek _ w) = 10080 * fromIntegral w
 
 alarmsToEventReminders :: Foldable f => f VAlarm -> EventReminders
 alarmsToEventReminders s = set erOverrides (foldr ((:) . alarmToReminder) [] s) eventReminders

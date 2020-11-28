@@ -9,7 +9,7 @@ Target side:
  - [ ] eLocked
  - [X] eLocation
  - [ ] eAttendees
- - [ ] eReminders
+ - [X] eReminders
  - [/] eKind (fixed)
  - [X] eCreated
  - [X] eTransparency
@@ -68,7 +68,7 @@ Source side:
  - [ ] veRelated :: Set RelatedTo
  - [ ] veResources :: Set Resources
  - [X] veRDate :: Set RDate
- - [ ] veAlarms :: Set VAlarm
+ - [X] veAlarms :: Set VAlarm
  - [ ] veOther :: Set OtherProperty
 
 options:
