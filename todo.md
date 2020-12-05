@@ -45,7 +45,7 @@ Source side:
  - [X] veDTStart :: Maybe DTStart
  - [X] veCreated :: Maybe Created
  - [X] veDescription :: Maybe Description
- - [ ] veGeo :: Maybe Geo
+ - [X] veGeo :: Maybe Geo
  - [X] veLastMod :: Maybe LastModified
  - [X] veLocation :: Maybe Location
  - [X] veOrganizer :: Maybe Organizer

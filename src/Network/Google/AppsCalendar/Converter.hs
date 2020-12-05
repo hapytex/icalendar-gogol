@@ -4,6 +4,7 @@ module Network.Google.AppsCalendar.Converter (
     convert
   ) where
 
+import Control.Applicative((<|>))
 import Control.Lens.Setter(ASetter, set)
 
 import Data.Int(Int32)
@@ -31,7 +32,7 @@ import Network.Google.Prelude(Day, UTCTime)
 import Network.URI(URI, uriToString)
 
 import Text.ICalendar.Types(
-    VEvent(veClass, veCreated, veDescription, veDTEndDuration, veDTStart, veOrganizer, veExDate, veLastMod, veLocation, veRDate, veRRule, veSeq, veStatus, veSummary, veTransp, veUID, veUrl)
+    VEvent(veClass, veCreated, veDescription, veDTEndDuration, veDTStart, veGeo, veOrganizer, veExDate, veLastMod, veLocation, veRDate, veRRule, veSeq, veStatus, veSummary, veTransp, veUID, veUrl)
   , CalAddress
   , Class(Class)
   , ClassValue(Confidential, Public)
@@ -44,6 +45,7 @@ import Text.ICalendar.Types(
   , DTEnd(DTEndDate, DTEndDateTime)
   , Organizer(Organizer)
   , EventStatus(CancelledEvent, ConfirmedEvent, TentativeEvent)
+  , Geo(Geo)
   , LastModified(lastModifiedValue)
   , Location(locationValue)
   , Sequence(Sequence)
@@ -76,6 +78,9 @@ eventStatusToText TentativeEvent {} = "tentative"
 transparencyToText :: TimeTransparency -> Text
 transparencyToText Opaque {} = "opaque"
 transparencyToText Transparent {} = "transparent"
+
+geoToText :: Geo -> Text
+geoToText (Geo la lo _) = pack (show la) <> " " <> pack (show lo)
 
 alarmToReminder :: VAlarm -> EventReminder
 alarmToReminder va = set erMinutes (durationToMinutes . durationValue <$> vaDuration va) (alarmToReminder' va)
@@ -150,7 +155,7 @@ setDescription :: VEvent -> Event -> Event
 setDescription = _setFunctorStrict eDescription veDescription descriptionValue
 
 setLocation :: VEvent -> Event -> Event
-setLocation = _setFunctorStrict eLocation veLocation locationValue
+setLocation ve = set eLocation (((toStrict . locationValue) <$> veLocation ve) <|> (geoToText <$> veGeo ve))
 
 setUpdated :: VEvent -> Event -> Event
 setUpdated = _setFunctor eUpdated veLastMod lastModifiedValue

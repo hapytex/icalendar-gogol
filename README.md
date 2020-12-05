@@ -11,6 +11,11 @@
 
 ???
 
+## Mapping `VEvent`s to `Event`
+
+The type `VEvent` of the [**`iCalendar`** package [Hackage]](http://hackage.haskell.org/package/iCalendar) does not fully maps on the
+`Event` type 
+
 ## `icalendar-gogol` is ??? *safe* Haskell
 
 ???
