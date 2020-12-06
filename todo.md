@@ -24,11 +24,11 @@ Target side:
  - [X] eRecurrence
  - [/] eGadget
  - [X] eSequence
- - [ ] eICalUId
+ - [X] eICalUId
  - [X] eEnd
  - [ ] eAttendeesOmitted
  - [ ] eSource
- - [X] eId
+ - [/] eId
  - [X] eHTMLLink
  - [X] eUpdated
  - [/] eColorId
@@ -69,7 +69,7 @@ Source side:
  - [ ] veResources :: Set Resources
  - [X] veRDate :: Set RDate
  - [X] veAlarms :: Set VAlarm
- - [ ] veOther :: Set OtherProperty
+ - [/] veOther :: Set OtherProperty
 
 options:
 [ ] not yet done

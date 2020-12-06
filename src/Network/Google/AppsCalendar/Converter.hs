@@ -25,7 +25,7 @@ import Network.Google.AppsCalendar.Types(
   , EventOrganizer, eventOrganizer, eoDisplayName, eoId, eoEmail, eoSelf
   , EventReminder, eventReminder, erMethod, erMinutes
   , EventReminders, eventReminders, erOverrides
-  , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eId, eLocation, eOrganizer, eOriginalStartTime, eRecurrence, eSequence, eStatus, eStart, eSummary, eTransparency, eUpdated, eVisibility
+  , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eICalUId, eLocation, eOrganizer, eOriginalStartTime, eRecurrence, eSequence, eStatus, eStart, eSummary, eTransparency, eUpdated, eVisibility
   , edtDate, edtDateTime, edtTimeZone
   )
 import Network.Google.Prelude(Day, UTCTime)
@@ -203,7 +203,7 @@ setSequence :: VEvent -> Event -> Event
 setSequence = _setSimple eSequence (sequenceToInt . veSeq)
 
 setId :: VEvent -> Event -> Event
-setId = _setSimple eId (Just . encodeBase32 . toStrict . uidValue . veUID)
+setId = _setSimple eICalUId (Just . encodeBase32 . toStrict . uidValue . veUID)
 
 convert :: VEvent -> Event
 convert ev = foldr ($ ev) event [
