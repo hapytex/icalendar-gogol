@@ -1,9 +1,26 @@
 {-# LANGUAGE CPP, OverloadedStrings, TupleSections #-}
 
+{-|
+Module      : Network.Google.AppsCalendar.Converter.ICalFormat
+Description : A module that provides functionality to map subparts of a 'Text.ICalendar.Types.VEvent' to 'Text'.
+Maintainer  : hapytexeu+gh@gmail.com
+Stability   : experimental
+Portability : POSIX
+
+This module provides functions to map subparts of a 'Text.ICalendar.Types.VEvent' to 'Text'. Especially the part
+of a 'Recur' object is useful here for the conversion of a 'Text.ICalendar.Types.VEvent'.
+
+The code is basically a copy of the 'Text.ICalendar.Printer' module, which does not export functionality to print
+the /subparts/ of a Text.'ICalendar.Types.VEvent' object.
+-}
+
 module Network.Google.AppsCalendar.Converter.ICalFormat (
+    -- * Typeclass to map subparts.
     IsValue(printValue)
-  , ContentPrinter, EncodingFunctions(..), prop
-  , IsProperty(propertyToText)
+    -- * Types to make printing more convenient.
+  , ContentPrinter, EncodingFunctions(efChar2Bu, efChar2Len)
+    -- * Printing properties.
+  , IsProperty(printProperty, propertyToText)
   ) where
 
 import Control.Arrow ((&&&))
@@ -17,7 +34,7 @@ import Control.Monad.RWS (
 --    MonadState (get, put)
 --  , MonadWriter (tell), RWS, asks
 --  , modify, runRWS
-  , RWS, runRWS
+  , RWS, evalRWS
   )
 
 import Data.CaseInsensitive (original)
@@ -54,11 +71,13 @@ import Data.Time (defaultTimeLocale)
 import System.Locale (defaultTimeLocale)
 #endif
 
+-- | A datatype that is used as state to construct a textual representation of the objects.
 data EncodingFunctions = EncodingFunctions
-    { efChar2Bu  :: Char -> Builder
+    { efChar2Bu  :: Char -> Builder  -- ^ A function to convert a single character into a 'Builder' used to construct singleton text objects.
     , efChar2Len :: Char -> Int -- ^ How many octets the character is encoded.
     }
 
+-- | A type synonym of a way to print data. This makes use of the 'Builder' to generate the stream and the 'EncodingFunctions' as state.
 type ContentPrinter = RWS EncodingFunctions Builder Int
 
 data Quoting = NeedQuotes | Optional | NoQuotes deriving (Eq, Ord, Show)
@@ -111,16 +130,33 @@ paramVal :: (Quoting, Text) -> ContentPrinter ()
 paramVal (NoQuotes, t) = out t
 paramVal (_, t) = putc '"' >> out t >> putc '"'
 
+-- | A typeclass that specifies that the given type can be printed
+-- as specified by the iCal format.
 class IsValue a where
-    printValue :: a -> ContentPrinter ()
+    -- | Convert the given item to a 'ContentPrinter' that prints it
+    -- as specified by the iCal format.
+    printValue
+      :: a  -- ^ The given element to print.
+      -> ContentPrinter ()  -- ^ a builder that will print the specified object.
 
+-- | A typeclass that is used to print items as properties of a /parent/ element.
 class IsProperty a where
-    printProperty :: a -> ContentPrinter ()
-    propertyToText :: a -> Text
-    propertyToText x = (\(_, _, y) -> toStrict (toLazyText y)) $ runRWS (printProperty x) (EncodingFunctions singleton utf8Len) 0
+    -- | print the element as specified by the iCal format.
+    printProperty
+      :: a  -- ^ The given element to print.
+      -> ContentPrinter ()  -- ^ A builder that will print the given property.
+    -- | Convert the given element to a 'Text' object that is the iCal format of that element.
+    propertyToText
+      :: a  -- ^ The given element to convert to 'Text'.
+      -> Text  -- ^ The textual presentation of the element as a /property/.
+    propertyToText x = toStrict . toLazyText . snd $ evalRWS (printProperty x) (EncodingFunctions singleton utf8Len) 0
 
+-- | A typeclass that provides a function to obtain the parameter of a given item.
 class ToParam a where
-    toParam :: a -> [(Text, [(Quoting, Text)])]
+    -- | Obtain the properties of the given element as a list of 2-tuples with the name, the value and the corresponding quotation style.
+    toParam
+      :: a  -- ^ The given object to obtain the properties from.
+      -> [(Text, [(Quoting, Text)])]  -- ^ The properties of the object.
 
 recurPart :: (b -> Bool) -> (b -> ContentPrinter ()) -> Text -> (a -> b) -> a -> ContentPrinter ()
 recurPart ch h t f x = unless (ch fx) (out t >> h fx)

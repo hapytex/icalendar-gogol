@@ -1,7 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+{-|
+Module      : Network.Google.AppsCalendar.Converter
+Description : Converting a 'VEvent' from the 'Text.ICalendar.Types' module to a Google 'Event'.
+Maintainer  : hapytexeu+gh@gmail.com
+Stability   : experimental
+Portability : POSIX
+
+This module provides a convenient way to convert a 'VEvent' to an 'Event'.
+-}
+
 module Network.Google.AppsCalendar.Converter (
-    convert
+    -- * Convert to 'Event'
+    convertToEvent
   ) where
 
 import Control.Applicative((<|>))
@@ -205,8 +216,11 @@ setSequence = _setSimple eSequence (sequenceToInt . veSeq)
 setId :: VEvent -> Event -> Event
 setId = _setSimple eICalUId (Just . encodeBase32 . toStrict . uidValue . veUID)
 
-convert :: VEvent -> Event
-convert ev = foldr ($ ev) event [
+-- | Convert the given 'VEvent' object to an 'Event' object.
+convertToEvent
+  :: VEvent  -- ^ The given 'VEvent' to convert.
+  -> Event  -- ^ The corresponding 'Event' object.
+convertToEvent ev = foldr ($ ev) event [
     setCreated
   , setDescription
   , setEnd
