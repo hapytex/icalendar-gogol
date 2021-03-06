@@ -97,7 +97,7 @@ alarmToReminder :: VAlarm -> EventReminder
 alarmToReminder va = set erMinutes (durationToMinutes . durationValue <$> vaDuration va) (alarmToReminder' va)
 
 alarmToReminder' :: VAlarm -> EventReminder
-alarmToReminder' (VAlarmEmail _ _ _ _ _ _ _ _ _) = set erMethod (Just "email") eventReminder
+alarmToReminder' VAlarmEmail {} = set erMethod (Just "email") eventReminder
 alarmToReminder' _ = set erMethod (Just "popup") eventReminder
 
 hmsToMinutes :: Int -> Int -> Int -> Int32
@@ -166,7 +166,7 @@ setDescription :: VEvent -> Event -> Event
 setDescription = _setFunctorStrict eDescription veDescription descriptionValue
 
 setLocation :: VEvent -> Event -> Event
-setLocation ve = set eLocation (((toStrict . locationValue) <$> veLocation ve) <|> (geoToText <$> veGeo ve))
+setLocation ve = set eLocation ((toStrict . locationValue <$> veLocation ve) <|> (geoToText <$> veGeo ve))
 
 setUpdated :: VEvent -> Event -> Event
 setUpdated = _setFunctor eUpdated veLastMod lastModifiedValue
