@@ -1,7 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+{-|
+Module      : Network.Google.AppsCalendar.Converter
+Description : Converting a 'VEvent' from the 'Text.ICalendar.Types' module to a Google 'Event'.
+Maintainer  : hapytexeu+gh@gmail.com
+Stability   : experimental
+Portability : POSIX
+
+This module provides a convenient way to convert a 'VEvent' to an 'Event'.
+-}
+
 module Network.Google.AppsCalendar.Converter (
-    convert
+    -- * Convert to 'Event'
+    convertToEvent
   ) where
 
 import Control.Applicative((<|>))
@@ -25,14 +36,14 @@ import Network.Google.AppsCalendar.Types(
   , EventOrganizer, eventOrganizer, eoDisplayName, eoId, eoEmail, eoSelf
   , EventReminder, eventReminder, erMethod, erMinutes
   , EventReminders, eventReminders, erOverrides
-  , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eICalUId, eLocation, eOrganizer, eOriginalStartTime, eRecurrence, eSequence, eStatus, eStart, eSummary, eTransparency, eUpdated, eVisibility
-  , edtDate, edtDateTime, edtTimeZone
+  , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eICalUId, eLocation, eOrganizer, eOriginalStartTime, eRecurrence, eReminders, eSequence, eStatus, eStart
+  , eSummary, eTransparency, eUpdated, eVisibility, edtDate, edtDateTime, edtTimeZone
   )
 import Network.Google.Prelude(Day, UTCTime)
 import Network.URI(URI, uriToString)
 
 import Text.ICalendar.Types(
-    VEvent(veClass, veCreated, veDescription, veDTEndDuration, veDTStart, veGeo, veOrganizer, veExDate, veLastMod, veLocation, veRDate, veRRule, veSeq, veStatus, veSummary, veTransp, veUID, veUrl)
+    VEvent(veAlarms, veClass, veCreated, veDescription, veDTEndDuration, veDTStart, veGeo, veOrganizer, veExDate, veLastMod, veLocation, veRDate, veRRule, veSeq, veStatus, veSummary, veTransp, veUID, veUrl)
   , CalAddress
   , Class(Class)
   , ClassValue(Confidential, Public)
@@ -86,7 +97,7 @@ alarmToReminder :: VAlarm -> EventReminder
 alarmToReminder va = set erMinutes (durationToMinutes . durationValue <$> vaDuration va) (alarmToReminder' va)
 
 alarmToReminder' :: VAlarm -> EventReminder
-alarmToReminder' (VAlarmEmail _ _ _ _ _ _ _ _ _) = set erMethod (Just "email") eventReminder
+alarmToReminder' VAlarmEmail {} = set erMethod (Just "email") eventReminder
 alarmToReminder' _ = set erMethod (Just "popup") eventReminder
 
 hmsToMinutes :: Int -> Int -> Int -> Int32
@@ -101,7 +112,7 @@ alarmsToEventReminders :: Foldable f => f VAlarm -> EventReminders
 alarmsToEventReminders s = set erOverrides (foldr ((:) . alarmToReminder) [] s) eventReminders
 
 organizerToEventOrganizer :: Organizer -> EventOrganizer
-organizerToEventOrganizer (Organizer email cn dir sentBy _ _) = set eoId tcn (set eoDisplayName tcn (set eoSelf (isOrganizerSelf sentBy email) (set eoEmail (Just (_textURI email)) eventOrganizer)))
+organizerToEventOrganizer (Organizer email cn _ sentBy _ _) = set eoId tcn (set eoDisplayName tcn (set eoSelf (isOrganizerSelf sentBy email) (set eoEmail (Just (_textURI email)) eventOrganizer)))
     where tcn = toStrict <$> cn
 
 isOrganizerSelf :: Maybe CalAddress -> CalAddress -> Bool
@@ -155,7 +166,7 @@ setDescription :: VEvent -> Event -> Event
 setDescription = _setFunctorStrict eDescription veDescription descriptionValue
 
 setLocation :: VEvent -> Event -> Event
-setLocation ve = set eLocation (((toStrict . locationValue) <$> veLocation ve) <|> (geoToText <$> veGeo ve))
+setLocation ve = set eLocation ((toStrict . locationValue <$> veLocation ve) <|> (geoToText <$> veGeo ve))
 
 setUpdated :: VEvent -> Event -> Event
 setUpdated = _setFunctor eUpdated veLastMod lastModifiedValue
@@ -205,8 +216,14 @@ setSequence = _setSimple eSequence (sequenceToInt . veSeq)
 setId :: VEvent -> Event -> Event
 setId = _setSimple eICalUId (Just . encodeBase32 . toStrict . uidValue . veUID)
 
-convert :: VEvent -> Event
-convert ev = foldr ($ ev) event [
+setReminders :: VEvent -> Event -> Event
+setReminders = _setSimple eReminders (Just . alarmsToEventReminders . veAlarms)
+
+-- | Convert the given 'VEvent' object to an 'Event' object.
+convertToEvent
+  :: VEvent  -- ^ The given 'VEvent' to convert.
+  -> Event  -- ^ The corresponding 'Event' object.
+convertToEvent ev = foldr ($ ev) event [
     setCreated
   , setDescription
   , setEnd
@@ -216,6 +233,8 @@ convert ev = foldr ($ ev) event [
   , setLocation
   , setOrganizer
   , setOriginalStartTime
+  , setRecurrence
+  , setReminders
   , setSequence
   , setStart
   , setStatus
@@ -223,5 +242,4 @@ convert ev = foldr ($ ev) event [
   , setTransparency
   , setUpdated
   , setVisibility
-  , setRecurrence
   ]
