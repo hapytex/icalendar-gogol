@@ -1,0 +1,348 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE DataKinds          #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE DeriveDataTypeable #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# LANGUAGE DeriveGeneric      #-}</span><span>
+</span><span id="line-4"></span><span class="hs-pragma">{-# LANGUAGE FlexibleInstances  #-}</span><span>
+</span><span id="line-5"></span><span class="hs-pragma">{-# LANGUAGE NoImplicitPrelude  #-}</span><span>
+</span><span id="line-6"></span><span class="hs-pragma">{-# LANGUAGE OverloadedStrings  #-}</span><span>
+</span><span id="line-7"></span><span class="hs-pragma">{-# LANGUAGE RecordWildCards    #-}</span><span>
+</span><span id="line-8"></span><span class="hs-pragma">{-# LANGUAGE TypeFamilies       #-}</span><span>
+</span><span id="line-9"></span><span class="hs-pragma">{-# LANGUAGE TypeOperators      #-}</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-duplicate-exports #-}</span><span>
+</span><span id="line-12"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-binds      #-}</span><span>
+</span><span id="line-13"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-imports    #-}</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-16"></span><span class="hs-comment">-- Module      : Network.Google.Resource.Calendar.CalendarList.Delete</span><span>
+</span><span id="line-17"></span><span class="hs-comment">-- Copyright   : (c) 2015-2016 Brendan Hay</span><span>
+</span><span id="line-18"></span><span class="hs-comment">-- License     : Mozilla Public License, v. 2.0.</span><span>
+</span><span id="line-19"></span><span class="hs-comment">-- Maintainer  : Brendan Hay &lt;brendan.g.hay@gmail.com&gt;</span><span>
+</span><span id="line-20"></span><span class="hs-comment">-- Stability   : auto-generated</span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><span id="line-22"></span><span class="hs-comment">--</span><span>
+</span><span id="line-23"></span><span class="hs-comment">-- Removes a calendar from the user\'s calendar list.</span><span>
+</span><span id="line-24"></span><span class="hs-comment">--</span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- /See:/ &lt;https://developers.google.com/google-apps/calendar/firstapp Calendar API Reference&gt; for @calendar.calendarList.delete@.</span><span>
+</span><span id="line-26"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Network.Google.Resource.Calendar.CalendarList.Delete</span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">(</span><span>
+</span><span id="line-28"></span><span>    </span><span class="annot"><span class="hs-comment">-- * REST Resource</span></span><span>
+</span><span id="line-29"></span><span>      </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#CalendarListDeleteResource"><span class="hs-identifier">CalendarListDeleteResource</span></a></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Creating a Request</span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#calendarListDelete"><span class="hs-identifier">calendarListDelete</span></a></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#CalendarListDelete"><span class="hs-identifier">CalendarListDelete</span></a></span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Request Lenses</span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#cldCalendarId"><span class="hs-identifier">cldCalendarId</span></a></span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-38"></span><span>
+</span><span id="line-39"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.html"><span class="hs-identifier">Network.Google.AppsCalendar.Types</span></a></span><span>
+</span><span id="line-40"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Network.Google.Prelude</span></span><span>
+</span><span id="line-41"></span><span>
+</span><span id="line-42"></span><span class="hs-comment">-- | A resource alias for @calendar.calendarList.delete@ method which the</span><span>
+</span><span id="line-43"></span><span class="hs-comment">-- 'CalendarListDelete' request conforms to.</span><span>
+</span><span id="line-44"></span><span class="hs-keyword">type</span><span> </span><span id="CalendarListDeleteResource"><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#CalendarListDeleteResource"><span class="hs-identifier hs-var">CalendarListDeleteResource</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-45"></span><span>     </span><span class="annot"><span class="hs-string">&quot;calendar&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-46"></span><span>       </span><span class="annot"><span class="hs-string">&quot;v3&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-47"></span><span>         </span><span class="annot"><span class="hs-string">&quot;users&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-48"></span><span>           </span><span class="annot"><span class="hs-string">&quot;me&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-49"></span><span>             </span><span class="annot"><span class="hs-string">&quot;calendarList&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-50"></span><span>               </span><span class="annot"><span class="hs-identifier hs-type">Capture</span></span><span> </span><span class="annot"><span class="hs-string">&quot;calendarId&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-51"></span><span>                 </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;alt&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">AltJSON</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Delete</span></span><span> </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">JSON</span></span><span class="hs-special">]</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-52"></span><span>
+</span><span id="line-53"></span><span class="hs-comment">-- | Removes a calendar from the user\'s calendar list.</span><span>
+</span><span id="line-54"></span><span class="hs-comment">--</span><span>
+</span><span id="line-55"></span><span class="hs-comment">-- /See:/ 'calendarListDelete' smart constructor.</span><span>
+</span><span id="line-56"></span><span id="local-6989586621679326445"><span id="local-6989586621679326446"></span></span><span class="hs-keyword">newtype</span><span> </span><span id="CalendarListDelete"><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#CalendarListDelete"><span class="hs-identifier hs-var">CalendarListDelete</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-57"></span><span>  </span><span id="CalendarListDelete%27"><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#CalendarListDelete%27"><span class="hs-identifier hs-var">CalendarListDelete'</span></a></span></span><span>
+</span><span id="line-58"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="_cldCalendarId"><span class="annot"><span class="annottext">CalendarListDelete -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#_cldCalendarId"><span class="hs-identifier hs-var hs-var">_cldCalendarId</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-59"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-60"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679326439"><span id="local-6989586621679326441"><span class="annot"><span class="annottext">CalendarListDelete -&gt; CalendarListDelete -&gt; Bool
+(CalendarListDelete -&gt; CalendarListDelete -&gt; Bool)
+-&gt; (CalendarListDelete -&gt; CalendarListDelete -&gt; Bool)
+-&gt; Eq CalendarListDelete
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: CalendarListDelete -&gt; CalendarListDelete -&gt; Bool
+$c/= :: CalendarListDelete -&gt; CalendarListDelete -&gt; Bool
+== :: CalendarListDelete -&gt; CalendarListDelete -&gt; Bool
+$c== :: CalendarListDelete -&gt; CalendarListDelete -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679326432"><span id="local-6989586621679326434"><span id="local-6989586621679326436"><span class="annot"><span class="annottext">Int -&gt; CalendarListDelete -&gt; ShowS
+[CalendarListDelete] -&gt; ShowS
+CalendarListDelete -&gt; String
+(Int -&gt; CalendarListDelete -&gt; ShowS)
+-&gt; (CalendarListDelete -&gt; String)
+-&gt; ([CalendarListDelete] -&gt; ShowS)
+-&gt; Show CalendarListDelete
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [CalendarListDelete] -&gt; ShowS
+$cshowList :: [CalendarListDelete] -&gt; ShowS
+show :: CalendarListDelete -&gt; String
+$cshow :: CalendarListDelete -&gt; String
+showsPrec :: Int -&gt; CalendarListDelete -&gt; ShowS
+$cshowsPrec :: Int -&gt; CalendarListDelete -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="%24cCalendarListDelete%27"><span id="%24tCalendarListDelete"><span id="local-6989586621679326402"><span id="local-6989586621679326404"><span id="local-6989586621679326406"><span id="local-6989586621679326408"><span id="local-6989586621679326410"><span id="local-6989586621679326412"><span id="local-6989586621679326414"><span id="local-6989586621679326416"><span id="local-6989586621679326418"><span id="local-6989586621679326420"><span id="local-6989586621679326422"><span id="local-6989586621679326424"><span id="local-6989586621679326426"><span id="local-6989586621679326428"><span class="annot"><span class="annottext">Typeable CalendarListDelete
+DataType
+Constr
+Typeable CalendarListDelete =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g)
+ -&gt; CalendarListDelete
+ -&gt; c CalendarListDelete)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c CalendarListDelete)
+-&gt; (CalendarListDelete -&gt; Constr)
+-&gt; (CalendarListDelete -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c CalendarListDelete))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e))
+    -&gt; Maybe (c CalendarListDelete))
+-&gt; ((forall b. Data b =&gt; b -&gt; b)
+    -&gt; CalendarListDelete -&gt; CalendarListDelete)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarListDelete -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarListDelete -&gt; r)
+-&gt; (forall u.
+    (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarListDelete -&gt; [u])
+-&gt; (forall u.
+    Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarListDelete -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d)
+    -&gt; CalendarListDelete -&gt; m CalendarListDelete)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d)
+    -&gt; CalendarListDelete -&gt; m CalendarListDelete)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d)
+    -&gt; CalendarListDelete -&gt; m CalendarListDelete)
+-&gt; Data CalendarListDelete
+CalendarListDelete -&gt; DataType
+CalendarListDelete -&gt; Constr
+(forall b. Data b =&gt; b -&gt; b)
+-&gt; CalendarListDelete -&gt; CalendarListDelete
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g)
+-&gt; CalendarListDelete
+-&gt; c CalendarListDelete
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c CalendarListDelete
+forall a.
+Typeable a =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; a -&gt; c a)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c a)
+-&gt; (a -&gt; Constr)
+-&gt; (a -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c a))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c a))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; a -&gt; a)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; Data a
+forall u.
+Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarListDelete -&gt; u
+forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarListDelete -&gt; [u]
+forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarListDelete -&gt; r
+forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarListDelete -&gt; r
+forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarListDelete -&gt; m CalendarListDelete
+forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarListDelete -&gt; m CalendarListDelete
+forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c CalendarListDelete
+forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g)
+-&gt; CalendarListDelete
+-&gt; c CalendarListDelete
+forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c CalendarListDelete)
+forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e))
+-&gt; Maybe (c CalendarListDelete)
+$cCalendarListDelete' :: Constr
+$tCalendarListDelete :: DataType
+gmapMo :: (forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarListDelete -&gt; m CalendarListDelete
+$cgmapMo :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarListDelete -&gt; m CalendarListDelete
+gmapMp :: (forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarListDelete -&gt; m CalendarListDelete
+$cgmapMp :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarListDelete -&gt; m CalendarListDelete
+gmapM :: (forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarListDelete -&gt; m CalendarListDelete
+$cgmapM :: forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarListDelete -&gt; m CalendarListDelete
+gmapQi :: Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarListDelete -&gt; u
+$cgmapQi :: forall u.
+Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarListDelete -&gt; u
+gmapQ :: (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarListDelete -&gt; [u]
+$cgmapQ :: forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarListDelete -&gt; [u]
+gmapQr :: (r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarListDelete -&gt; r
+$cgmapQr :: forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarListDelete -&gt; r
+gmapQl :: (r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarListDelete -&gt; r
+$cgmapQl :: forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarListDelete -&gt; r
+gmapT :: (forall b. Data b =&gt; b -&gt; b)
+-&gt; CalendarListDelete -&gt; CalendarListDelete
+$cgmapT :: (forall b. Data b =&gt; b -&gt; b)
+-&gt; CalendarListDelete -&gt; CalendarListDelete
+dataCast2 :: (forall d e. (Data d, Data e) =&gt; c (t d e))
+-&gt; Maybe (c CalendarListDelete)
+$cdataCast2 :: forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e))
+-&gt; Maybe (c CalendarListDelete)
+dataCast1 :: (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c CalendarListDelete)
+$cdataCast1 :: forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c CalendarListDelete)
+dataTypeOf :: CalendarListDelete -&gt; DataType
+$cdataTypeOf :: CalendarListDelete -&gt; DataType
+toConstr :: CalendarListDelete -&gt; Constr
+$ctoConstr :: CalendarListDelete -&gt; Constr
+gunfold :: (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c CalendarListDelete
+$cgunfold :: forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c CalendarListDelete
+gfoldl :: (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g)
+-&gt; CalendarListDelete
+-&gt; c CalendarListDelete
+$cgfoldl :: forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g)
+-&gt; CalendarListDelete
+-&gt; c CalendarListDelete
+$cp1Data :: Typeable CalendarListDelete
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Data</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Typeable</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(forall x. CalendarListDelete -&gt; Rep CalendarListDelete x)
+-&gt; (forall x. Rep CalendarListDelete x -&gt; CalendarListDelete)
+-&gt; Generic CalendarListDelete
+forall x. Rep CalendarListDelete x -&gt; CalendarListDelete
+forall x. CalendarListDelete -&gt; Rep CalendarListDelete x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep CalendarListDelete x -&gt; CalendarListDelete
+$cfrom :: forall x. CalendarListDelete -&gt; Rep CalendarListDelete x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">)</span><span>
+</span><span id="line-61"></span><span>
+</span><span id="line-62"></span><span>
+</span><span id="line-63"></span><span class="hs-comment">-- | Creates a value of 'CalendarListDelete' with the minimum fields required to make a request.</span><span>
+</span><span id="line-64"></span><span class="hs-comment">--</span><span>
+</span><span id="line-65"></span><span class="hs-comment">-- Use one of the following lenses to modify other fields as desired:</span><span>
+</span><span id="line-66"></span><span class="hs-comment">--</span><span>
+</span><span id="line-67"></span><span class="hs-comment">-- * 'cldCalendarId'</span><span>
+</span><span id="line-68"></span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#calendarListDelete"><span class="hs-identifier hs-type">calendarListDelete</span></a></span><span>
+</span><span id="line-69"></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ 'cldCalendarId'</span><span>
+</span><span id="line-70"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#CalendarListDelete"><span class="hs-identifier hs-type">CalendarListDelete</span></a></span><span>
+</span><span id="line-71"></span><span id="calendarListDelete"><span class="annot"><span class="annottext">calendarListDelete :: Text -&gt; CalendarListDelete
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#calendarListDelete"><span class="hs-identifier hs-var hs-var">calendarListDelete</span></a></span></span><span> </span><span id="local-6989586621679326395"><span class="annot"><span class="annottext">pCldCalendarId_ :: Text
+</span><a href="#local-6989586621679326395"><span class="hs-identifier hs-var">pCldCalendarId_</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-72"></span><span>  </span><span class="annot"><span class="annottext">CalendarListDelete' :: Text -&gt; CalendarListDelete
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#CalendarListDelete%27"><span class="hs-identifier hs-type hs-type">CalendarListDelete'</span></a></span><span> </span><span class="hs-special">{</span><span class="annot"><span class="annottext">_cldCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#_cldCalendarId"><span class="hs-identifier hs-var">_cldCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679326395"><span class="hs-identifier hs-var">pCldCalendarId_</span></a></span><span class="hs-special">}</span><span>
+</span><span id="line-73"></span><span>
+</span><span id="line-74"></span><span>
+</span><span id="line-75"></span><span class="hs-comment">-- | Calendar identifier. To retrieve calendar IDs call the calendarList.list</span><span>
+</span><span id="line-76"></span><span class="hs-comment">-- method. If you want to access the primary calendar of the currently</span><span>
+</span><span id="line-77"></span><span class="hs-comment">-- logged in user, use the \&quot;primary\&quot; keyword.</span><span>
+</span><span id="line-78"></span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#cldCalendarId"><span class="hs-identifier hs-type">cldCalendarId</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#CalendarListDelete"><span class="hs-identifier hs-type">CalendarListDelete</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-79"></span><span id="cldCalendarId"><span class="annot"><span class="annottext">cldCalendarId :: (Text -&gt; f Text) -&gt; CalendarListDelete -&gt; f CalendarListDelete
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#cldCalendarId"><span class="hs-identifier hs-var hs-var">cldCalendarId</span></a></span></span><span>
+</span><span id="line-80"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(CalendarListDelete -&gt; Text)
+-&gt; (CalendarListDelete -&gt; Text -&gt; CalendarListDelete)
+-&gt; Lens CalendarListDelete CalendarListDelete Text Text
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">CalendarListDelete -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#_cldCalendarId"><span class="hs-identifier hs-var hs-var">_cldCalendarId</span></a></span><span>
+</span><span id="line-81"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679326391"><span class="annot"><span class="annottext">s :: CalendarListDelete
+</span><a href="#local-6989586621679326391"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679326390"><span class="annot"><span class="annottext">a :: Text
+</span><a href="#local-6989586621679326390"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">CalendarListDelete
+</span><a href="#local-6989586621679326391"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_cldCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#_cldCalendarId"><span class="hs-identifier hs-var">_cldCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679326390"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-82"></span><span>
+</span><span id="line-83"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">GoogleRequest</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#CalendarListDelete"><span class="hs-identifier hs-type">CalendarListDelete</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-84"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Rs"><span class="annot"><span class="hs-identifier hs-var">Rs</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#CalendarListDelete"><span class="hs-identifier hs-type">CalendarListDelete</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-85"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Scopes"><span class="annot"><span class="hs-identifier hs-var">Scopes</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#CalendarListDelete"><span class="hs-identifier hs-type">CalendarListDelete</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-86"></span><span>             </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar&quot;</span></span><span class="hs-special">]</span><span>
+</span><span id="line-87"></span><span>        </span><span id="local-6989586621679326386"><span class="annot"><span class="annottext">requestClient :: CalendarListDelete -&gt; GClient (Rs CalendarListDelete)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">requestClient</span></span></span><span> </span><span id="local-6989586621679326384"><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#CalendarListDelete%27"><span class="hs-identifier hs-type">CalendarListDelete'</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span><span>
+</span><span id="line-88"></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Maybe AltJSON -&gt; ServiceConfig -&gt; GClient ()
+</span><a href="#local-6989586621679326383"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679326384"><span class="hs-identifier hs-var">_cldCalendarId</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">AltJSON -&gt; Maybe AltJSON
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">AltJSON
+</span><span class="hs-identifier hs-var">AltJSON</span></span><span class="hs-special">)</span><span>
+</span><span id="line-89"></span><span>              </span><span class="annot"><span class="annottext">ServiceConfig
+</span><a href="Network.Google.AppsCalendar.Types.html#appsCalendarService"><span class="hs-identifier hs-var">appsCalendarService</span></a></span><span>
+</span><span id="line-90"></span><span>          </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679326383"><span class="annot"><span class="annottext">go :: Fn CalendarListDeleteResource
+</span><a href="#local-6989586621679326383"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span>
+</span><span id="line-91"></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Proxy CalendarListDeleteResource
+-&gt; Request -&gt; Fn CalendarListDeleteResource
+forall fn. GoogleClient fn =&gt; Proxy fn -&gt; Request -&gt; Fn fn
+</span><span class="hs-identifier hs-var">buildClient</span></span><span>
+</span><span id="line-92"></span><span>                      </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Proxy CalendarListDeleteResource
+forall k (t :: k). Proxy t
+</span><span class="hs-identifier hs-var">Proxy</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Proxy</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Delete.html#CalendarListDeleteResource"><span class="hs-identifier hs-type">CalendarListDeleteResource</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-93"></span><span>                      </span><span class="annot"><span class="annottext">Request
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-94"></span></pre></body></html>

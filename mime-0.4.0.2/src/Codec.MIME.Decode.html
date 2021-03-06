@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">--------------------------------------------------------------------</span><span>
+</span><span id="line-2"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-3"></span><span class="hs-comment">-- Module    : Codec.MIME.Decode</span><span>
+</span><span id="line-4"></span><span class="hs-comment">-- Copyright : (c) 2006-2009, Galois, Inc. </span><span>
+</span><span id="line-5"></span><span class="hs-comment">-- License   : BSD3</span><span>
+</span><span id="line-6"></span><span class="hs-comment">--</span><span>
+</span><span id="line-7"></span><span class="hs-comment">-- Maintainer: Sigbjorn Finne &lt;sigbjorn.finne@gmail.com&gt;</span><span>
+</span><span id="line-8"></span><span class="hs-comment">-- Stability : provisional</span><span>
+</span><span id="line-9"></span><span class="hs-comment">-- Portability: portable</span><span>
+</span><span id="line-10"></span><span class="hs-comment">--</span><span>
+</span><span id="line-11"></span><span class="hs-comment">-- </span><span>
+</span><span id="line-12"></span><span class="hs-comment">-- </span><span>
+</span><span id="line-13"></span><span class="hs-comment">--------------------------------------------------------------------</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Codec.MIME.Decode</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-16"></span><span>
+</span><span id="line-17"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Char</span></span><span>
+</span><span id="line-18"></span><span>
+</span><span id="line-19"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Codec.MIME.QuotedPrintable.html"><span class="hs-identifier">Codec.MIME.QuotedPrintable</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">QP</span></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Codec.MIME.Base64.html"><span class="hs-identifier">Codec.MIME.Base64</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Base64</span></span><span>
+</span><span id="line-21"></span><span>
+</span><span id="line-22"></span><span class="hs-comment">-- | @decodeBody enc str@ decodes @str@ according to the scheme</span><span>
+</span><span id="line-23"></span><span class="hs-comment">-- specified by @enc@. Currently, @base64@ and @quoted-printable@ are</span><span>
+</span><span id="line-24"></span><span class="hs-comment">-- the only two encodings supported. If you supply anything else</span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- for @enc@, @decodeBody@ returns @str@.</span><span>
+</span><span id="line-26"></span><span class="hs-comment">-- </span><span>
+</span><span id="line-27"></span><span class="annot"><a href="Codec.MIME.Decode.html#decodeBody"><span class="hs-identifier hs-type">decodeBody</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-28"></span><span id="decodeBody"><span class="annot"><span class="annottext">decodeBody :: String -&gt; String -&gt; String
+</span><a href="Codec.MIME.Decode.html#decodeBody"><span class="hs-identifier hs-var hs-var">decodeBody</span></a></span></span><span> </span><span id="local-6989586621679051835"><span class="annot"><span class="annottext">enc :: String
+</span><a href="#local-6989586621679051835"><span class="hs-identifier hs-var">enc</span></a></span></span><span> </span><span id="local-6989586621679051834"><span class="annot"><span class="annottext">body :: String
+</span><a href="#local-6989586621679051834"><span class="hs-identifier hs-var">body</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-29"></span><span> </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">(Char -&gt; Char) -&gt; String -&gt; String
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char
+</span><span class="hs-identifier hs-var">toLower</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051835"><span class="hs-identifier hs-var">enc</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-30"></span><span>   </span><span class="hs-string">&quot;base64&quot;</span><span>           </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String -&gt; String
+</span><a href="Codec.MIME.Base64.html#decodeToString"><span class="hs-identifier hs-var">Base64.decodeToString</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051834"><span class="hs-identifier hs-var">body</span></a></span><span>
+</span><span id="line-31"></span><span>   </span><span class="hs-string">&quot;quoted-printable&quot;</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String -&gt; String
+</span><a href="Codec.MIME.QuotedPrintable.html#decode"><span class="hs-identifier hs-var">QP.decode</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051834"><span class="hs-identifier hs-var">body</span></a></span><span>
+</span><span id="line-32"></span><span>   </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051834"><span class="hs-identifier hs-var">body</span></a></span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span class="hs-comment">-- Decoding of RFC 2047's &quot;encoded-words&quot; production</span><span>
+</span><span id="line-35"></span><span class="hs-comment">-- (as used in email-headers and some HTTP header cases</span><span>
+</span><span id="line-36"></span><span class="hs-comment">-- (AtomPub's Slug: header))</span><span>
+</span><span id="line-37"></span><span class="annot"><a href="Codec.MIME.Decode.html#decodeWord"><span class="hs-identifier hs-type">decodeWord</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span>
+</span><span id="line-38"></span><span id="decodeWord"><span class="annot"><span class="annottext">decodeWord :: String -&gt; Maybe (String, String)
+</span><a href="Codec.MIME.Decode.html#decodeWord"><span class="hs-identifier hs-var hs-var">decodeWord</span></a></span></span><span> </span><span id="local-6989586621679051829"><span class="annot"><span class="annottext">str :: String
+</span><a href="#local-6989586621679051829"><span class="hs-identifier hs-var">str</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-39"></span><span>  </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051829"><span class="hs-identifier hs-var">str</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-40"></span><span>   </span><span class="hs-char">'='</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span class="hs-char">'?'</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679051828"><span class="annot"><span class="annottext">xs :: String
+</span><a href="#local-6989586621679051828"><span class="hs-identifier hs-var">xs</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-41"></span><span>     </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">(String, String) -&gt; (String, String)
+forall a. (a, String) -&gt; (a, String)
+</span><a href="#local-6989586621679051827"><span class="hs-identifier hs-var">dropLang</span></a></span><span> </span><span class="annot"><span class="annottext">((String, String) -&gt; (String, String))
+-&gt; (String, String) -&gt; (String, String)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">(Char -&gt; Bool) -&gt; String -&gt; (String, String)
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; ([a], [a])
+</span><span class="hs-identifier hs-var">break</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679051825"><span class="annot"><span class="annottext">ch :: Char
+</span><a href="#local-6989586621679051825"><span class="hs-identifier hs-var">ch</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051825"><span class="hs-identifier hs-var">ch</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span class="annot"><span class="hs-char">'?'</span></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">||</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051825"><span class="hs-identifier hs-var">ch</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="hs-char">'*'</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051828"><span class="hs-identifier hs-var">xs</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-42"></span><span>       </span><span class="hs-special">(</span><span id="local-6989586621679051823"><span class="annot"><span class="annottext">cs :: String
+</span><a href="#local-6989586621679051823"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">,</span><span class="hs-identifier">_</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679051822"><span class="annot"><span class="annottext">x :: Char
+</span><a href="#local-6989586621679051822"><span class="hs-identifier hs-var">x</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span class="hs-char">'?'</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679051821"><span class="annot"><span class="annottext">bs :: String
+</span><a href="#local-6989586621679051821"><span class="hs-identifier hs-var">bs</span></a></span></span><span class="hs-special">)</span><span>
+</span><span id="line-43"></span><span>         </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">String -&gt; Bool
+</span><a href="#local-6989586621679051820"><span class="hs-identifier hs-var">isKnownCharset</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Char -&gt; Char) -&gt; String -&gt; String
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char
+</span><span class="hs-identifier hs-var">toLower</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051823"><span class="hs-identifier hs-var">cs</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-44"></span><span>           </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char
+</span><span class="hs-identifier hs-var">toLower</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051822"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-45"></span><span>             </span><span class="hs-char">'q'</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String -&gt; (String, String) -&gt; Maybe (String, String)
+forall p. p -&gt; (String, String) -&gt; Maybe (String, String)
+</span><a href="#local-6989586621679051819"><span class="hs-identifier hs-var">decodeQ</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051823"><span class="hs-identifier hs-var">cs</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Char -&gt; Bool) -&gt; String -&gt; (String, String)
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; ([a], [a])
+</span><span class="hs-identifier hs-var">break</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span class="annot"><span class="hs-char">'?'</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051821"><span class="hs-identifier hs-var">bs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-46"></span><span>             </span><span class="hs-char">'b'</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String -&gt; (String, String) -&gt; Maybe (String, String)
+forall p. p -&gt; (String, String) -&gt; Maybe (String, String)
+</span><a href="#local-6989586621679051818"><span class="hs-identifier hs-var">decodeB</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051823"><span class="hs-identifier hs-var">cs</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Char -&gt; Bool) -&gt; String -&gt; (String, String)
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; ([a], [a])
+</span><span class="hs-identifier hs-var">break</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span class="annot"><span class="hs-char">'?'</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051821"><span class="hs-identifier hs-var">bs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-47"></span><span>             </span><span class="hs-identifier">_</span><span>   </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Maybe (String, String)
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-48"></span><span>       </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Maybe (String, String)
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-49"></span><span>   </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Maybe (String, String)
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-50"></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-51"></span><span>  </span><span id="local-6989586621679051820"><span class="annot"><span class="annottext">isKnownCharset :: String -&gt; Bool
+</span><a href="#local-6989586621679051820"><span class="hs-identifier hs-var hs-var">isKnownCharset</span></a></span></span><span> </span><span id="local-6989586621679051817"><span class="annot"><span class="annottext">cs :: String
+</span><a href="#local-6989586621679051817"><span class="hs-identifier hs-var">cs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051817"><span class="hs-identifier hs-var">cs</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; [String] -&gt; Bool
+forall (t :: * -&gt; *) a. (Foldable t, Eq a) =&gt; a -&gt; t a -&gt; Bool
+</span><span class="hs-operator hs-var">`elem`</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-string">&quot;iso-8859-1&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-string">&quot;us-ascii&quot;</span></span><span class="hs-special">]</span><span>
+</span><span id="line-52"></span><span>
+</span><span id="line-53"></span><span>   </span><span class="hs-comment">-- ignore RFC 2231 extension of permitting a language tag to be supplied</span><span>
+</span><span id="line-54"></span><span>   </span><span class="hs-comment">-- after the charset.</span><span>
+</span><span id="line-55"></span><span>  </span><span id="local-6989586621679051827"><span class="annot"><span class="annottext">dropLang :: (a, String) -&gt; (a, String)
+</span><a href="#local-6989586621679051827"><span class="hs-identifier hs-var hs-var">dropLang</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679051815"><span class="annot"><span class="annottext">as :: a
+</span><a href="#local-6989586621679051815"><span class="hs-keyword hs-var">as</span></a></span></span><span class="hs-special">,</span><span class="hs-char">'*'</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679051814"><span class="annot"><span class="annottext">bs :: String
+</span><a href="#local-6989586621679051814"><span class="hs-identifier hs-var">bs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679051815"><span class="hs-keyword hs-var">as</span></a></span><span class="hs-special">,</span><span class="annot"><span class="annottext">(Char -&gt; Bool) -&gt; String -&gt; String
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">dropWhile</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">/=</span></span><span class="annot"><span class="hs-char">'?'</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051814"><span class="hs-identifier hs-var">bs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-56"></span><span>  </span><span class="annot"><a href="#local-6989586621679051827"><span class="hs-identifier hs-var">dropLang</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679051811"><span class="annot"><span class="annottext">as :: a
+</span><a href="#local-6989586621679051811"><span class="hs-keyword hs-var">as</span></a></span></span><span class="hs-special">,</span><span id="local-6989586621679051810"><span class="annot"><span class="annottext">bs :: String
+</span><a href="#local-6989586621679051810"><span class="hs-identifier hs-var">bs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679051811"><span class="hs-keyword hs-var">as</span></a></span><span class="hs-special">,</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051810"><span class="hs-identifier hs-var">bs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-57"></span><span>
+</span><span id="line-58"></span><span>  </span><span id="local-6989586621679051819"><span class="annot"><span class="annottext">decodeQ :: p -&gt; (String, String) -&gt; Maybe (String, String)
+</span><a href="#local-6989586621679051819"><span class="hs-identifier hs-var hs-var">decodeQ</span></a></span></span><span> </span><span id="local-6989586621679051809"><span class="annot"><span class="annottext">cset :: p
+</span><a href="#local-6989586621679051809"><span class="hs-identifier hs-var">cset</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679051808"><span class="annot"><span class="annottext">fs :: String
+</span><a href="#local-6989586621679051808"><span class="hs-identifier hs-var">fs</span></a></span></span><span class="hs-special">,</span><span class="hs-char">'?'</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span class="hs-char">'='</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679051807"><span class="annot"><span class="annottext">rs :: String
+</span><a href="#local-6989586621679051807"><span class="hs-identifier hs-var">rs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(String, String) -&gt; Maybe (String, String)
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">p -&gt; String -&gt; String
+forall p p. p -&gt; p -&gt; p
+</span><a href="#local-6989586621679051806"><span class="hs-identifier hs-var">fromCharset</span></a></span><span> </span><span class="annot"><span class="annottext">p
+</span><a href="#local-6989586621679051809"><span class="hs-identifier hs-var">cset</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; String
+</span><a href="Codec.MIME.QuotedPrintable.html#decode"><span class="hs-identifier hs-var">QP.decode</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051808"><span class="hs-identifier hs-var">fs</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051807"><span class="hs-identifier hs-var">rs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-59"></span><span>  </span><span class="annot"><a href="#local-6989586621679051819"><span class="hs-identifier hs-var">decodeQ</span></a></span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe (String, String)
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-60"></span><span>
+</span><span id="line-61"></span><span>  </span><span id="local-6989586621679051818"><span class="annot"><span class="annottext">decodeB :: p -&gt; (String, String) -&gt; Maybe (String, String)
+</span><a href="#local-6989586621679051818"><span class="hs-identifier hs-var hs-var">decodeB</span></a></span></span><span> </span><span id="local-6989586621679051805"><span class="annot"><span class="annottext">cset :: p
+</span><a href="#local-6989586621679051805"><span class="hs-identifier hs-var">cset</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679051804"><span class="annot"><span class="annottext">fs :: String
+</span><a href="#local-6989586621679051804"><span class="hs-identifier hs-var">fs</span></a></span></span><span class="hs-special">,</span><span class="hs-char">'?'</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span class="hs-char">'='</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679051803"><span class="annot"><span class="annottext">rs :: String
+</span><a href="#local-6989586621679051803"><span class="hs-identifier hs-var">rs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-62"></span><span>    </span><span class="annot"><span class="annottext">(String, String) -&gt; Maybe (String, String)
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">p -&gt; String -&gt; String
+forall p p. p -&gt; p -&gt; p
+</span><a href="#local-6989586621679051806"><span class="hs-identifier hs-var">fromCharset</span></a></span><span> </span><span class="annot"><span class="annottext">p
+</span><a href="#local-6989586621679051805"><span class="hs-identifier hs-var">cset</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; String
+</span><a href="Codec.MIME.Base64.html#decodeToString"><span class="hs-identifier hs-var">Base64.decodeToString</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051804"><span class="hs-identifier hs-var">fs</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051803"><span class="hs-identifier hs-var">rs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-63"></span><span>  </span><span class="annot"><a href="#local-6989586621679051818"><span class="hs-identifier hs-var">decodeB</span></a></span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe (String, String)
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-64"></span><span>
+</span><span id="line-65"></span><span>  </span><span id="local-6989586621679051806"><span class="annot"><span class="annottext">fromCharset :: p -&gt; p -&gt; p
+</span><a href="#local-6989586621679051806"><span class="hs-identifier hs-var hs-var">fromCharset</span></a></span></span><span> </span><span id="local-6989586621679051802"><span class="annot"><span class="annottext">_cset :: p
+</span><a href="#local-6989586621679051802"><span class="hs-identifier hs-var">_cset</span></a></span></span><span> </span><span id="local-6989586621679051801"><span class="annot"><span class="annottext">cs :: p
+</span><a href="#local-6989586621679051801"><span class="hs-identifier hs-var">cs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">p
+</span><a href="#local-6989586621679051801"><span class="hs-identifier hs-var">cs</span></a></span><span>
+</span><span id="line-66"></span><span>
+</span><span id="line-67"></span><span class="annot"><a href="Codec.MIME.Decode.html#decodeWords"><span class="hs-identifier hs-type">decodeWords</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-68"></span><span id="decodeWords"><span class="annot"><span class="annottext">decodeWords :: String -&gt; String
+</span><a href="Codec.MIME.Decode.html#decodeWords"><span class="hs-identifier hs-var hs-var">decodeWords</span></a></span></span><span> </span><span class="hs-string">&quot;&quot;</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-string">&quot;&quot;</span></span><span>
+</span><span id="line-69"></span><span class="annot"><a href="Codec.MIME.Decode.html#decodeWords"><span class="hs-identifier hs-var">decodeWords</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679051799"><span class="annot"><span class="annottext">x :: Char
+</span><a href="#local-6989586621679051799"><span class="hs-identifier hs-var">x</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679051798"><span class="annot"><span class="annottext">xs :: String
+</span><a href="#local-6989586621679051798"><span class="hs-identifier hs-var">xs</span></a></span></span><span class="hs-special">)</span><span>
+</span><span id="line-70"></span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Bool
+</span><span class="hs-identifier hs-var">isSpace</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051799"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051799"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String
+</span><a href="Codec.MIME.Decode.html#decodeWords"><span class="hs-identifier hs-var">decodeWords</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051798"><span class="hs-identifier hs-var">xs</span></a></span><span>
+</span><span id="line-71"></span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-72"></span><span>  </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe (String, String)
+</span><a href="Codec.MIME.Decode.html#decodeWord"><span class="hs-identifier hs-var">decodeWord</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051799"><span class="hs-identifier hs-var">x</span></a></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051798"><span class="hs-identifier hs-var">xs</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-73"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051799"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String
+</span><a href="Codec.MIME.Decode.html#decodeWords"><span class="hs-identifier hs-var">decodeWords</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051798"><span class="hs-identifier hs-var">xs</span></a></span><span>
+</span><span id="line-74"></span><span>    </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679051796"><span class="annot"><span class="annottext">as :: String
+</span><a href="#local-6989586621679051796"><span class="hs-keyword hs-var">as</span></a></span></span><span class="hs-special">,</span><span id="local-6989586621679051795"><span class="annot"><span class="annottext">bs :: String
+</span><a href="#local-6989586621679051795"><span class="hs-identifier hs-var">bs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051796"><span class="hs-keyword hs-var">as</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String
+</span><a href="Codec.MIME.Decode.html#decodeWords"><span class="hs-identifier hs-var">decodeWords</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051795"><span class="hs-identifier hs-var">bs</span></a></span><span>
+</span><span id="line-75"></span><span>
+</span><span id="line-76"></span><span>
+</span><span id="line-77"></span></pre></body></html>

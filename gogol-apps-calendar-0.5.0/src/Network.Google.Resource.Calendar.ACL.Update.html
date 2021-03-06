@@ -1,0 +1,405 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE DataKinds          #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE DeriveDataTypeable #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# LANGUAGE DeriveGeneric      #-}</span><span>
+</span><span id="line-4"></span><span class="hs-pragma">{-# LANGUAGE FlexibleInstances  #-}</span><span>
+</span><span id="line-5"></span><span class="hs-pragma">{-# LANGUAGE NoImplicitPrelude  #-}</span><span>
+</span><span id="line-6"></span><span class="hs-pragma">{-# LANGUAGE OverloadedStrings  #-}</span><span>
+</span><span id="line-7"></span><span class="hs-pragma">{-# LANGUAGE RecordWildCards    #-}</span><span>
+</span><span id="line-8"></span><span class="hs-pragma">{-# LANGUAGE TypeFamilies       #-}</span><span>
+</span><span id="line-9"></span><span class="hs-pragma">{-# LANGUAGE TypeOperators      #-}</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-duplicate-exports #-}</span><span>
+</span><span id="line-12"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-binds      #-}</span><span>
+</span><span id="line-13"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-imports    #-}</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-16"></span><span class="hs-comment">-- Module      : Network.Google.Resource.Calendar.ACL.Update</span><span>
+</span><span id="line-17"></span><span class="hs-comment">-- Copyright   : (c) 2015-2016 Brendan Hay</span><span>
+</span><span id="line-18"></span><span class="hs-comment">-- License     : Mozilla Public License, v. 2.0.</span><span>
+</span><span id="line-19"></span><span class="hs-comment">-- Maintainer  : Brendan Hay &lt;brendan.g.hay@gmail.com&gt;</span><span>
+</span><span id="line-20"></span><span class="hs-comment">-- Stability   : auto-generated</span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><span id="line-22"></span><span class="hs-comment">--</span><span>
+</span><span id="line-23"></span><span class="hs-comment">-- Updates an access control rule.</span><span>
+</span><span id="line-24"></span><span class="hs-comment">--</span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- /See:/ &lt;https://developers.google.com/google-apps/calendar/firstapp Calendar API Reference&gt; for @calendar.acl.update@.</span><span>
+</span><span id="line-26"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Network.Google.Resource.Calendar.ACL.Update</span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">(</span><span>
+</span><span id="line-28"></span><span>    </span><span class="annot"><span class="hs-comment">-- * REST Resource</span></span><span>
+</span><span id="line-29"></span><span>      </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#ACLUpdateResource"><span class="hs-identifier">ACLUpdateResource</span></a></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Creating a Request</span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#aclUpdate"><span class="hs-identifier">aclUpdate</span></a></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#ACLUpdate"><span class="hs-identifier">ACLUpdate</span></a></span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Request Lenses</span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#auCalendarId"><span class="hs-identifier">auCalendarId</span></a></span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#auRuleId"><span class="hs-identifier">auRuleId</span></a></span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#auPayload"><span class="hs-identifier">auPayload</span></a></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#auSendNotifications"><span class="hs-identifier">auSendNotifications</span></a></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-41"></span><span>
+</span><span id="line-42"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.html"><span class="hs-identifier">Network.Google.AppsCalendar.Types</span></a></span><span>
+</span><span id="line-43"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Network.Google.Prelude</span></span><span>
+</span><span id="line-44"></span><span>
+</span><span id="line-45"></span><span class="hs-comment">-- | A resource alias for @calendar.acl.update@ method which the</span><span>
+</span><span id="line-46"></span><span class="hs-comment">-- 'ACLUpdate' request conforms to.</span><span>
+</span><span id="line-47"></span><span class="hs-keyword">type</span><span> </span><span id="ACLUpdateResource"><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#ACLUpdateResource"><span class="hs-identifier hs-var">ACLUpdateResource</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-48"></span><span>     </span><span class="annot"><span class="hs-string">&quot;calendar&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-49"></span><span>       </span><span class="annot"><span class="hs-string">&quot;v3&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-50"></span><span>         </span><span class="annot"><span class="hs-string">&quot;calendars&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-51"></span><span>           </span><span class="annot"><span class="hs-identifier hs-type">Capture</span></span><span> </span><span class="annot"><span class="hs-string">&quot;calendarId&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-52"></span><span>             </span><span class="annot"><span class="hs-string">&quot;acl&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-53"></span><span>               </span><span class="annot"><span class="hs-identifier hs-type">Capture</span></span><span> </span><span class="annot"><span class="hs-string">&quot;ruleId&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-54"></span><span>                 </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;sendNotifications&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-55"></span><span>                   </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;alt&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">AltJSON</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-56"></span><span>                     </span><span class="annot"><span class="hs-identifier hs-type">ReqBody</span></span><span> </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">JSON</span></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#ACLRule"><span class="hs-identifier hs-type">ACLRule</span></a></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Put</span></span><span> </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">JSON</span></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#ACLRule"><span class="hs-identifier hs-type">ACLRule</span></a></span><span>
+</span><span id="line-57"></span><span>
+</span><span id="line-58"></span><span class="hs-comment">-- | Updates an access control rule.</span><span>
+</span><span id="line-59"></span><span class="hs-comment">--</span><span>
+</span><span id="line-60"></span><span class="hs-comment">-- /See:/ 'aclUpdate' smart constructor.</span><span>
+</span><span id="line-61"></span><span id="local-6989586621679326070"><span id="local-6989586621679326071"></span></span><span class="hs-keyword">data</span><span> </span><span id="ACLUpdate"><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#ACLUpdate"><span class="hs-identifier hs-var">ACLUpdate</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-62"></span><span>  </span><span id="ACLUpdate%27"><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#ACLUpdate%27"><span class="hs-identifier hs-var">ACLUpdate'</span></a></span></span><span>
+</span><span id="line-63"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="_auCalendarId"><span class="annot"><span class="annottext">ACLUpdate -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#_auCalendarId"><span class="hs-identifier hs-var hs-var">_auCalendarId</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-64"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_auRuleId"><span class="annot"><span class="annottext">ACLUpdate -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#_auRuleId"><span class="hs-identifier hs-var hs-var">_auRuleId</span></a></span></span><span>            </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-65"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_auPayload"><span class="annot"><span class="annottext">ACLUpdate -&gt; ACLRule
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#_auPayload"><span class="hs-identifier hs-var hs-var">_auPayload</span></a></span></span><span>           </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#ACLRule"><span class="hs-identifier hs-type">ACLRule</span></a></span><span>
+</span><span id="line-66"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_auSendNotifications"><span class="annot"><span class="annottext">ACLUpdate -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#_auSendNotifications"><span class="hs-identifier hs-var hs-var">_auSendNotifications</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-67"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-68"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679326061"><span id="local-6989586621679326063"><span class="annot"><span class="annottext">ACLUpdate -&gt; ACLUpdate -&gt; Bool
+(ACLUpdate -&gt; ACLUpdate -&gt; Bool)
+-&gt; (ACLUpdate -&gt; ACLUpdate -&gt; Bool) -&gt; Eq ACLUpdate
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: ACLUpdate -&gt; ACLUpdate -&gt; Bool
+$c/= :: ACLUpdate -&gt; ACLUpdate -&gt; Bool
+== :: ACLUpdate -&gt; ACLUpdate -&gt; Bool
+$c== :: ACLUpdate -&gt; ACLUpdate -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679326054"><span id="local-6989586621679326056"><span id="local-6989586621679326058"><span class="annot"><span class="annottext">Int -&gt; ACLUpdate -&gt; ShowS
+[ACLUpdate] -&gt; ShowS
+ACLUpdate -&gt; String
+(Int -&gt; ACLUpdate -&gt; ShowS)
+-&gt; (ACLUpdate -&gt; String)
+-&gt; ([ACLUpdate] -&gt; ShowS)
+-&gt; Show ACLUpdate
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [ACLUpdate] -&gt; ShowS
+$cshowList :: [ACLUpdate] -&gt; ShowS
+show :: ACLUpdate -&gt; String
+$cshow :: ACLUpdate -&gt; String
+showsPrec :: Int -&gt; ACLUpdate -&gt; ShowS
+$cshowsPrec :: Int -&gt; ACLUpdate -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="%24cACLUpdate%27"><span id="%24tACLUpdate"><span id="local-6989586621679326024"><span id="local-6989586621679326026"><span id="local-6989586621679326028"><span id="local-6989586621679326030"><span id="local-6989586621679326032"><span id="local-6989586621679326034"><span id="local-6989586621679326036"><span id="local-6989586621679326038"><span id="local-6989586621679326040"><span id="local-6989586621679326042"><span id="local-6989586621679326044"><span id="local-6989586621679326046"><span id="local-6989586621679326048"><span id="local-6989586621679326050"><span class="annot"><span class="annottext">Typeable ACLUpdate
+DataType
+Constr
+Typeable ACLUpdate =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; ACLUpdate -&gt; c ACLUpdate)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLUpdate)
+-&gt; (ACLUpdate -&gt; Constr)
+-&gt; (ACLUpdate -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c ACLUpdate))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c ACLUpdate))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; ACLUpdate -&gt; ACLUpdate)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLUpdate -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLUpdate -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; ACLUpdate -&gt; [u])
+-&gt; (forall u.
+    Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; ACLUpdate -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLUpdate -&gt; m ACLUpdate)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLUpdate -&gt; m ACLUpdate)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLUpdate -&gt; m ACLUpdate)
+-&gt; Data ACLUpdate
+ACLUpdate -&gt; DataType
+ACLUpdate -&gt; Constr
+(forall b. Data b =&gt; b -&gt; b) -&gt; ACLUpdate -&gt; ACLUpdate
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; ACLUpdate -&gt; c ACLUpdate
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLUpdate
+forall a.
+Typeable a =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; a -&gt; c a)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c a)
+-&gt; (a -&gt; Constr)
+-&gt; (a -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c a))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c a))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; a -&gt; a)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; Data a
+forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; ACLUpdate -&gt; u
+forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; ACLUpdate -&gt; [u]
+forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLUpdate -&gt; r
+forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLUpdate -&gt; r
+forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLUpdate -&gt; m ACLUpdate
+forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLUpdate -&gt; m ACLUpdate
+forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLUpdate
+forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; ACLUpdate -&gt; c ACLUpdate
+forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c ACLUpdate)
+forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c ACLUpdate)
+$cACLUpdate' :: Constr
+$tACLUpdate :: DataType
+gmapMo :: (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLUpdate -&gt; m ACLUpdate
+$cgmapMo :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLUpdate -&gt; m ACLUpdate
+gmapMp :: (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLUpdate -&gt; m ACLUpdate
+$cgmapMp :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLUpdate -&gt; m ACLUpdate
+gmapM :: (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLUpdate -&gt; m ACLUpdate
+$cgmapM :: forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLUpdate -&gt; m ACLUpdate
+gmapQi :: Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; ACLUpdate -&gt; u
+$cgmapQi :: forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; ACLUpdate -&gt; u
+gmapQ :: (forall d. Data d =&gt; d -&gt; u) -&gt; ACLUpdate -&gt; [u]
+$cgmapQ :: forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; ACLUpdate -&gt; [u]
+gmapQr :: (r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLUpdate -&gt; r
+$cgmapQr :: forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLUpdate -&gt; r
+gmapQl :: (r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLUpdate -&gt; r
+$cgmapQl :: forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLUpdate -&gt; r
+gmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; ACLUpdate -&gt; ACLUpdate
+$cgmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; ACLUpdate -&gt; ACLUpdate
+dataCast2 :: (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c ACLUpdate)
+$cdataCast2 :: forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c ACLUpdate)
+dataCast1 :: (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c ACLUpdate)
+$cdataCast1 :: forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c ACLUpdate)
+dataTypeOf :: ACLUpdate -&gt; DataType
+$cdataTypeOf :: ACLUpdate -&gt; DataType
+toConstr :: ACLUpdate -&gt; Constr
+$ctoConstr :: ACLUpdate -&gt; Constr
+gunfold :: (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLUpdate
+$cgunfold :: forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLUpdate
+gfoldl :: (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; ACLUpdate -&gt; c ACLUpdate
+$cgfoldl :: forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; ACLUpdate -&gt; c ACLUpdate
+$cp1Data :: Typeable ACLUpdate
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Data</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Typeable</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(forall x. ACLUpdate -&gt; Rep ACLUpdate x)
+-&gt; (forall x. Rep ACLUpdate x -&gt; ACLUpdate) -&gt; Generic ACLUpdate
+forall x. Rep ACLUpdate x -&gt; ACLUpdate
+forall x. ACLUpdate -&gt; Rep ACLUpdate x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep ACLUpdate x -&gt; ACLUpdate
+$cfrom :: forall x. ACLUpdate -&gt; Rep ACLUpdate x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">)</span><span>
+</span><span id="line-69"></span><span>
+</span><span id="line-70"></span><span>
+</span><span id="line-71"></span><span class="hs-comment">-- | Creates a value of 'ACLUpdate' with the minimum fields required to make a request.</span><span>
+</span><span id="line-72"></span><span class="hs-comment">--</span><span>
+</span><span id="line-73"></span><span class="hs-comment">-- Use one of the following lenses to modify other fields as desired:</span><span>
+</span><span id="line-74"></span><span class="hs-comment">--</span><span>
+</span><span id="line-75"></span><span class="hs-comment">-- * 'auCalendarId'</span><span>
+</span><span id="line-76"></span><span class="hs-comment">--</span><span>
+</span><span id="line-77"></span><span class="hs-comment">-- * 'auRuleId'</span><span>
+</span><span id="line-78"></span><span class="hs-comment">--</span><span>
+</span><span id="line-79"></span><span class="hs-comment">-- * 'auPayload'</span><span>
+</span><span id="line-80"></span><span class="hs-comment">--</span><span>
+</span><span id="line-81"></span><span class="hs-comment">-- * 'auSendNotifications'</span><span>
+</span><span id="line-82"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#aclUpdate"><span class="hs-identifier hs-type">aclUpdate</span></a></span><span>
+</span><span id="line-83"></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ 'auCalendarId'</span><span>
+</span><span id="line-84"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ 'auRuleId'</span><span>
+</span><span id="line-85"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#ACLRule"><span class="hs-identifier hs-type">ACLRule</span></a></span><span> </span><span class="hs-comment">-- ^ 'auPayload'</span><span>
+</span><span id="line-86"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#ACLUpdate"><span class="hs-identifier hs-type">ACLUpdate</span></a></span><span>
+</span><span id="line-87"></span><span id="aclUpdate"><span class="annot"><span class="annottext">aclUpdate :: Text -&gt; Text -&gt; ACLRule -&gt; ACLUpdate
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#aclUpdate"><span class="hs-identifier hs-var hs-var">aclUpdate</span></a></span></span><span> </span><span id="local-6989586621679326017"><span class="annot"><span class="annottext">pAuCalendarId_ :: Text
+</span><a href="#local-6989586621679326017"><span class="hs-identifier hs-var">pAuCalendarId_</span></a></span></span><span> </span><span id="local-6989586621679326016"><span class="annot"><span class="annottext">pAuRuleId_ :: Text
+</span><a href="#local-6989586621679326016"><span class="hs-identifier hs-var">pAuRuleId_</span></a></span></span><span> </span><span id="local-6989586621679326015"><span class="annot"><span class="annottext">pAuPayload_ :: ACLRule
+</span><a href="#local-6989586621679326015"><span class="hs-identifier hs-var">pAuPayload_</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-88"></span><span>  </span><span class="annot"><span class="annottext">$WACLUpdate' :: Text -&gt; Text -&gt; ACLRule -&gt; Maybe Bool -&gt; ACLUpdate
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#%24WACLUpdate%27"><span class="hs-identifier hs-type hs-type">ACLUpdate'</span></a></span><span>
+</span><span id="line-89"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_auCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#_auCalendarId"><span class="hs-identifier hs-var">_auCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679326017"><span class="hs-identifier hs-var">pAuCalendarId_</span></a></span><span>
+</span><span id="line-90"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_auRuleId :: Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#_auRuleId"><span class="hs-identifier hs-var">_auRuleId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679326016"><span class="hs-identifier hs-var">pAuRuleId_</span></a></span><span>
+</span><span id="line-91"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_auPayload :: ACLRule
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#_auPayload"><span class="hs-identifier hs-var">_auPayload</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ACLRule
+</span><a href="#local-6989586621679326015"><span class="hs-identifier hs-var">pAuPayload_</span></a></span><span>
+</span><span id="line-92"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_auSendNotifications :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#_auSendNotifications"><span class="hs-identifier hs-var">_auSendNotifications</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-93"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-94"></span><span>
+</span><span id="line-95"></span><span>
+</span><span id="line-96"></span><span class="hs-comment">-- | Calendar identifier. To retrieve calendar IDs call the calendarList.list</span><span>
+</span><span id="line-97"></span><span class="hs-comment">-- method. If you want to access the primary calendar of the currently</span><span>
+</span><span id="line-98"></span><span class="hs-comment">-- logged in user, use the \&quot;primary\&quot; keyword.</span><span>
+</span><span id="line-99"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#auCalendarId"><span class="hs-identifier hs-type">auCalendarId</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#ACLUpdate"><span class="hs-identifier hs-type">ACLUpdate</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-100"></span><span id="auCalendarId"><span class="annot"><span class="annottext">auCalendarId :: (Text -&gt; f Text) -&gt; ACLUpdate -&gt; f ACLUpdate
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#auCalendarId"><span class="hs-identifier hs-var hs-var">auCalendarId</span></a></span></span><span>
+</span><span id="line-101"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLUpdate -&gt; Text)
+-&gt; (ACLUpdate -&gt; Text -&gt; ACLUpdate)
+-&gt; Lens ACLUpdate ACLUpdate Text Text
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLUpdate -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#_auCalendarId"><span class="hs-identifier hs-var hs-var">_auCalendarId</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679326011"><span class="annot"><span class="annottext">s :: ACLUpdate
+</span><a href="#local-6989586621679326011"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679326010"><span class="annot"><span class="annottext">a :: Text
+</span><a href="#local-6989586621679326010"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLUpdate
+</span><a href="#local-6989586621679326011"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_auCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#_auCalendarId"><span class="hs-identifier hs-var">_auCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679326010"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-102"></span><span>
+</span><span id="line-103"></span><span class="hs-comment">-- | ACL rule identifier.</span><span>
+</span><span id="line-104"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#auRuleId"><span class="hs-identifier hs-type">auRuleId</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#ACLUpdate"><span class="hs-identifier hs-type">ACLUpdate</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-105"></span><span id="auRuleId"><span class="annot"><span class="annottext">auRuleId :: (Text -&gt; f Text) -&gt; ACLUpdate -&gt; f ACLUpdate
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#auRuleId"><span class="hs-identifier hs-var hs-var">auRuleId</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLUpdate -&gt; Text)
+-&gt; (ACLUpdate -&gt; Text -&gt; ACLUpdate)
+-&gt; Lens ACLUpdate ACLUpdate Text Text
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLUpdate -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#_auRuleId"><span class="hs-identifier hs-var hs-var">_auRuleId</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679326009"><span class="annot"><span class="annottext">s :: ACLUpdate
+</span><a href="#local-6989586621679326009"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679326008"><span class="annot"><span class="annottext">a :: Text
+</span><a href="#local-6989586621679326008"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLUpdate
+</span><a href="#local-6989586621679326009"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_auRuleId :: Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#_auRuleId"><span class="hs-identifier hs-var">_auRuleId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679326008"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-106"></span><span>
+</span><span id="line-107"></span><span class="hs-comment">-- | Multipart request metadata.</span><span>
+</span><span id="line-108"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#auPayload"><span class="hs-identifier hs-type">auPayload</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#ACLUpdate"><span class="hs-identifier hs-type">ACLUpdate</span></a></span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#ACLRule"><span class="hs-identifier hs-type">ACLRule</span></a></span><span>
+</span><span id="line-109"></span><span id="auPayload"><span class="annot"><span class="annottext">auPayload :: (ACLRule -&gt; f ACLRule) -&gt; ACLUpdate -&gt; f ACLUpdate
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#auPayload"><span class="hs-identifier hs-var hs-var">auPayload</span></a></span></span><span>
+</span><span id="line-110"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLUpdate -&gt; ACLRule)
+-&gt; (ACLUpdate -&gt; ACLRule -&gt; ACLUpdate)
+-&gt; Lens ACLUpdate ACLUpdate ACLRule ACLRule
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLUpdate -&gt; ACLRule
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#_auPayload"><span class="hs-identifier hs-var hs-var">_auPayload</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679326007"><span class="annot"><span class="annottext">s :: ACLUpdate
+</span><a href="#local-6989586621679326007"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679326006"><span class="annot"><span class="annottext">a :: ACLRule
+</span><a href="#local-6989586621679326006"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLUpdate
+</span><a href="#local-6989586621679326007"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_auPayload :: ACLRule
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#_auPayload"><span class="hs-identifier hs-var">_auPayload</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ACLRule
+</span><a href="#local-6989586621679326006"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-111"></span><span>
+</span><span id="line-112"></span><span class="hs-comment">-- | Whether to send notifications about the calendar sharing change. Note</span><span>
+</span><span id="line-113"></span><span class="hs-comment">-- that there are no notifications on access removal. Optional. The default</span><span>
+</span><span id="line-114"></span><span class="hs-comment">-- is True.</span><span>
+</span><span id="line-115"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#auSendNotifications"><span class="hs-identifier hs-type">auSendNotifications</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#ACLUpdate"><span class="hs-identifier hs-type">ACLUpdate</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-116"></span><span id="auSendNotifications"><span class="annot"><span class="annottext">auSendNotifications :: (Maybe Bool -&gt; f (Maybe Bool)) -&gt; ACLUpdate -&gt; f ACLUpdate
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#auSendNotifications"><span class="hs-identifier hs-var hs-var">auSendNotifications</span></a></span></span><span>
+</span><span id="line-117"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLUpdate -&gt; Maybe Bool)
+-&gt; (ACLUpdate -&gt; Maybe Bool -&gt; ACLUpdate)
+-&gt; Lens ACLUpdate ACLUpdate (Maybe Bool) (Maybe Bool)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLUpdate -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#_auSendNotifications"><span class="hs-identifier hs-var hs-var">_auSendNotifications</span></a></span><span>
+</span><span id="line-118"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679326005"><span class="annot"><span class="annottext">s :: ACLUpdate
+</span><a href="#local-6989586621679326005"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679326004"><span class="annot"><span class="annottext">a :: Maybe Bool
+</span><a href="#local-6989586621679326004"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLUpdate
+</span><a href="#local-6989586621679326005"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_auSendNotifications :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.ACL.Update.html#_auSendNotifications"><span class="hs-identifier hs-var">_auSendNotifications</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679326004"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-119"></span><span>
+</span><span id="line-120"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">GoogleRequest</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#ACLUpdate"><span class="hs-identifier hs-type">ACLUpdate</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-121"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Rs"><span class="annot"><span class="hs-identifier hs-var">Rs</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#ACLUpdate"><span class="hs-identifier hs-type">ACLUpdate</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#ACLRule"><span class="hs-identifier hs-type">ACLRule</span></a></span><span>
+</span><span id="line-122"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Scopes"><span class="annot"><span class="hs-identifier hs-var">Scopes</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#ACLUpdate"><span class="hs-identifier hs-type">ACLUpdate</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-123"></span><span>             </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar&quot;</span></span><span class="hs-special">]</span><span>
+</span><span id="line-124"></span><span>        </span><span id="local-6989586621679326000"><span class="annot"><span class="annottext">requestClient :: ACLUpdate -&gt; GClient (Rs ACLUpdate)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">requestClient</span></span></span><span> </span><span id="local-6989586621679325995"><span id="local-6989586621679325996"><span id="local-6989586621679325997"><span id="local-6989586621679325998"><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#ACLUpdate%27"><span class="hs-identifier hs-type">ACLUpdate'</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span></span><span>
+</span><span id="line-125"></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+-&gt; Text
+-&gt; Maybe Bool
+-&gt; Maybe AltJSON
+-&gt; ACLRule
+-&gt; ServiceConfig
+-&gt; GClient ACLRule
+</span><a href="#local-6989586621679325994"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679325998"><span class="hs-identifier hs-var">_auCalendarId</span></a></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679325997"><span class="hs-identifier hs-var">_auRuleId</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679325995"><span class="hs-identifier hs-var">_auSendNotifications</span></a></span><span>
+</span><span id="line-126"></span><span>              </span><span class="hs-special">(</span><span class="annot"><span class="annottext">AltJSON -&gt; Maybe AltJSON
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">AltJSON
+</span><span class="hs-identifier hs-var">AltJSON</span></span><span class="hs-special">)</span><span>
+</span><span id="line-127"></span><span>              </span><span class="annot"><span class="annottext">ACLRule
+</span><a href="#local-6989586621679325996"><span class="hs-identifier hs-var">_auPayload</span></a></span><span>
+</span><span id="line-128"></span><span>              </span><span class="annot"><span class="annottext">ServiceConfig
+</span><a href="Network.Google.AppsCalendar.Types.html#appsCalendarService"><span class="hs-identifier hs-var">appsCalendarService</span></a></span><span>
+</span><span id="line-129"></span><span>          </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679325994"><span class="annot"><span class="annottext">go :: Fn ACLUpdateResource
+</span><a href="#local-6989586621679325994"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span>
+</span><span id="line-130"></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Proxy ACLUpdateResource -&gt; Request -&gt; Fn ACLUpdateResource
+forall fn. GoogleClient fn =&gt; Proxy fn -&gt; Request -&gt; Fn fn
+</span><span class="hs-identifier hs-var">buildClient</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Proxy ACLUpdateResource
+forall k (t :: k). Proxy t
+</span><span class="hs-identifier hs-var">Proxy</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Proxy</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Update.html#ACLUpdateResource"><span class="hs-identifier hs-type">ACLUpdateResource</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-131"></span><span>                      </span><span class="annot"><span class="annottext">Request
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-132"></span></pre></body></html>

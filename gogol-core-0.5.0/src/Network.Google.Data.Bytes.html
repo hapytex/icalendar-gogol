@@ -1,0 +1,321 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE DeriveDataTypeable         #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE DeriveGeneric              #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# LANGUAGE GeneralizedNewtypeDeriving #-}</span><span>
+</span><span id="line-4"></span><span>
+</span><span id="line-5"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-6"></span><span class="hs-comment">-- Module      : Network.Google.Data.Bytes</span><span>
+</span><span id="line-7"></span><span class="hs-comment">-- Copyright   : (c) 2013-2016 Brendan Hay</span><span>
+</span><span id="line-8"></span><span class="hs-comment">-- License     : Mozilla Public License, v. 2.0.</span><span>
+</span><span id="line-9"></span><span class="hs-comment">-- Maintainer  : Brendan Hay &lt;brendan.g.hay@gmail.com&gt;</span><span>
+</span><span id="line-10"></span><span class="hs-comment">-- Stability   : provisional</span><span>
+</span><span id="line-11"></span><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><span id="line-12"></span><span class="hs-comment">--</span><span>
+</span><span id="line-13"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Network.Google.Data.Bytes</span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="Network.Google.Data.Bytes.html#Bytes"><span class="hs-identifier">Bytes</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Data.Bytes.html#_Bytes"><span class="hs-identifier">_Bytes</span></a></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Control.Lens</span></span><span>             </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Iso'</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">iso</span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span>               </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">FromJSON</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">ToJSON</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-20"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.ByteString</span></span><span>          </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">ByteString</span></span><span class="hs-special">)</span><span>
+</span><span id="line-21"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Data</span></span><span>                </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Data</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">Typeable</span></span><span class="hs-special">)</span><span>
+</span><span id="line-22"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Hashable</span></span><span>
+</span><span id="line-23"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text.Encoding</span></span><span>       </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Text</span></span><span>
+</span><span id="line-24"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">GHC.Generics</span></span><span>             </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Generic</span></span><span class="hs-special">)</span><span>
+</span><span id="line-25"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><a href="Network.Google.Data.JSON.html"><span class="hs-identifier">Network.Google.Data.JSON</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Network.Google.Data.JSON.html#parseJSONText"><span class="hs-identifier">parseJSONText</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Data.JSON.html#toJSONText"><span class="hs-identifier">toJSONText</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-26"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Web.HttpApiData</span></span><span>          </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">FromHttpApiData</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-27"></span><span>                                           </span><span class="annot"><span class="hs-identifier">ToHttpApiData</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-28"></span><span class="hs-comment">-- | Binary data.</span><span>
+</span><span id="line-29"></span><span class="hs-comment">--</span><span>
+</span><span id="line-30"></span><span class="hs-comment">-- This data is passed to/from the serialisation routines as-is, and any</span><span>
+</span><span id="line-31"></span><span class="hs-comment">-- particular encoding or decoding (say, base64) is left up to the caller.</span><span>
+</span><span id="line-32"></span><span id="local-6989586621679233666"><span id="local-6989586621679233667"></span></span><span class="hs-keyword">newtype</span><span> </span><span id="Bytes"><span class="annot"><a href="Network.Google.Data.Bytes.html#Bytes"><span class="hs-identifier hs-var">Bytes</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Bytes"><span class="annot"><a href="Network.Google.Data.Bytes.html#Bytes"><span class="hs-identifier hs-var">Bytes</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="unBytes"><span class="annot"><span class="annottext">Bytes -&gt; ByteString
+</span><a href="Network.Google.Data.Bytes.html#unBytes"><span class="hs-identifier hs-var hs-var">unBytes</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">ByteString</span></span><span> </span><span class="hs-special">}</span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679233660"><span id="local-6989586621679233662"><span class="annot"><span class="annottext">Bytes -&gt; Bytes -&gt; Bool
+(Bytes -&gt; Bytes -&gt; Bool) -&gt; (Bytes -&gt; Bytes -&gt; Bool) -&gt; Eq Bytes
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Bytes -&gt; Bytes -&gt; Bool
+$c/= :: Bytes -&gt; Bytes -&gt; Bool
+== :: Bytes -&gt; Bytes -&gt; Bool
+$c== :: Bytes -&gt; Bytes -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679233653"><span id="local-6989586621679233655"><span id="local-6989586621679233657"><span class="annot"><span class="annottext">Int -&gt; Bytes -&gt; ShowS
+[Bytes] -&gt; ShowS
+Bytes -&gt; String
+(Int -&gt; Bytes -&gt; ShowS)
+-&gt; (Bytes -&gt; String) -&gt; ([Bytes] -&gt; ShowS) -&gt; Show Bytes
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [Bytes] -&gt; ShowS
+$cshowList :: [Bytes] -&gt; ShowS
+show :: Bytes -&gt; String
+$cshow :: Bytes -&gt; String
+showsPrec :: Int -&gt; Bytes -&gt; ShowS
+$cshowsPrec :: Int -&gt; Bytes -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679233644"><span id="local-6989586621679233646"><span id="local-6989586621679233648"><span id="local-6989586621679233650"><span class="annot"><span class="annottext">ReadPrec [Bytes]
+ReadPrec Bytes
+Int -&gt; ReadS Bytes
+ReadS [Bytes]
+(Int -&gt; ReadS Bytes)
+-&gt; ReadS [Bytes]
+-&gt; ReadPrec Bytes
+-&gt; ReadPrec [Bytes]
+-&gt; Read Bytes
+forall a.
+(Int -&gt; ReadS a)
+-&gt; ReadS [a] -&gt; ReadPrec a -&gt; ReadPrec [a] -&gt; Read a
+readListPrec :: ReadPrec [Bytes]
+$creadListPrec :: ReadPrec [Bytes]
+readPrec :: ReadPrec Bytes
+$creadPrec :: ReadPrec Bytes
+readList :: ReadS [Bytes]
+$creadList :: ReadS [Bytes]
+readsPrec :: Int -&gt; ReadS Bytes
+$creadsPrec :: Int -&gt; ReadS Bytes
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Read</span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679233628"><span id="local-6989586621679233630"><span id="local-6989586621679233632"><span id="local-6989586621679233634"><span id="local-6989586621679233636"><span id="local-6989586621679233638"><span id="local-6989586621679233640"><span class="annot"><span class="annottext">Eq Bytes
+Eq Bytes =&gt;
+(Bytes -&gt; Bytes -&gt; Ordering)
+-&gt; (Bytes -&gt; Bytes -&gt; Bool)
+-&gt; (Bytes -&gt; Bytes -&gt; Bool)
+-&gt; (Bytes -&gt; Bytes -&gt; Bool)
+-&gt; (Bytes -&gt; Bytes -&gt; Bool)
+-&gt; (Bytes -&gt; Bytes -&gt; Bytes)
+-&gt; (Bytes -&gt; Bytes -&gt; Bytes)
+-&gt; Ord Bytes
+Bytes -&gt; Bytes -&gt; Bool
+Bytes -&gt; Bytes -&gt; Ordering
+Bytes -&gt; Bytes -&gt; Bytes
+forall a.
+Eq a =&gt;
+(a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: Bytes -&gt; Bytes -&gt; Bytes
+$cmin :: Bytes -&gt; Bytes -&gt; Bytes
+max :: Bytes -&gt; Bytes -&gt; Bytes
+$cmax :: Bytes -&gt; Bytes -&gt; Bytes
+&gt;= :: Bytes -&gt; Bytes -&gt; Bool
+$c&gt;= :: Bytes -&gt; Bytes -&gt; Bool
+&gt; :: Bytes -&gt; Bytes -&gt; Bool
+$c&gt; :: Bytes -&gt; Bytes -&gt; Bool
+&lt;= :: Bytes -&gt; Bytes -&gt; Bool
+$c&lt;= :: Bytes -&gt; Bytes -&gt; Bool
+&lt; :: Bytes -&gt; Bytes -&gt; Bool
+$c&lt; :: Bytes -&gt; Bytes -&gt; Bool
+compare :: Bytes -&gt; Bytes -&gt; Ordering
+$ccompare :: Bytes -&gt; Bytes -&gt; Ordering
+$cp1Ord :: Eq Bytes
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="%24cBytes"><span id="%24tBytes"><span id="local-6989586621679233598"><span id="local-6989586621679233600"><span id="local-6989586621679233602"><span id="local-6989586621679233604"><span id="local-6989586621679233606"><span id="local-6989586621679233608"><span id="local-6989586621679233610"><span id="local-6989586621679233612"><span id="local-6989586621679233614"><span id="local-6989586621679233616"><span id="local-6989586621679233618"><span id="local-6989586621679233620"><span id="local-6989586621679233622"><span id="local-6989586621679233624"><span class="annot"><span class="annottext">Typeable Bytes
+DataType
+Constr
+Typeable Bytes =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; Bytes -&gt; c Bytes)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Bytes)
+-&gt; (Bytes -&gt; Constr)
+-&gt; (Bytes -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c Bytes))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c Bytes))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; Bytes -&gt; Bytes)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Bytes -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Bytes -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; Bytes -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; Bytes -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; Bytes -&gt; m Bytes)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; Bytes -&gt; m Bytes)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; Bytes -&gt; m Bytes)
+-&gt; Data Bytes
+Bytes -&gt; DataType
+Bytes -&gt; Constr
+(forall b. Data b =&gt; b -&gt; b) -&gt; Bytes -&gt; Bytes
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; Bytes -&gt; c Bytes
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Bytes
+forall a.
+Typeable a =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; a -&gt; c a)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c a)
+-&gt; (a -&gt; Constr)
+-&gt; (a -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c a))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c a))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; a -&gt; a)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; Data a
+forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; Bytes -&gt; u
+forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; Bytes -&gt; [u]
+forall r r'.
+(r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Bytes -&gt; r
+forall r r'.
+(r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Bytes -&gt; r
+forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Bytes -&gt; m Bytes
+forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Bytes -&gt; m Bytes
+forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Bytes
+forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; Bytes -&gt; c Bytes
+forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c Bytes)
+forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c Bytes)
+$cBytes :: Constr
+$tBytes :: DataType
+gmapMo :: (forall d. Data d =&gt; d -&gt; m d) -&gt; Bytes -&gt; m Bytes
+$cgmapMo :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Bytes -&gt; m Bytes
+gmapMp :: (forall d. Data d =&gt; d -&gt; m d) -&gt; Bytes -&gt; m Bytes
+$cgmapMp :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Bytes -&gt; m Bytes
+gmapM :: (forall d. Data d =&gt; d -&gt; m d) -&gt; Bytes -&gt; m Bytes
+$cgmapM :: forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Bytes -&gt; m Bytes
+gmapQi :: Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; Bytes -&gt; u
+$cgmapQi :: forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; Bytes -&gt; u
+gmapQ :: (forall d. Data d =&gt; d -&gt; u) -&gt; Bytes -&gt; [u]
+$cgmapQ :: forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; Bytes -&gt; [u]
+gmapQr :: (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Bytes -&gt; r
+$cgmapQr :: forall r r'.
+(r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Bytes -&gt; r
+gmapQl :: (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Bytes -&gt; r
+$cgmapQl :: forall r r'.
+(r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Bytes -&gt; r
+gmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; Bytes -&gt; Bytes
+$cgmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; Bytes -&gt; Bytes
+dataCast2 :: (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c Bytes)
+$cdataCast2 :: forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c Bytes)
+dataCast1 :: (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c Bytes)
+$cdataCast1 :: forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c Bytes)
+dataTypeOf :: Bytes -&gt; DataType
+$cdataTypeOf :: Bytes -&gt; DataType
+toConstr :: Bytes -&gt; Constr
+$ctoConstr :: Bytes -&gt; Constr
+gunfold :: (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Bytes
+$cgunfold :: forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Bytes
+gfoldl :: (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; Bytes -&gt; c Bytes
+$cgfoldl :: forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; Bytes -&gt; c Bytes
+$cp1Data :: Typeable Bytes
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Data</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Typeable</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(forall x. Bytes -&gt; Rep Bytes x)
+-&gt; (forall x. Rep Bytes x -&gt; Bytes) -&gt; Generic Bytes
+forall x. Rep Bytes x -&gt; Bytes
+forall x. Bytes -&gt; Rep Bytes x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep Bytes x -&gt; Bytes
+$cfrom :: forall x. Bytes -&gt; Rep Bytes x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">)</span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679233588"><span id="local-6989586621679233590"><span class="annot"><span class="hs-identifier hs-type">Hashable</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Bytes.html#Bytes"><span class="hs-identifier hs-type">Bytes</span></a></span></span></span><span>
+</span><span id="line-36"></span><span>
+</span><span id="line-37"></span><span class="annot"><a href="Network.Google.Data.Bytes.html#_Bytes"><span class="hs-identifier hs-type">_Bytes</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Iso'</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Bytes.html#Bytes"><span class="hs-identifier hs-type">Bytes</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">ByteString</span></span><span>
+</span><span id="line-38"></span><span id="_Bytes"><span class="annot"><span class="annottext">_Bytes :: p ByteString (f ByteString) -&gt; p Bytes (f Bytes)
+</span><a href="Network.Google.Data.Bytes.html#_Bytes"><span class="hs-identifier hs-var hs-var">_Bytes</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Bytes -&gt; ByteString)
+-&gt; (ByteString -&gt; Bytes) -&gt; Iso Bytes Bytes ByteString ByteString
+forall s a b t. (s -&gt; a) -&gt; (b -&gt; t) -&gt; Iso s t a b
+</span><span class="hs-identifier hs-var">iso</span></span><span> </span><span class="annot"><span class="annottext">Bytes -&gt; ByteString
+</span><a href="Network.Google.Data.Bytes.html#unBytes"><span class="hs-identifier hs-var hs-var">unBytes</span></a></span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Bytes
+</span><a href="Network.Google.Data.Bytes.html#Bytes"><span class="hs-identifier hs-var">Bytes</span></a></span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679233583"><span id="local-6989586621679233585"><span class="annot"><span class="hs-identifier hs-type">ToHttpApiData</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Bytes.html#Bytes"><span class="hs-identifier hs-type">Bytes</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-41"></span><span>    </span><span id="local-6989586621679233579"><span class="annot"><span class="annottext">toQueryParam :: Bytes -&gt; Text
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">toQueryParam</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Text
+</span><span class="hs-identifier hs-var">Text.decodeUtf8</span></span><span> </span><span class="annot"><span class="annottext">(ByteString -&gt; Text) -&gt; (Bytes -&gt; ByteString) -&gt; Bytes -&gt; Text
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Bytes -&gt; ByteString
+</span><a href="Network.Google.Data.Bytes.html#unBytes"><span class="hs-identifier hs-var hs-var">unBytes</span></a></span><span>
+</span><span id="line-42"></span><span>    </span><span id="local-6989586621679233575"><span class="annot"><span class="annottext">toHeader :: Bytes -&gt; ByteString
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">toHeader</span></span></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bytes -&gt; ByteString
+</span><a href="Network.Google.Data.Bytes.html#unBytes"><span class="hs-identifier hs-var hs-var">unBytes</span></a></span><span>
+</span><span id="line-43"></span><span>
+</span><span id="line-44"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679233572"><span class="annot"><span class="hs-identifier hs-type">FromHttpApiData</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Bytes.html#Bytes"><span class="hs-identifier hs-type">Bytes</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-45"></span><span>    </span><span id="local-6989586621679233568"><span class="annot"><span class="annottext">parseQueryParam :: Text -&gt; Either Text Bytes
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">parseQueryParam</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bytes -&gt; Either Text Bytes
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(Bytes -&gt; Either Text Bytes)
+-&gt; (Text -&gt; Bytes) -&gt; Text -&gt; Either Text Bytes
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Bytes
+</span><a href="Network.Google.Data.Bytes.html#Bytes"><span class="hs-identifier hs-var">Bytes</span></a></span><span> </span><span class="annot"><span class="annottext">(ByteString -&gt; Bytes) -&gt; (Text -&gt; ByteString) -&gt; Text -&gt; Bytes
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ByteString
+</span><span class="hs-identifier hs-var">Text.encodeUtf8</span></span><span>
+</span><span id="line-46"></span><span>    </span><span id="local-6989586621679233565"><span class="annot"><span class="annottext">parseHeader :: ByteString -&gt; Either Text Bytes
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">parseHeader</span></span></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bytes -&gt; Either Text Bytes
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(Bytes -&gt; Either Text Bytes)
+-&gt; (ByteString -&gt; Bytes) -&gt; ByteString -&gt; Either Text Bytes
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Bytes
+</span><a href="Network.Google.Data.Bytes.html#Bytes"><span class="hs-identifier hs-var">Bytes</span></a></span><span>
+</span><span id="line-47"></span><span>
+</span><span id="line-48"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679233561"><span class="annot"><span class="hs-identifier hs-type">FromJSON</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Bytes.html#Bytes"><span class="hs-identifier hs-type">Bytes</span></a></span></span><span> </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679233559"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser Bytes
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Value -&gt; Parser Bytes
+forall a. FromHttpApiData a =&gt; String -&gt; Value -&gt; Parser a
+</span><a href="Network.Google.Data.JSON.html#parseJSONText"><span class="hs-identifier hs-var">parseJSONText</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Bytes&quot;</span></span><span>
+</span><span id="line-49"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679233551"><span id="local-6989586621679233553"><span id="local-6989586621679233555"><span class="annot"><span class="hs-identifier hs-type">ToJSON</span></span><span>   </span><span class="annot"><a href="Network.Google.Data.Bytes.html#Bytes"><span class="hs-identifier hs-type">Bytes</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679233549"><span class="annot"><span class="annottext">toJSON :: Bytes -&gt; Value
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></span></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bytes -&gt; Value
+forall a. ToHttpApiData a =&gt; a -&gt; Value
+</span><a href="Network.Google.Data.JSON.html#toJSONText"><span class="hs-identifier hs-var">toJSONText</span></a></span><span>
+</span><span id="line-50"></span></pre></body></html>

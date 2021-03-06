@@ -1,0 +1,423 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE DataKinds          #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE DeriveDataTypeable #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# LANGUAGE DeriveGeneric      #-}</span><span>
+</span><span id="line-4"></span><span class="hs-pragma">{-# LANGUAGE FlexibleInstances  #-}</span><span>
+</span><span id="line-5"></span><span class="hs-pragma">{-# LANGUAGE NoImplicitPrelude  #-}</span><span>
+</span><span id="line-6"></span><span class="hs-pragma">{-# LANGUAGE OverloadedStrings  #-}</span><span>
+</span><span id="line-7"></span><span class="hs-pragma">{-# LANGUAGE RecordWildCards    #-}</span><span>
+</span><span id="line-8"></span><span class="hs-pragma">{-# LANGUAGE TypeFamilies       #-}</span><span>
+</span><span id="line-9"></span><span class="hs-pragma">{-# LANGUAGE TypeOperators      #-}</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-duplicate-exports #-}</span><span>
+</span><span id="line-12"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-binds      #-}</span><span>
+</span><span id="line-13"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-imports    #-}</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-16"></span><span class="hs-comment">-- Module      : Network.Google.Resource.Calendar.Events.Delete</span><span>
+</span><span id="line-17"></span><span class="hs-comment">-- Copyright   : (c) 2015-2016 Brendan Hay</span><span>
+</span><span id="line-18"></span><span class="hs-comment">-- License     : Mozilla Public License, v. 2.0.</span><span>
+</span><span id="line-19"></span><span class="hs-comment">-- Maintainer  : Brendan Hay &lt;brendan.g.hay@gmail.com&gt;</span><span>
+</span><span id="line-20"></span><span class="hs-comment">-- Stability   : auto-generated</span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><span id="line-22"></span><span class="hs-comment">--</span><span>
+</span><span id="line-23"></span><span class="hs-comment">-- Deletes an event.</span><span>
+</span><span id="line-24"></span><span class="hs-comment">--</span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- /See:/ &lt;https://developers.google.com/google-apps/calendar/firstapp Calendar API Reference&gt; for @calendar.events.delete@.</span><span>
+</span><span id="line-26"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Network.Google.Resource.Calendar.Events.Delete</span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">(</span><span>
+</span><span id="line-28"></span><span>    </span><span class="annot"><span class="hs-comment">-- * REST Resource</span></span><span>
+</span><span id="line-29"></span><span>      </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#EventsDeleteResource"><span class="hs-identifier">EventsDeleteResource</span></a></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Creating a Request</span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#eventsDelete"><span class="hs-identifier">eventsDelete</span></a></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#EventsDelete"><span class="hs-identifier">EventsDelete</span></a></span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Request Lenses</span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#edCalendarId"><span class="hs-identifier">edCalendarId</span></a></span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#edSendNotifications"><span class="hs-identifier">edSendNotifications</span></a></span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#edSendUpdates"><span class="hs-identifier">edSendUpdates</span></a></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#edEventId"><span class="hs-identifier">edEventId</span></a></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-41"></span><span>
+</span><span id="line-42"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.html"><span class="hs-identifier">Network.Google.AppsCalendar.Types</span></a></span><span>
+</span><span id="line-43"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Network.Google.Prelude</span></span><span>
+</span><span id="line-44"></span><span>
+</span><span id="line-45"></span><span class="hs-comment">-- | A resource alias for @calendar.events.delete@ method which the</span><span>
+</span><span id="line-46"></span><span class="hs-comment">-- 'EventsDelete' request conforms to.</span><span>
+</span><span id="line-47"></span><span class="hs-keyword">type</span><span> </span><span id="EventsDeleteResource"><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#EventsDeleteResource"><span class="hs-identifier hs-var">EventsDeleteResource</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-48"></span><span>     </span><span class="annot"><span class="hs-string">&quot;calendar&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-49"></span><span>       </span><span class="annot"><span class="hs-string">&quot;v3&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-50"></span><span>         </span><span class="annot"><span class="hs-string">&quot;calendars&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-51"></span><span>           </span><span class="annot"><span class="hs-identifier hs-type">Capture</span></span><span> </span><span class="annot"><span class="hs-string">&quot;calendarId&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-52"></span><span>             </span><span class="annot"><span class="hs-string">&quot;events&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-53"></span><span>               </span><span class="annot"><span class="hs-identifier hs-type">Capture</span></span><span> </span><span class="annot"><span class="hs-string">&quot;eventId&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-54"></span><span>                 </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;sendNotifications&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-55"></span><span>                   </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;sendUpdates&quot;</span></span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Sum.html#EventsDeleteSendUpdates"><span class="hs-identifier hs-type">EventsDeleteSendUpdates</span></a></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-56"></span><span>                     </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;alt&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">AltJSON</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Delete</span></span><span> </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">JSON</span></span><span class="hs-special">]</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-57"></span><span>
+</span><span id="line-58"></span><span class="hs-comment">-- | Deletes an event.</span><span>
+</span><span id="line-59"></span><span class="hs-comment">--</span><span>
+</span><span id="line-60"></span><span class="hs-comment">-- /See:/ 'eventsDelete' smart constructor.</span><span>
+</span><span id="line-61"></span><span id="local-6989586621679328972"><span id="local-6989586621679328973"></span></span><span class="hs-keyword">data</span><span> </span><span id="EventsDelete"><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#EventsDelete"><span class="hs-identifier hs-var">EventsDelete</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-62"></span><span>  </span><span id="EventsDelete%27"><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#EventsDelete%27"><span class="hs-identifier hs-var">EventsDelete'</span></a></span></span><span>
+</span><span id="line-63"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="_edCalendarId"><span class="annot"><span class="annottext">EventsDelete -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#_edCalendarId"><span class="hs-identifier hs-var hs-var">_edCalendarId</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-64"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_edSendNotifications"><span class="annot"><span class="annottext">EventsDelete -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#_edSendNotifications"><span class="hs-identifier hs-var hs-var">_edSendNotifications</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-65"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_edSendUpdates"><span class="annot"><span class="annottext">EventsDelete -&gt; Maybe EventsDeleteSendUpdates
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#_edSendUpdates"><span class="hs-identifier hs-var hs-var">_edSendUpdates</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Sum.html#EventsDeleteSendUpdates"><span class="hs-identifier hs-type">EventsDeleteSendUpdates</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-66"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_edEventId"><span class="annot"><span class="annottext">EventsDelete -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#_edEventId"><span class="hs-identifier hs-var hs-var">_edEventId</span></a></span></span><span>           </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-67"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-68"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679328963"><span id="local-6989586621679328965"><span class="annot"><span class="annottext">EventsDelete -&gt; EventsDelete -&gt; Bool
+(EventsDelete -&gt; EventsDelete -&gt; Bool)
+-&gt; (EventsDelete -&gt; EventsDelete -&gt; Bool) -&gt; Eq EventsDelete
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: EventsDelete -&gt; EventsDelete -&gt; Bool
+$c/= :: EventsDelete -&gt; EventsDelete -&gt; Bool
+== :: EventsDelete -&gt; EventsDelete -&gt; Bool
+$c== :: EventsDelete -&gt; EventsDelete -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679328956"><span id="local-6989586621679328958"><span id="local-6989586621679328960"><span class="annot"><span class="annottext">Int -&gt; EventsDelete -&gt; ShowS
+[EventsDelete] -&gt; ShowS
+EventsDelete -&gt; String
+(Int -&gt; EventsDelete -&gt; ShowS)
+-&gt; (EventsDelete -&gt; String)
+-&gt; ([EventsDelete] -&gt; ShowS)
+-&gt; Show EventsDelete
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [EventsDelete] -&gt; ShowS
+$cshowList :: [EventsDelete] -&gt; ShowS
+show :: EventsDelete -&gt; String
+$cshow :: EventsDelete -&gt; String
+showsPrec :: Int -&gt; EventsDelete -&gt; ShowS
+$cshowsPrec :: Int -&gt; EventsDelete -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="%24cEventsDelete%27"><span id="%24tEventsDelete"><span id="local-6989586621679328926"><span id="local-6989586621679328928"><span id="local-6989586621679328930"><span id="local-6989586621679328932"><span id="local-6989586621679328934"><span id="local-6989586621679328936"><span id="local-6989586621679328938"><span id="local-6989586621679328940"><span id="local-6989586621679328942"><span id="local-6989586621679328944"><span id="local-6989586621679328946"><span id="local-6989586621679328948"><span id="local-6989586621679328950"><span id="local-6989586621679328952"><span class="annot"><span class="annottext">Typeable EventsDelete
+DataType
+Constr
+Typeable EventsDelete =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; EventsDelete -&gt; c EventsDelete)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsDelete)
+-&gt; (EventsDelete -&gt; Constr)
+-&gt; (EventsDelete -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c EventsDelete))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e))
+    -&gt; Maybe (c EventsDelete))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; EventsDelete -&gt; EventsDelete)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsDelete -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsDelete -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; EventsDelete -&gt; [u])
+-&gt; (forall u.
+    Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; EventsDelete -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsDelete -&gt; m EventsDelete)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsDelete -&gt; m EventsDelete)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsDelete -&gt; m EventsDelete)
+-&gt; Data EventsDelete
+EventsDelete -&gt; DataType
+EventsDelete -&gt; Constr
+(forall b. Data b =&gt; b -&gt; b) -&gt; EventsDelete -&gt; EventsDelete
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; EventsDelete -&gt; c EventsDelete
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsDelete
+forall a.
+Typeable a =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; a -&gt; c a)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c a)
+-&gt; (a -&gt; Constr)
+-&gt; (a -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c a))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c a))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; a -&gt; a)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; Data a
+forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; EventsDelete -&gt; u
+forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; EventsDelete -&gt; [u]
+forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsDelete -&gt; r
+forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsDelete -&gt; r
+forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsDelete -&gt; m EventsDelete
+forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsDelete -&gt; m EventsDelete
+forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsDelete
+forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; EventsDelete -&gt; c EventsDelete
+forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c EventsDelete)
+forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e))
+-&gt; Maybe (c EventsDelete)
+$cEventsDelete' :: Constr
+$tEventsDelete :: DataType
+gmapMo :: (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsDelete -&gt; m EventsDelete
+$cgmapMo :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsDelete -&gt; m EventsDelete
+gmapMp :: (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsDelete -&gt; m EventsDelete
+$cgmapMp :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsDelete -&gt; m EventsDelete
+gmapM :: (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsDelete -&gt; m EventsDelete
+$cgmapM :: forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsDelete -&gt; m EventsDelete
+gmapQi :: Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; EventsDelete -&gt; u
+$cgmapQi :: forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; EventsDelete -&gt; u
+gmapQ :: (forall d. Data d =&gt; d -&gt; u) -&gt; EventsDelete -&gt; [u]
+$cgmapQ :: forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; EventsDelete -&gt; [u]
+gmapQr :: (r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsDelete -&gt; r
+$cgmapQr :: forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsDelete -&gt; r
+gmapQl :: (r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsDelete -&gt; r
+$cgmapQl :: forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsDelete -&gt; r
+gmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; EventsDelete -&gt; EventsDelete
+$cgmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; EventsDelete -&gt; EventsDelete
+dataCast2 :: (forall d e. (Data d, Data e) =&gt; c (t d e))
+-&gt; Maybe (c EventsDelete)
+$cdataCast2 :: forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e))
+-&gt; Maybe (c EventsDelete)
+dataCast1 :: (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c EventsDelete)
+$cdataCast1 :: forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c EventsDelete)
+dataTypeOf :: EventsDelete -&gt; DataType
+$cdataTypeOf :: EventsDelete -&gt; DataType
+toConstr :: EventsDelete -&gt; Constr
+$ctoConstr :: EventsDelete -&gt; Constr
+gunfold :: (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsDelete
+$cgunfold :: forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsDelete
+gfoldl :: (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; EventsDelete -&gt; c EventsDelete
+$cgfoldl :: forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; EventsDelete -&gt; c EventsDelete
+$cp1Data :: Typeable EventsDelete
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Data</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Typeable</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(forall x. EventsDelete -&gt; Rep EventsDelete x)
+-&gt; (forall x. Rep EventsDelete x -&gt; EventsDelete)
+-&gt; Generic EventsDelete
+forall x. Rep EventsDelete x -&gt; EventsDelete
+forall x. EventsDelete -&gt; Rep EventsDelete x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep EventsDelete x -&gt; EventsDelete
+$cfrom :: forall x. EventsDelete -&gt; Rep EventsDelete x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">)</span><span>
+</span><span id="line-69"></span><span>
+</span><span id="line-70"></span><span>
+</span><span id="line-71"></span><span class="hs-comment">-- | Creates a value of 'EventsDelete' with the minimum fields required to make a request.</span><span>
+</span><span id="line-72"></span><span class="hs-comment">--</span><span>
+</span><span id="line-73"></span><span class="hs-comment">-- Use one of the following lenses to modify other fields as desired:</span><span>
+</span><span id="line-74"></span><span class="hs-comment">--</span><span>
+</span><span id="line-75"></span><span class="hs-comment">-- * 'edCalendarId'</span><span>
+</span><span id="line-76"></span><span class="hs-comment">--</span><span>
+</span><span id="line-77"></span><span class="hs-comment">-- * 'edSendNotifications'</span><span>
+</span><span id="line-78"></span><span class="hs-comment">--</span><span>
+</span><span id="line-79"></span><span class="hs-comment">-- * 'edSendUpdates'</span><span>
+</span><span id="line-80"></span><span class="hs-comment">--</span><span>
+</span><span id="line-81"></span><span class="hs-comment">-- * 'edEventId'</span><span>
+</span><span id="line-82"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#eventsDelete"><span class="hs-identifier hs-type">eventsDelete</span></a></span><span>
+</span><span id="line-83"></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ 'edCalendarId'</span><span>
+</span><span id="line-84"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ 'edEventId'</span><span>
+</span><span id="line-85"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#EventsDelete"><span class="hs-identifier hs-type">EventsDelete</span></a></span><span>
+</span><span id="line-86"></span><span id="eventsDelete"><span class="annot"><span class="annottext">eventsDelete :: Text -&gt; Text -&gt; EventsDelete
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#eventsDelete"><span class="hs-identifier hs-var hs-var">eventsDelete</span></a></span></span><span> </span><span id="local-6989586621679328919"><span class="annot"><span class="annottext">pEdCalendarId_ :: Text
+</span><a href="#local-6989586621679328919"><span class="hs-identifier hs-var">pEdCalendarId_</span></a></span></span><span> </span><span id="local-6989586621679328918"><span class="annot"><span class="annottext">pEdEventId_ :: Text
+</span><a href="#local-6989586621679328918"><span class="hs-identifier hs-var">pEdEventId_</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-87"></span><span>  </span><span class="annot"><span class="annottext">$WEventsDelete' :: Text
+-&gt; Maybe Bool
+-&gt; Maybe EventsDeleteSendUpdates
+-&gt; Text
+-&gt; EventsDelete
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#%24WEventsDelete%27"><span class="hs-identifier hs-type hs-type">EventsDelete'</span></a></span><span>
+</span><span id="line-88"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_edCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#_edCalendarId"><span class="hs-identifier hs-var">_edCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679328919"><span class="hs-identifier hs-var">pEdCalendarId_</span></a></span><span>
+</span><span id="line-89"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_edSendNotifications :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#_edSendNotifications"><span class="hs-identifier hs-var">_edSendNotifications</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-90"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_edSendUpdates :: Maybe EventsDeleteSendUpdates
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#_edSendUpdates"><span class="hs-identifier hs-var">_edSendUpdates</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe EventsDeleteSendUpdates
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-91"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_edEventId :: Text
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#_edEventId"><span class="hs-identifier hs-var">_edEventId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679328918"><span class="hs-identifier hs-var">pEdEventId_</span></a></span><span>
+</span><span id="line-92"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-93"></span><span>
+</span><span id="line-94"></span><span>
+</span><span id="line-95"></span><span class="hs-comment">-- | Calendar identifier. To retrieve calendar IDs call the calendarList.list</span><span>
+</span><span id="line-96"></span><span class="hs-comment">-- method. If you want to access the primary calendar of the currently</span><span>
+</span><span id="line-97"></span><span class="hs-comment">-- logged in user, use the \&quot;primary\&quot; keyword.</span><span>
+</span><span id="line-98"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#edCalendarId"><span class="hs-identifier hs-type">edCalendarId</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#EventsDelete"><span class="hs-identifier hs-type">EventsDelete</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-99"></span><span id="edCalendarId"><span class="annot"><span class="annottext">edCalendarId :: (Text -&gt; f Text) -&gt; EventsDelete -&gt; f EventsDelete
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#edCalendarId"><span class="hs-identifier hs-var hs-var">edCalendarId</span></a></span></span><span>
+</span><span id="line-100"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsDelete -&gt; Text)
+-&gt; (EventsDelete -&gt; Text -&gt; EventsDelete)
+-&gt; Lens EventsDelete EventsDelete Text Text
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsDelete -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#_edCalendarId"><span class="hs-identifier hs-var hs-var">_edCalendarId</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679328914"><span class="annot"><span class="annottext">s :: EventsDelete
+</span><a href="#local-6989586621679328914"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679328913"><span class="annot"><span class="annottext">a :: Text
+</span><a href="#local-6989586621679328913"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsDelete
+</span><a href="#local-6989586621679328914"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_edCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#_edCalendarId"><span class="hs-identifier hs-var">_edCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679328913"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-101"></span><span>
+</span><span id="line-102"></span><span class="hs-comment">-- | Deprecated. Please use sendUpdates instead. Whether to send</span><span>
+</span><span id="line-103"></span><span class="hs-comment">-- notifications about the deletion of the event. Note that some emails</span><span>
+</span><span id="line-104"></span><span class="hs-comment">-- might still be sent even if you set the value to false. The default is</span><span>
+</span><span id="line-105"></span><span class="hs-comment">-- false.</span><span>
+</span><span id="line-106"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#edSendNotifications"><span class="hs-identifier hs-type">edSendNotifications</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#EventsDelete"><span class="hs-identifier hs-type">EventsDelete</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-107"></span><span id="edSendNotifications"><span class="annot"><span class="annottext">edSendNotifications :: (Maybe Bool -&gt; f (Maybe Bool)) -&gt; EventsDelete -&gt; f EventsDelete
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#edSendNotifications"><span class="hs-identifier hs-var hs-var">edSendNotifications</span></a></span></span><span>
+</span><span id="line-108"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsDelete -&gt; Maybe Bool)
+-&gt; (EventsDelete -&gt; Maybe Bool -&gt; EventsDelete)
+-&gt; Lens EventsDelete EventsDelete (Maybe Bool) (Maybe Bool)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsDelete -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#_edSendNotifications"><span class="hs-identifier hs-var hs-var">_edSendNotifications</span></a></span><span>
+</span><span id="line-109"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679328912"><span class="annot"><span class="annottext">s :: EventsDelete
+</span><a href="#local-6989586621679328912"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679328911"><span class="annot"><span class="annottext">a :: Maybe Bool
+</span><a href="#local-6989586621679328911"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsDelete
+</span><a href="#local-6989586621679328912"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_edSendNotifications :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#_edSendNotifications"><span class="hs-identifier hs-var">_edSendNotifications</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679328911"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-110"></span><span>
+</span><span id="line-111"></span><span class="hs-comment">-- | Guests who should receive notifications about the deletion of the event.</span><span>
+</span><span id="line-112"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#edSendUpdates"><span class="hs-identifier hs-type">edSendUpdates</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#EventsDelete"><span class="hs-identifier hs-type">EventsDelete</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Sum.html#EventsDeleteSendUpdates"><span class="hs-identifier hs-type">EventsDeleteSendUpdates</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-113"></span><span id="edSendUpdates"><span class="annot"><span class="annottext">edSendUpdates :: (Maybe EventsDeleteSendUpdates
+ -&gt; f (Maybe EventsDeleteSendUpdates))
+-&gt; EventsDelete -&gt; f EventsDelete
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#edSendUpdates"><span class="hs-identifier hs-var hs-var">edSendUpdates</span></a></span></span><span>
+</span><span id="line-114"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsDelete -&gt; Maybe EventsDeleteSendUpdates)
+-&gt; (EventsDelete -&gt; Maybe EventsDeleteSendUpdates -&gt; EventsDelete)
+-&gt; Lens
+     EventsDelete
+     EventsDelete
+     (Maybe EventsDeleteSendUpdates)
+     (Maybe EventsDeleteSendUpdates)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsDelete -&gt; Maybe EventsDeleteSendUpdates
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#_edSendUpdates"><span class="hs-identifier hs-var hs-var">_edSendUpdates</span></a></span><span>
+</span><span id="line-115"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679328910"><span class="annot"><span class="annottext">s :: EventsDelete
+</span><a href="#local-6989586621679328910"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679328909"><span class="annot"><span class="annottext">a :: Maybe EventsDeleteSendUpdates
+</span><a href="#local-6989586621679328909"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsDelete
+</span><a href="#local-6989586621679328910"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_edSendUpdates :: Maybe EventsDeleteSendUpdates
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#_edSendUpdates"><span class="hs-identifier hs-var">_edSendUpdates</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe EventsDeleteSendUpdates
+</span><a href="#local-6989586621679328909"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-116"></span><span>
+</span><span id="line-117"></span><span class="hs-comment">-- | Event identifier.</span><span>
+</span><span id="line-118"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#edEventId"><span class="hs-identifier hs-type">edEventId</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#EventsDelete"><span class="hs-identifier hs-type">EventsDelete</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-119"></span><span id="edEventId"><span class="annot"><span class="annottext">edEventId :: (Text -&gt; f Text) -&gt; EventsDelete -&gt; f EventsDelete
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#edEventId"><span class="hs-identifier hs-var hs-var">edEventId</span></a></span></span><span>
+</span><span id="line-120"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsDelete -&gt; Text)
+-&gt; (EventsDelete -&gt; Text -&gt; EventsDelete)
+-&gt; Lens EventsDelete EventsDelete Text Text
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsDelete -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#_edEventId"><span class="hs-identifier hs-var hs-var">_edEventId</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679328908"><span class="annot"><span class="annottext">s :: EventsDelete
+</span><a href="#local-6989586621679328908"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679328907"><span class="annot"><span class="annottext">a :: Text
+</span><a href="#local-6989586621679328907"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsDelete
+</span><a href="#local-6989586621679328908"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_edEventId :: Text
+</span><a href="Network.Google.Resource.Calendar.Events.Delete.html#_edEventId"><span class="hs-identifier hs-var">_edEventId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679328907"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-121"></span><span>
+</span><span id="line-122"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">GoogleRequest</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#EventsDelete"><span class="hs-identifier hs-type">EventsDelete</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-123"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Rs"><span class="annot"><span class="hs-identifier hs-var">Rs</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#EventsDelete"><span class="hs-identifier hs-type">EventsDelete</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-124"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Scopes"><span class="annot"><span class="hs-identifier hs-var">Scopes</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#EventsDelete"><span class="hs-identifier hs-type">EventsDelete</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-125"></span><span>             </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-126"></span><span>               </span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar.events&quot;</span></span><span class="hs-special">]</span><span>
+</span><span id="line-127"></span><span>        </span><span id="local-6989586621679328903"><span class="annot"><span class="annottext">requestClient :: EventsDelete -&gt; GClient (Rs EventsDelete)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">requestClient</span></span></span><span> </span><span id="local-6989586621679328898"><span id="local-6989586621679328899"><span id="local-6989586621679328900"><span id="local-6989586621679328901"><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#EventsDelete%27"><span class="hs-identifier hs-type">EventsDelete'</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span></span><span>
+</span><span id="line-128"></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+-&gt; Text
+-&gt; Maybe Bool
+-&gt; Maybe EventsDeleteSendUpdates
+-&gt; Maybe AltJSON
+-&gt; ServiceConfig
+-&gt; GClient ()
+</span><a href="#local-6989586621679328897"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679328901"><span class="hs-identifier hs-var">_edCalendarId</span></a></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679328898"><span class="hs-identifier hs-var">_edEventId</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679328900"><span class="hs-identifier hs-var">_edSendNotifications</span></a></span><span>
+</span><span id="line-129"></span><span>              </span><span class="annot"><span class="annottext">Maybe EventsDeleteSendUpdates
+</span><a href="#local-6989586621679328899"><span class="hs-identifier hs-var">_edSendUpdates</span></a></span><span>
+</span><span id="line-130"></span><span>              </span><span class="hs-special">(</span><span class="annot"><span class="annottext">AltJSON -&gt; Maybe AltJSON
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">AltJSON
+</span><span class="hs-identifier hs-var">AltJSON</span></span><span class="hs-special">)</span><span>
+</span><span id="line-131"></span><span>              </span><span class="annot"><span class="annottext">ServiceConfig
+</span><a href="Network.Google.AppsCalendar.Types.html#appsCalendarService"><span class="hs-identifier hs-var">appsCalendarService</span></a></span><span>
+</span><span id="line-132"></span><span>          </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679328897"><span class="annot"><span class="annottext">go :: Fn EventsDeleteResource
+</span><a href="#local-6989586621679328897"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span>
+</span><span id="line-133"></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Proxy EventsDeleteResource -&gt; Request -&gt; Fn EventsDeleteResource
+forall fn. GoogleClient fn =&gt; Proxy fn -&gt; Request -&gt; Fn fn
+</span><span class="hs-identifier hs-var">buildClient</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Proxy EventsDeleteResource
+forall k (t :: k). Proxy t
+</span><span class="hs-identifier hs-var">Proxy</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Proxy</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Delete.html#EventsDeleteResource"><span class="hs-identifier hs-type">EventsDeleteResource</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-134"></span><span>                      </span><span class="annot"><span class="annottext">Request
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-135"></span></pre></body></html>

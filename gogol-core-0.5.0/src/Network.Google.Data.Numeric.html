@@ -1,0 +1,506 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE DeriveDataTypeable         #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE GeneralizedNewtypeDeriving #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# LANGUAGE OverloadedStrings          #-}</span><span>
+</span><span id="line-4"></span><span class="hs-pragma">{-# LANGUAGE ScopedTypeVariables        #-}</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-7"></span><span class="hs-comment">-- Module      : Network.Google.Data.Numeric</span><span>
+</span><span id="line-8"></span><span class="hs-comment">-- Copyright   : (c) 2015-2016 Brendan Hay &lt;brendan.g.hay@gmail.com&gt;</span><span>
+</span><span id="line-9"></span><span class="hs-comment">-- License     : Mozilla Public License, v. 2.0.</span><span>
+</span><span id="line-10"></span><span class="hs-comment">-- Maintainer  : Brendan Hay &lt;brendan.g.hay@gmail.com&gt;</span><span>
+</span><span id="line-11"></span><span class="hs-comment">-- Stability   : provisional</span><span>
+</span><span id="line-12"></span><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><span id="line-13"></span><span class="hs-comment">--</span><span>
+</span><span id="line-14"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Network.Google.Data.Numeric</span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="Network.Google.Data.Numeric.html#Nat"><span class="hs-identifier">Nat</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Control.Monad</span></span><span>
+</span><span id="line-19"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Data</span></span><span>
+</span><span id="line-21"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Monoid</span></span><span>                </span><span class="hs-special">(</span><span class="annot"><span class="hs-operator">(&lt;&gt;)</span></span><span class="hs-special">)</span><span>
+</span><span id="line-22"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Scientific</span></span><span>
+</span><span id="line-23"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span>                  </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-24"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span>                  </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Text</span></span><span>
+</span><span id="line-25"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text.Lazy</span></span><span>             </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">LText</span></span><span>
+</span><span id="line-26"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Text.Lazy.Builder</span></span><span>     </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Builder</span></span><span class="hs-special">)</span><span>
+</span><span id="line-27"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text.Lazy.Builder</span></span><span>     </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Build</span></span><span>
+</span><span id="line-28"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text.Lazy.Builder.Int</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Build</span></span><span>
+</span><span id="line-29"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text.Read</span></span><span>             </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Read</span></span><span>
+</span><span id="line-30"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Numeric.Natural</span></span><span>
+</span><span id="line-31"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Servant.API</span></span><span>
+</span><span id="line-32"></span><span>
+</span><span id="line-33"></span><span class="hs-keyword">newtype</span><span> </span><span id="Nat"><span class="annot"><a href="Network.Google.Data.Numeric.html#Nat"><span class="hs-identifier hs-var">Nat</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Nat"><span class="annot"><a href="Network.Google.Data.Numeric.html#Nat"><span class="hs-identifier hs-var">Nat</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="unNat"><span class="annot"><span class="annottext">Nat -&gt; Natural
+</span><a href="Network.Google.Data.Numeric.html#unNat"><span class="hs-identifier hs-var hs-var">unNat</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Natural</span></span><span> </span><span class="hs-special">}</span><span>
+</span><span id="line-34"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679233942"><span id="local-6989586621679233944"><span class="annot"><span class="annottext">Nat -&gt; Nat -&gt; Bool
+(Nat -&gt; Nat -&gt; Bool) -&gt; (Nat -&gt; Nat -&gt; Bool) -&gt; Eq Nat
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Nat -&gt; Nat -&gt; Bool
+$c/= :: Nat -&gt; Nat -&gt; Bool
+== :: Nat -&gt; Nat -&gt; Bool
+$c== :: Nat -&gt; Nat -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679233926"><span id="local-6989586621679233928"><span id="local-6989586621679233930"><span id="local-6989586621679233932"><span id="local-6989586621679233934"><span id="local-6989586621679233936"><span id="local-6989586621679233938"><span class="annot"><span class="annottext">Eq Nat
+Eq Nat =&gt;
+(Nat -&gt; Nat -&gt; Ordering)
+-&gt; (Nat -&gt; Nat -&gt; Bool)
+-&gt; (Nat -&gt; Nat -&gt; Bool)
+-&gt; (Nat -&gt; Nat -&gt; Bool)
+-&gt; (Nat -&gt; Nat -&gt; Bool)
+-&gt; (Nat -&gt; Nat -&gt; Nat)
+-&gt; (Nat -&gt; Nat -&gt; Nat)
+-&gt; Ord Nat
+Nat -&gt; Nat -&gt; Bool
+Nat -&gt; Nat -&gt; Ordering
+Nat -&gt; Nat -&gt; Nat
+forall a.
+Eq a =&gt;
+(a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: Nat -&gt; Nat -&gt; Nat
+$cmin :: Nat -&gt; Nat -&gt; Nat
+max :: Nat -&gt; Nat -&gt; Nat
+$cmax :: Nat -&gt; Nat -&gt; Nat
+&gt;= :: Nat -&gt; Nat -&gt; Bool
+$c&gt;= :: Nat -&gt; Nat -&gt; Bool
+&gt; :: Nat -&gt; Nat -&gt; Bool
+$c&gt; :: Nat -&gt; Nat -&gt; Bool
+&lt;= :: Nat -&gt; Nat -&gt; Bool
+$c&lt;= :: Nat -&gt; Nat -&gt; Bool
+&lt; :: Nat -&gt; Nat -&gt; Bool
+$c&lt; :: Nat -&gt; Nat -&gt; Bool
+compare :: Nat -&gt; Nat -&gt; Ordering
+$ccompare :: Nat -&gt; Nat -&gt; Ordering
+$cp1Ord :: Eq Nat
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679233909"><span id="local-6989586621679233911"><span id="local-6989586621679233913"><span id="local-6989586621679233915"><span id="local-6989586621679233917"><span id="local-6989586621679233919"><span id="local-6989586621679233921"><span id="local-6989586621679233923"><span class="annot"><span class="annottext">Int -&gt; Nat
+Nat -&gt; Int
+Nat -&gt; [Nat]
+Nat -&gt; Nat
+Nat -&gt; Nat -&gt; [Nat]
+Nat -&gt; Nat -&gt; Nat -&gt; [Nat]
+(Nat -&gt; Nat)
+-&gt; (Nat -&gt; Nat)
+-&gt; (Int -&gt; Nat)
+-&gt; (Nat -&gt; Int)
+-&gt; (Nat -&gt; [Nat])
+-&gt; (Nat -&gt; Nat -&gt; [Nat])
+-&gt; (Nat -&gt; Nat -&gt; [Nat])
+-&gt; (Nat -&gt; Nat -&gt; Nat -&gt; [Nat])
+-&gt; Enum Nat
+forall a.
+(a -&gt; a)
+-&gt; (a -&gt; a)
+-&gt; (Int -&gt; a)
+-&gt; (a -&gt; Int)
+-&gt; (a -&gt; [a])
+-&gt; (a -&gt; a -&gt; [a])
+-&gt; (a -&gt; a -&gt; [a])
+-&gt; (a -&gt; a -&gt; a -&gt; [a])
+-&gt; Enum a
+enumFromThenTo :: Nat -&gt; Nat -&gt; Nat -&gt; [Nat]
+$cenumFromThenTo :: Nat -&gt; Nat -&gt; Nat -&gt; [Nat]
+enumFromTo :: Nat -&gt; Nat -&gt; [Nat]
+$cenumFromTo :: Nat -&gt; Nat -&gt; [Nat]
+enumFromThen :: Nat -&gt; Nat -&gt; [Nat]
+$cenumFromThen :: Nat -&gt; Nat -&gt; [Nat]
+enumFrom :: Nat -&gt; [Nat]
+$cenumFrom :: Nat -&gt; [Nat]
+fromEnum :: Nat -&gt; Int
+$cfromEnum :: Nat -&gt; Int
+toEnum :: Int -&gt; Nat
+$ctoEnum :: Int -&gt; Nat
+pred :: Nat -&gt; Nat
+$cpred :: Nat -&gt; Nat
+succ :: Nat -&gt; Nat
+$csucc :: Nat -&gt; Nat
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Enum</span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679233902"><span id="local-6989586621679233904"><span id="local-6989586621679233906"><span class="annot"><span class="annottext">Int -&gt; Nat -&gt; ShowS
+[Nat] -&gt; ShowS
+Nat -&gt; String
+(Int -&gt; Nat -&gt; ShowS)
+-&gt; (Nat -&gt; String) -&gt; ([Nat] -&gt; ShowS) -&gt; Show Nat
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [Nat] -&gt; ShowS
+$cshowList :: [Nat] -&gt; ShowS
+show :: Nat -&gt; String
+$cshow :: Nat -&gt; String
+showsPrec :: Int -&gt; Nat -&gt; ShowS
+$cshowsPrec :: Int -&gt; Nat -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679233893"><span id="local-6989586621679233895"><span id="local-6989586621679233897"><span id="local-6989586621679233899"><span class="annot"><span class="annottext">ReadPrec [Nat]
+ReadPrec Nat
+Int -&gt; ReadS Nat
+ReadS [Nat]
+(Int -&gt; ReadS Nat)
+-&gt; ReadS [Nat] -&gt; ReadPrec Nat -&gt; ReadPrec [Nat] -&gt; Read Nat
+forall a.
+(Int -&gt; ReadS a)
+-&gt; ReadS [a] -&gt; ReadPrec a -&gt; ReadPrec [a] -&gt; Read a
+readListPrec :: ReadPrec [Nat]
+$creadListPrec :: ReadPrec [Nat]
+readPrec :: ReadPrec Nat
+$creadPrec :: ReadPrec Nat
+readList :: ReadS [Nat]
+$creadList :: ReadS [Nat]
+readsPrec :: Int -&gt; ReadS Nat
+$creadsPrec :: Int -&gt; ReadS Nat
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Read</span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679233878"><span id="local-6989586621679233880"><span id="local-6989586621679233882"><span id="local-6989586621679233884"><span id="local-6989586621679233886"><span id="local-6989586621679233888"><span id="local-6989586621679233890"><span class="annot"><span class="annottext">Integer -&gt; Nat
+Nat -&gt; Nat
+Nat -&gt; Nat -&gt; Nat
+(Nat -&gt; Nat -&gt; Nat)
+-&gt; (Nat -&gt; Nat -&gt; Nat)
+-&gt; (Nat -&gt; Nat -&gt; Nat)
+-&gt; (Nat -&gt; Nat)
+-&gt; (Nat -&gt; Nat)
+-&gt; (Nat -&gt; Nat)
+-&gt; (Integer -&gt; Nat)
+-&gt; Num Nat
+forall a.
+(a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a)
+-&gt; (a -&gt; a)
+-&gt; (a -&gt; a)
+-&gt; (Integer -&gt; a)
+-&gt; Num a
+fromInteger :: Integer -&gt; Nat
+$cfromInteger :: Integer -&gt; Nat
+signum :: Nat -&gt; Nat
+$csignum :: Nat -&gt; Nat
+abs :: Nat -&gt; Nat
+$cabs :: Nat -&gt; Nat
+negate :: Nat -&gt; Nat
+$cnegate :: Nat -&gt; Nat
+* :: Nat -&gt; Nat -&gt; Nat
+$c* :: Nat -&gt; Nat -&gt; Nat
+- :: Nat -&gt; Nat -&gt; Nat
+$c- :: Nat -&gt; Nat -&gt; Nat
++ :: Nat -&gt; Nat -&gt; Nat
+$c+ :: Nat -&gt; Nat -&gt; Nat
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Num</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679233873"><span class="annot"><span class="annottext">Num Nat
+Ord Nat
+(Num Nat, Ord Nat) =&gt; (Nat -&gt; Rational) -&gt; Real Nat
+Nat -&gt; Rational
+forall a. (Num a, Ord a) =&gt; (a -&gt; Rational) -&gt; Real a
+toRational :: Nat -&gt; Rational
+$ctoRational :: Nat -&gt; Rational
+$cp2Real :: Ord Nat
+$cp1Real :: Num Nat
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Real</span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679233856"><span id="local-6989586621679233858"><span id="local-6989586621679233860"><span id="local-6989586621679233862"><span id="local-6989586621679233864"><span id="local-6989586621679233866"><span id="local-6989586621679233868"><span class="annot"><span class="annottext">Enum Nat
+Real Nat
+(Real Nat, Enum Nat) =&gt;
+(Nat -&gt; Nat -&gt; Nat)
+-&gt; (Nat -&gt; Nat -&gt; Nat)
+-&gt; (Nat -&gt; Nat -&gt; Nat)
+-&gt; (Nat -&gt; Nat -&gt; Nat)
+-&gt; (Nat -&gt; Nat -&gt; (Nat, Nat))
+-&gt; (Nat -&gt; Nat -&gt; (Nat, Nat))
+-&gt; (Nat -&gt; Integer)
+-&gt; Integral Nat
+Nat -&gt; Integer
+Nat -&gt; Nat -&gt; (Nat, Nat)
+Nat -&gt; Nat -&gt; Nat
+forall a.
+(Real a, Enum a) =&gt;
+(a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; (a, a))
+-&gt; (a -&gt; a -&gt; (a, a))
+-&gt; (a -&gt; Integer)
+-&gt; Integral a
+toInteger :: Nat -&gt; Integer
+$ctoInteger :: Nat -&gt; Integer
+divMod :: Nat -&gt; Nat -&gt; (Nat, Nat)
+$cdivMod :: Nat -&gt; Nat -&gt; (Nat, Nat)
+quotRem :: Nat -&gt; Nat -&gt; (Nat, Nat)
+$cquotRem :: Nat -&gt; Nat -&gt; (Nat, Nat)
+mod :: Nat -&gt; Nat -&gt; Nat
+$cmod :: Nat -&gt; Nat -&gt; Nat
+div :: Nat -&gt; Nat -&gt; Nat
+$cdiv :: Nat -&gt; Nat -&gt; Nat
+rem :: Nat -&gt; Nat -&gt; Nat
+$crem :: Nat -&gt; Nat -&gt; Nat
+quot :: Nat -&gt; Nat -&gt; Nat
+$cquot :: Nat -&gt; Nat -&gt; Nat
+$cp2Integral :: Enum Nat
+$cp1Integral :: Real Nat
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Integral</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="%24cNat"><span id="%24tNat"><span id="local-6989586621679233826"><span id="local-6989586621679233828"><span id="local-6989586621679233830"><span id="local-6989586621679233832"><span id="local-6989586621679233834"><span id="local-6989586621679233836"><span id="local-6989586621679233838"><span id="local-6989586621679233840"><span id="local-6989586621679233842"><span id="local-6989586621679233844"><span id="local-6989586621679233846"><span id="local-6989586621679233848"><span id="local-6989586621679233850"><span id="local-6989586621679233852"><span class="annot"><span class="annottext">Typeable Nat
+DataType
+Constr
+Typeable Nat =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; Nat -&gt; c Nat)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Nat)
+-&gt; (Nat -&gt; Constr)
+-&gt; (Nat -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c Nat))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c Nat))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; Nat -&gt; Nat)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Nat -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Nat -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; Nat -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; Nat -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; Nat -&gt; m Nat)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; Nat -&gt; m Nat)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; Nat -&gt; m Nat)
+-&gt; Data Nat
+Nat -&gt; DataType
+Nat -&gt; Constr
+(forall b. Data b =&gt; b -&gt; b) -&gt; Nat -&gt; Nat
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; Nat -&gt; c Nat
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Nat
+forall a.
+Typeable a =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; a -&gt; c a)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c a)
+-&gt; (a -&gt; Constr)
+-&gt; (a -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c a))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c a))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; a -&gt; a)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; Data a
+forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; Nat -&gt; u
+forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; Nat -&gt; [u]
+forall r r'.
+(r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Nat -&gt; r
+forall r r'.
+(r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Nat -&gt; r
+forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Nat -&gt; m Nat
+forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Nat -&gt; m Nat
+forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Nat
+forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; Nat -&gt; c Nat
+forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c Nat)
+forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c Nat)
+$cNat :: Constr
+$tNat :: DataType
+gmapMo :: (forall d. Data d =&gt; d -&gt; m d) -&gt; Nat -&gt; m Nat
+$cgmapMo :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Nat -&gt; m Nat
+gmapMp :: (forall d. Data d =&gt; d -&gt; m d) -&gt; Nat -&gt; m Nat
+$cgmapMp :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Nat -&gt; m Nat
+gmapM :: (forall d. Data d =&gt; d -&gt; m d) -&gt; Nat -&gt; m Nat
+$cgmapM :: forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Nat -&gt; m Nat
+gmapQi :: Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; Nat -&gt; u
+$cgmapQi :: forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; Nat -&gt; u
+gmapQ :: (forall d. Data d =&gt; d -&gt; u) -&gt; Nat -&gt; [u]
+$cgmapQ :: forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; Nat -&gt; [u]
+gmapQr :: (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Nat -&gt; r
+$cgmapQr :: forall r r'.
+(r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Nat -&gt; r
+gmapQl :: (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Nat -&gt; r
+$cgmapQl :: forall r r'.
+(r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Nat -&gt; r
+gmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; Nat -&gt; Nat
+$cgmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; Nat -&gt; Nat
+dataCast2 :: (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c Nat)
+$cdataCast2 :: forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c Nat)
+dataCast1 :: (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c Nat)
+$cdataCast1 :: forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c Nat)
+dataTypeOf :: Nat -&gt; DataType
+$cdataTypeOf :: Nat -&gt; DataType
+toConstr :: Nat -&gt; Constr
+$ctoConstr :: Nat -&gt; Constr
+gunfold :: (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Nat
+$cgunfold :: forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Nat
+gfoldl :: (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; Nat -&gt; c Nat
+$cgfoldl :: forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; Nat -&gt; c Nat
+$cp1Data :: Typeable Nat
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Data</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Typeable</span></span><span class="hs-special">)</span><span>
+</span><span id="line-35"></span><span>
+</span><span id="line-36"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679233820"><span class="annot"><span class="hs-identifier hs-type">FromJSON</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Numeric.html#Nat"><span class="hs-identifier hs-type">Nat</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-37"></span><span>    </span><span id="local-6989586621679233818"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser Nat
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser Scientific
+forall a. FromJSON a =&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">(Value -&gt; Parser Scientific)
+-&gt; (Scientific -&gt; Parser Nat) -&gt; Value -&gt; Parser Nat
+forall (m :: * -&gt; *) a b c.
+Monad m =&gt;
+(a -&gt; m b) -&gt; (b -&gt; m c) -&gt; a -&gt; m c
+</span><span class="hs-operator hs-var">&gt;=&gt;</span></span><span> </span><span class="annot"><span class="annottext">Scientific -&gt; Parser Nat
+forall (m :: * -&gt; *). MonadFail m =&gt; Scientific -&gt; m Nat
+</span><a href="#local-6989586621679233815"><span class="hs-identifier hs-var">go</span></a></span><span>
+</span><span id="line-38"></span><span>      </span><span class="hs-keyword">where</span><span>
+</span><span id="line-39"></span><span>        </span><span id="local-6989586621679233815"><span class="annot"><span class="annottext">go :: Scientific -&gt; m Nat
+</span><a href="#local-6989586621679233815"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span> </span><span id="local-6989586621679233814"><span class="annot"><span class="annottext">n :: Scientific
+</span><a href="#local-6989586621679233814"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Scientific -&gt; Either Double Integer
+forall r i. (RealFloat r, Integral i) =&gt; Scientific -&gt; Either r i
+</span><span class="hs-identifier hs-var">floatingOrInteger</span></span><span> </span><span class="annot"><span class="annottext">Scientific
+</span><a href="#local-6989586621679233814"><span class="hs-identifier hs-var">n</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-40"></span><span>            </span><span class="annot"><span class="hs-identifier hs-type">Left</span></span><span>  </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Double
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Double</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String -&gt; m Nat
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Scientific -&gt; String
+</span><a href="#local-6989586621679233812"><span class="hs-identifier hs-var">floatErr</span></a></span><span> </span><span class="annot"><span class="annottext">Scientific
+</span><a href="#local-6989586621679233814"><span class="hs-identifier hs-var">n</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-41"></span><span>            </span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span id="local-6989586621679233811"><span class="annot"><span class="annottext">i :: Integer
+</span><a href="#local-6989586621679233811"><span class="hs-identifier hs-var">i</span></a></span></span><span>
+</span><span id="line-42"></span><span>                </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Scientific
+</span><a href="#local-6989586621679233814"><span class="hs-identifier hs-var">n</span></a></span><span> </span><span class="annot"><span class="annottext">Scientific -&gt; Scientific -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&lt;</span></span><span> </span><span class="annot"><span class="hs-number">0</span></span><span>         </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String -&gt; m Nat
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Scientific -&gt; String
+</span><a href="#local-6989586621679233809"><span class="hs-identifier hs-var">negateErr</span></a></span><span> </span><span class="annot"><span class="annottext">Scientific
+</span><a href="#local-6989586621679233814"><span class="hs-identifier hs-var">n</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-43"></span><span>                </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span>     </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Nat -&gt; m Nat
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(Nat -&gt; m Nat) -&gt; (Natural -&gt; Nat) -&gt; Natural -&gt; m Nat
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Natural -&gt; Nat
+</span><a href="Network.Google.Data.Numeric.html#Nat"><span class="hs-identifier hs-var">Nat</span></a></span><span> </span><span class="annot"><span class="annottext">(Natural -&gt; m Nat) -&gt; Natural -&gt; m Nat
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Integer -&gt; Natural
+forall a. Num a =&gt; Integer -&gt; a
+</span><span class="hs-identifier hs-var">fromInteger</span></span><span> </span><span class="annot"><span class="annottext">Integer
+</span><a href="#local-6989586621679233811"><span class="hs-identifier hs-var">i</span></a></span><span>
+</span><span id="line-44"></span><span>
+</span><span id="line-45"></span><span>        </span><span id="local-6989586621679233812"><span class="annot"><span class="annottext">floatErr :: Scientific -&gt; String
+</span><a href="#local-6989586621679233812"><span class="hs-identifier hs-var hs-var">floatErr</span></a></span></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. Monoid a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-identifier hs-var">mappend</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Cannot convert float to Natural: &quot;</span></span><span> </span><span class="annot"><span class="annottext">ShowS -&gt; (Scientific -&gt; String) -&gt; Scientific -&gt; String
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Scientific -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span>
+</span><span id="line-46"></span><span>        </span><span id="local-6989586621679233809"><span class="annot"><span class="annottext">negateErr :: Scientific -&gt; String
+</span><a href="#local-6989586621679233809"><span class="hs-identifier hs-var hs-var">negateErr</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. Monoid a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-identifier hs-var">mappend</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Cannot convert negative number to Natural: &quot;</span></span><span> </span><span class="annot"><span class="annottext">ShowS -&gt; (Scientific -&gt; String) -&gt; Scientific -&gt; String
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Scientific -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span>
+</span><span id="line-47"></span><span>
+</span><span id="line-48"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679233800"><span id="local-6989586621679233802"><span id="local-6989586621679233804"><span class="annot"><span class="hs-identifier hs-type">ToJSON</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Numeric.html#Nat"><span class="hs-identifier hs-type">Nat</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-49"></span><span>    </span><span id="local-6989586621679233798"><span class="annot"><span class="annottext">toJSON :: Nat -&gt; Value
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Scientific -&gt; Value
+</span><span class="hs-identifier hs-var">Number</span></span><span> </span><span class="annot"><span class="annottext">(Scientific -&gt; Value) -&gt; (Nat -&gt; Scientific) -&gt; Nat -&gt; Value
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(Integer -&gt; Int -&gt; Scientific) -&gt; Int -&gt; Integer -&gt; Scientific
+forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
+</span><span class="hs-identifier hs-var">flip</span></span><span> </span><span class="annot"><span class="annottext">Integer -&gt; Int -&gt; Scientific
+</span><span class="hs-identifier hs-var">scientific</span></span><span> </span><span class="annot"><span class="hs-number">0</span></span><span> </span><span class="annot"><span class="annottext">(Integer -&gt; Scientific) -&gt; (Nat -&gt; Integer) -&gt; Nat -&gt; Scientific
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Natural -&gt; Integer
+forall a. Integral a =&gt; a -&gt; Integer
+</span><span class="hs-identifier hs-var">toInteger</span></span><span> </span><span class="annot"><span class="annottext">(Natural -&gt; Integer) -&gt; (Nat -&gt; Natural) -&gt; Nat -&gt; Integer
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Nat -&gt; Natural
+</span><a href="Network.Google.Data.Numeric.html#unNat"><span class="hs-identifier hs-var hs-var">unNat</span></a></span><span>
+</span><span id="line-50"></span><span>
+</span><span id="line-51"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679233788"><span id="local-6989586621679233790"><span id="local-6989586621679233792"><span class="annot"><span class="hs-identifier hs-type">ToHttpApiData</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Numeric.html#Nat"><span class="hs-identifier hs-type">Nat</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-52"></span><span>    </span><span id="local-6989586621679233785"><span class="annot"><span class="annottext">toQueryParam :: Nat -&gt; Text
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">toQueryParam</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Builder -&gt; Text
+</span><a href="Network.Google.Data.Numeric.html#shortText"><span class="hs-identifier hs-var">shortText</span></a></span><span> </span><span class="annot"><span class="annottext">(Builder -&gt; Text) -&gt; (Nat -&gt; Builder) -&gt; Nat -&gt; Text
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Nat -&gt; Builder
+forall a. Integral a =&gt; a -&gt; Builder
+</span><span class="hs-identifier hs-var">Build.decimal</span></span><span>
+</span><span id="line-53"></span><span>
+</span><span id="line-54"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679233778"><span id="local-6989586621679233780"><span class="annot"><span class="hs-identifier hs-type">FromHttpApiData</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Numeric.html#Nat"><span class="hs-identifier hs-type">Nat</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-55"></span><span>    </span><span id="local-6989586621679233775"><span class="annot"><span class="annottext">parseQueryParam :: Text -&gt; Either Text Nat
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">parseQueryParam</span></span></span><span> </span><span id="local-6989586621679233773"><span class="annot"><span class="annottext">t :: Text
+</span><a href="#local-6989586621679233773"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-56"></span><span>        </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Reader Nat
+forall a. Integral a =&gt; Reader a
+</span><span class="hs-identifier hs-var">Read.decimal</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679233773"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-57"></span><span>            </span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679233771"><span class="annot"><span class="annottext">x :: Nat
+</span><a href="#local-6989586621679233771"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679233770"><span class="annot"><span class="annottext">r :: Text
+</span><a href="#local-6989586621679233770"><span class="hs-identifier hs-var">r</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Bool
+</span><span class="hs-identifier hs-var">Text.null</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679233770"><span class="hs-identifier hs-var">r</span></a></span><span>
+</span><span id="line-58"></span><span>                </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Nat -&gt; Either Text Nat
+forall a b. b -&gt; Either a b
+</span><span class="hs-identifier hs-var">Right</span></span><span> </span><span class="annot"><span class="annottext">Nat
+</span><a href="#local-6989586621679233771"><span class="hs-identifier hs-var">x</span></a></span><span>
+</span><span id="line-59"></span><span>            </span><span class="hs-identifier">_</span><span>   </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Either Text Nat
+forall a b. a -&gt; Either a b
+</span><span class="hs-identifier hs-var">Left</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-string">&quot;Unable to parse natural from: &quot;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
+forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679233773"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-60"></span><span>
+</span><span id="line-61"></span><span class="annot"><a href="Network.Google.Data.Numeric.html#shortText"><span class="hs-identifier hs-type">shortText</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Builder</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-62"></span><span id="shortText"><span class="annot"><span class="annottext">shortText :: Builder -&gt; Text
+</span><a href="Network.Google.Data.Numeric.html#shortText"><span class="hs-identifier hs-var hs-var">shortText</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text
+</span><span class="hs-identifier hs-var">LText.toStrict</span></span><span> </span><span class="annot"><span class="annottext">(Text -&gt; Text) -&gt; (Builder -&gt; Text) -&gt; Builder -&gt; Text
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Builder -&gt; Text
+</span><span class="hs-identifier hs-var">Build.toLazyTextWith</span></span><span> </span><span class="annot"><span class="hs-number">32</span></span><span>
+</span><span id="line-63"></span></pre></body></html>

@@ -1,0 +1,470 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE DataKinds          #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE DeriveDataTypeable #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# LANGUAGE DeriveGeneric      #-}</span><span>
+</span><span id="line-4"></span><span class="hs-pragma">{-# LANGUAGE FlexibleInstances  #-}</span><span>
+</span><span id="line-5"></span><span class="hs-pragma">{-# LANGUAGE NoImplicitPrelude  #-}</span><span>
+</span><span id="line-6"></span><span class="hs-pragma">{-# LANGUAGE OverloadedStrings  #-}</span><span>
+</span><span id="line-7"></span><span class="hs-pragma">{-# LANGUAGE RecordWildCards    #-}</span><span>
+</span><span id="line-8"></span><span class="hs-pragma">{-# LANGUAGE TypeFamilies       #-}</span><span>
+</span><span id="line-9"></span><span class="hs-pragma">{-# LANGUAGE TypeOperators      #-}</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-duplicate-exports #-}</span><span>
+</span><span id="line-12"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-binds      #-}</span><span>
+</span><span id="line-13"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-imports    #-}</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-16"></span><span class="hs-comment">-- Module      : Network.Google.Resource.Calendar.Events.Get</span><span>
+</span><span id="line-17"></span><span class="hs-comment">-- Copyright   : (c) 2015-2016 Brendan Hay</span><span>
+</span><span id="line-18"></span><span class="hs-comment">-- License     : Mozilla Public License, v. 2.0.</span><span>
+</span><span id="line-19"></span><span class="hs-comment">-- Maintainer  : Brendan Hay &lt;brendan.g.hay@gmail.com&gt;</span><span>
+</span><span id="line-20"></span><span class="hs-comment">-- Stability   : auto-generated</span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><span id="line-22"></span><span class="hs-comment">--</span><span>
+</span><span id="line-23"></span><span class="hs-comment">-- Returns an event.</span><span>
+</span><span id="line-24"></span><span class="hs-comment">--</span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- /See:/ &lt;https://developers.google.com/google-apps/calendar/firstapp Calendar API Reference&gt; for @calendar.events.get@.</span><span>
+</span><span id="line-26"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Network.Google.Resource.Calendar.Events.Get</span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">(</span><span>
+</span><span id="line-28"></span><span>    </span><span class="annot"><span class="hs-comment">-- * REST Resource</span></span><span>
+</span><span id="line-29"></span><span>      </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#EventsGetResource"><span class="hs-identifier">EventsGetResource</span></a></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Creating a Request</span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#eventsGet"><span class="hs-identifier">eventsGet</span></a></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#EventsGet"><span class="hs-identifier">EventsGet</span></a></span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Request Lenses</span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#egCalendarId"><span class="hs-identifier">egCalendarId</span></a></span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#egMaxAttendees"><span class="hs-identifier">egMaxAttendees</span></a></span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#egTimeZone"><span class="hs-identifier">egTimeZone</span></a></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#egAlwaysIncludeEmail"><span class="hs-identifier">egAlwaysIncludeEmail</span></a></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#egEventId"><span class="hs-identifier">egEventId</span></a></span><span>
+</span><span id="line-41"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-42"></span><span>
+</span><span id="line-43"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.html"><span class="hs-identifier">Network.Google.AppsCalendar.Types</span></a></span><span>
+</span><span id="line-44"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Network.Google.Prelude</span></span><span>
+</span><span id="line-45"></span><span>
+</span><span id="line-46"></span><span class="hs-comment">-- | A resource alias for @calendar.events.get@ method which the</span><span>
+</span><span id="line-47"></span><span class="hs-comment">-- 'EventsGet' request conforms to.</span><span>
+</span><span id="line-48"></span><span class="hs-keyword">type</span><span> </span><span id="EventsGetResource"><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#EventsGetResource"><span class="hs-identifier hs-var">EventsGetResource</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-49"></span><span>     </span><span class="annot"><span class="hs-string">&quot;calendar&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-50"></span><span>       </span><span class="annot"><span class="hs-string">&quot;v3&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-51"></span><span>         </span><span class="annot"><span class="hs-string">&quot;calendars&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-52"></span><span>           </span><span class="annot"><span class="hs-identifier hs-type">Capture</span></span><span> </span><span class="annot"><span class="hs-string">&quot;calendarId&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-53"></span><span>             </span><span class="annot"><span class="hs-string">&quot;events&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-54"></span><span>               </span><span class="annot"><span class="hs-identifier hs-type">Capture</span></span><span> </span><span class="annot"><span class="hs-string">&quot;eventId&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-55"></span><span>                 </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;maxAttendees&quot;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Textual</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-56"></span><span>                   </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;timeZone&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-57"></span><span>                     </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;alwaysIncludeEmail&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-58"></span><span>                       </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;alt&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">AltJSON</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Get</span></span><span> </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">JSON</span></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Event"><span class="hs-identifier hs-type">Event</span></a></span><span>
+</span><span id="line-59"></span><span>
+</span><span id="line-60"></span><span class="hs-comment">-- | Returns an event.</span><span>
+</span><span id="line-61"></span><span class="hs-comment">--</span><span>
+</span><span id="line-62"></span><span class="hs-comment">-- /See:/ 'eventsGet' smart constructor.</span><span>
+</span><span id="line-63"></span><span id="local-6989586621679329157"><span id="local-6989586621679329158"></span></span><span class="hs-keyword">data</span><span> </span><span id="EventsGet"><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#EventsGet"><span class="hs-identifier hs-var">EventsGet</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-64"></span><span>  </span><span id="EventsGet%27"><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#EventsGet%27"><span class="hs-identifier hs-var">EventsGet'</span></a></span></span><span>
+</span><span id="line-65"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="_egCalendarId"><span class="annot"><span class="annottext">EventsGet -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egCalendarId"><span class="hs-identifier hs-var hs-var">_egCalendarId</span></a></span></span><span>         </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-66"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_egMaxAttendees"><span class="annot"><span class="annottext">EventsGet -&gt; Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egMaxAttendees"><span class="hs-identifier hs-var hs-var">_egMaxAttendees</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Textual</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-67"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_egTimeZone"><span class="annot"><span class="annottext">EventsGet -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egTimeZone"><span class="hs-identifier hs-var hs-var">_egTimeZone</span></a></span></span><span>           </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-68"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_egAlwaysIncludeEmail"><span class="annot"><span class="annottext">EventsGet -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egAlwaysIncludeEmail"><span class="hs-identifier hs-var hs-var">_egAlwaysIncludeEmail</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-69"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_egEventId"><span class="annot"><span class="annottext">EventsGet -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egEventId"><span class="hs-identifier hs-var hs-var">_egEventId</span></a></span></span><span>            </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-70"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-71"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679329147"><span id="local-6989586621679329149"><span class="annot"><span class="annottext">EventsGet -&gt; EventsGet -&gt; Bool
+(EventsGet -&gt; EventsGet -&gt; Bool)
+-&gt; (EventsGet -&gt; EventsGet -&gt; Bool) -&gt; Eq EventsGet
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: EventsGet -&gt; EventsGet -&gt; Bool
+$c/= :: EventsGet -&gt; EventsGet -&gt; Bool
+== :: EventsGet -&gt; EventsGet -&gt; Bool
+$c== :: EventsGet -&gt; EventsGet -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679329140"><span id="local-6989586621679329142"><span id="local-6989586621679329144"><span class="annot"><span class="annottext">Int -&gt; EventsGet -&gt; ShowS
+[EventsGet] -&gt; ShowS
+EventsGet -&gt; String
+(Int -&gt; EventsGet -&gt; ShowS)
+-&gt; (EventsGet -&gt; String)
+-&gt; ([EventsGet] -&gt; ShowS)
+-&gt; Show EventsGet
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [EventsGet] -&gt; ShowS
+$cshowList :: [EventsGet] -&gt; ShowS
+show :: EventsGet -&gt; String
+$cshow :: EventsGet -&gt; String
+showsPrec :: Int -&gt; EventsGet -&gt; ShowS
+$cshowsPrec :: Int -&gt; EventsGet -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="%24cEventsGet%27"><span id="%24tEventsGet"><span id="local-6989586621679329110"><span id="local-6989586621679329112"><span id="local-6989586621679329114"><span id="local-6989586621679329116"><span id="local-6989586621679329118"><span id="local-6989586621679329120"><span id="local-6989586621679329122"><span id="local-6989586621679329124"><span id="local-6989586621679329126"><span id="local-6989586621679329128"><span id="local-6989586621679329130"><span id="local-6989586621679329132"><span id="local-6989586621679329134"><span id="local-6989586621679329136"><span class="annot"><span class="annottext">Typeable EventsGet
+DataType
+Constr
+Typeable EventsGet =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; EventsGet -&gt; c EventsGet)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsGet)
+-&gt; (EventsGet -&gt; Constr)
+-&gt; (EventsGet -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c EventsGet))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c EventsGet))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; EventsGet -&gt; EventsGet)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsGet -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsGet -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; EventsGet -&gt; [u])
+-&gt; (forall u.
+    Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; EventsGet -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsGet -&gt; m EventsGet)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsGet -&gt; m EventsGet)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsGet -&gt; m EventsGet)
+-&gt; Data EventsGet
+EventsGet -&gt; DataType
+EventsGet -&gt; Constr
+(forall b. Data b =&gt; b -&gt; b) -&gt; EventsGet -&gt; EventsGet
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; EventsGet -&gt; c EventsGet
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsGet
+forall a.
+Typeable a =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; a -&gt; c a)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c a)
+-&gt; (a -&gt; Constr)
+-&gt; (a -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c a))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c a))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; a -&gt; a)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; Data a
+forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; EventsGet -&gt; u
+forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; EventsGet -&gt; [u]
+forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsGet -&gt; r
+forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsGet -&gt; r
+forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsGet -&gt; m EventsGet
+forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsGet -&gt; m EventsGet
+forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsGet
+forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; EventsGet -&gt; c EventsGet
+forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c EventsGet)
+forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c EventsGet)
+$cEventsGet' :: Constr
+$tEventsGet :: DataType
+gmapMo :: (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsGet -&gt; m EventsGet
+$cgmapMo :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsGet -&gt; m EventsGet
+gmapMp :: (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsGet -&gt; m EventsGet
+$cgmapMp :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsGet -&gt; m EventsGet
+gmapM :: (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsGet -&gt; m EventsGet
+$cgmapM :: forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsGet -&gt; m EventsGet
+gmapQi :: Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; EventsGet -&gt; u
+$cgmapQi :: forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; EventsGet -&gt; u
+gmapQ :: (forall d. Data d =&gt; d -&gt; u) -&gt; EventsGet -&gt; [u]
+$cgmapQ :: forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; EventsGet -&gt; [u]
+gmapQr :: (r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsGet -&gt; r
+$cgmapQr :: forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsGet -&gt; r
+gmapQl :: (r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsGet -&gt; r
+$cgmapQl :: forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsGet -&gt; r
+gmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; EventsGet -&gt; EventsGet
+$cgmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; EventsGet -&gt; EventsGet
+dataCast2 :: (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c EventsGet)
+$cdataCast2 :: forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c EventsGet)
+dataCast1 :: (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c EventsGet)
+$cdataCast1 :: forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c EventsGet)
+dataTypeOf :: EventsGet -&gt; DataType
+$cdataTypeOf :: EventsGet -&gt; DataType
+toConstr :: EventsGet -&gt; Constr
+$ctoConstr :: EventsGet -&gt; Constr
+gunfold :: (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsGet
+$cgunfold :: forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsGet
+gfoldl :: (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; EventsGet -&gt; c EventsGet
+$cgfoldl :: forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; EventsGet -&gt; c EventsGet
+$cp1Data :: Typeable EventsGet
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Data</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Typeable</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(forall x. EventsGet -&gt; Rep EventsGet x)
+-&gt; (forall x. Rep EventsGet x -&gt; EventsGet) -&gt; Generic EventsGet
+forall x. Rep EventsGet x -&gt; EventsGet
+forall x. EventsGet -&gt; Rep EventsGet x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep EventsGet x -&gt; EventsGet
+$cfrom :: forall x. EventsGet -&gt; Rep EventsGet x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">)</span><span>
+</span><span id="line-72"></span><span>
+</span><span id="line-73"></span><span>
+</span><span id="line-74"></span><span class="hs-comment">-- | Creates a value of 'EventsGet' with the minimum fields required to make a request.</span><span>
+</span><span id="line-75"></span><span class="hs-comment">--</span><span>
+</span><span id="line-76"></span><span class="hs-comment">-- Use one of the following lenses to modify other fields as desired:</span><span>
+</span><span id="line-77"></span><span class="hs-comment">--</span><span>
+</span><span id="line-78"></span><span class="hs-comment">-- * 'egCalendarId'</span><span>
+</span><span id="line-79"></span><span class="hs-comment">--</span><span>
+</span><span id="line-80"></span><span class="hs-comment">-- * 'egMaxAttendees'</span><span>
+</span><span id="line-81"></span><span class="hs-comment">--</span><span>
+</span><span id="line-82"></span><span class="hs-comment">-- * 'egTimeZone'</span><span>
+</span><span id="line-83"></span><span class="hs-comment">--</span><span>
+</span><span id="line-84"></span><span class="hs-comment">-- * 'egAlwaysIncludeEmail'</span><span>
+</span><span id="line-85"></span><span class="hs-comment">--</span><span>
+</span><span id="line-86"></span><span class="hs-comment">-- * 'egEventId'</span><span>
+</span><span id="line-87"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#eventsGet"><span class="hs-identifier hs-type">eventsGet</span></a></span><span>
+</span><span id="line-88"></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ 'egCalendarId'</span><span>
+</span><span id="line-89"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ 'egEventId'</span><span>
+</span><span id="line-90"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#EventsGet"><span class="hs-identifier hs-type">EventsGet</span></a></span><span>
+</span><span id="line-91"></span><span id="eventsGet"><span class="annot"><span class="annottext">eventsGet :: Text -&gt; Text -&gt; EventsGet
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#eventsGet"><span class="hs-identifier hs-var hs-var">eventsGet</span></a></span></span><span> </span><span id="local-6989586621679329103"><span class="annot"><span class="annottext">pEgCalendarId_ :: Text
+</span><a href="#local-6989586621679329103"><span class="hs-identifier hs-var">pEgCalendarId_</span></a></span></span><span> </span><span id="local-6989586621679329102"><span class="annot"><span class="annottext">pEgEventId_ :: Text
+</span><a href="#local-6989586621679329102"><span class="hs-identifier hs-var">pEgEventId_</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-92"></span><span>  </span><span class="annot"><span class="annottext">$WEventsGet' :: Text
+-&gt; Maybe (Textual Int32)
+-&gt; Maybe Text
+-&gt; Maybe Bool
+-&gt; Text
+-&gt; EventsGet
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#%24WEventsGet%27"><span class="hs-identifier hs-type hs-type">EventsGet'</span></a></span><span>
+</span><span id="line-93"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_egCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egCalendarId"><span class="hs-identifier hs-var">_egCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679329103"><span class="hs-identifier hs-var">pEgCalendarId_</span></a></span><span>
+</span><span id="line-94"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_egMaxAttendees :: Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egMaxAttendees"><span class="hs-identifier hs-var">_egMaxAttendees</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe (Textual Int32)
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-95"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_egTimeZone :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egTimeZone"><span class="hs-identifier hs-var">_egTimeZone</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-96"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_egAlwaysIncludeEmail :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egAlwaysIncludeEmail"><span class="hs-identifier hs-var">_egAlwaysIncludeEmail</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-97"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_egEventId :: Text
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egEventId"><span class="hs-identifier hs-var">_egEventId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679329102"><span class="hs-identifier hs-var">pEgEventId_</span></a></span><span>
+</span><span id="line-98"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-99"></span><span>
+</span><span id="line-100"></span><span>
+</span><span id="line-101"></span><span class="hs-comment">-- | Calendar identifier. To retrieve calendar IDs call the calendarList.list</span><span>
+</span><span id="line-102"></span><span class="hs-comment">-- method. If you want to access the primary calendar of the currently</span><span>
+</span><span id="line-103"></span><span class="hs-comment">-- logged in user, use the \&quot;primary\&quot; keyword.</span><span>
+</span><span id="line-104"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#egCalendarId"><span class="hs-identifier hs-type">egCalendarId</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#EventsGet"><span class="hs-identifier hs-type">EventsGet</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-105"></span><span id="egCalendarId"><span class="annot"><span class="annottext">egCalendarId :: (Text -&gt; f Text) -&gt; EventsGet -&gt; f EventsGet
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#egCalendarId"><span class="hs-identifier hs-var hs-var">egCalendarId</span></a></span></span><span>
+</span><span id="line-106"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsGet -&gt; Text)
+-&gt; (EventsGet -&gt; Text -&gt; EventsGet)
+-&gt; Lens EventsGet EventsGet Text Text
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsGet -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egCalendarId"><span class="hs-identifier hs-var hs-var">_egCalendarId</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329098"><span class="annot"><span class="annottext">s :: EventsGet
+</span><a href="#local-6989586621679329098"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329097"><span class="annot"><span class="annottext">a :: Text
+</span><a href="#local-6989586621679329097"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsGet
+</span><a href="#local-6989586621679329098"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_egCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egCalendarId"><span class="hs-identifier hs-var">_egCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679329097"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-107"></span><span>
+</span><span id="line-108"></span><span class="hs-comment">-- | The maximum number of attendees to include in the response. If there are</span><span>
+</span><span id="line-109"></span><span class="hs-comment">-- more than the specified number of attendees, only the participant is</span><span>
+</span><span id="line-110"></span><span class="hs-comment">-- returned. Optional.</span><span>
+</span><span id="line-111"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#egMaxAttendees"><span class="hs-identifier hs-type">egMaxAttendees</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#EventsGet"><span class="hs-identifier hs-type">EventsGet</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span class="hs-special">)</span><span>
+</span><span id="line-112"></span><span id="egMaxAttendees"><span class="annot"><span class="annottext">egMaxAttendees :: (Maybe Int32 -&gt; f (Maybe Int32)) -&gt; EventsGet -&gt; f EventsGet
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#egMaxAttendees"><span class="hs-identifier hs-var hs-var">egMaxAttendees</span></a></span></span><span>
+</span><span id="line-113"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsGet -&gt; Maybe (Textual Int32))
+-&gt; (EventsGet -&gt; Maybe (Textual Int32) -&gt; EventsGet)
+-&gt; Lens
+     EventsGet EventsGet (Maybe (Textual Int32)) (Maybe (Textual Int32))
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsGet -&gt; Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egMaxAttendees"><span class="hs-identifier hs-var hs-var">_egMaxAttendees</span></a></span><span>
+</span><span id="line-114"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329096"><span class="annot"><span class="annottext">s :: EventsGet
+</span><a href="#local-6989586621679329096"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329095"><span class="annot"><span class="annottext">a :: Maybe (Textual Int32)
+</span><a href="#local-6989586621679329095"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsGet
+</span><a href="#local-6989586621679329096"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_egMaxAttendees :: Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egMaxAttendees"><span class="hs-identifier hs-var">_egMaxAttendees</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe (Textual Int32)
+</span><a href="#local-6989586621679329095"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-115"></span><span>      </span><span class="annot"><span class="annottext">((Maybe (Textual Int32) -&gt; f (Maybe (Textual Int32)))
+ -&gt; EventsGet -&gt; f EventsGet)
+-&gt; ((Maybe Int32 -&gt; f (Maybe Int32))
+    -&gt; Maybe (Textual Int32) -&gt; f (Maybe (Textual Int32)))
+-&gt; (Maybe Int32 -&gt; f (Maybe Int32))
+-&gt; EventsGet
+-&gt; f EventsGet
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">AnIso (Textual Int32) (Textual Int32) Int32 Int32
+-&gt; Iso
+     (Maybe (Textual Int32))
+     (Maybe (Textual Int32))
+     (Maybe Int32)
+     (Maybe Int32)
+forall (f :: * -&gt; *) (g :: * -&gt; *) s t a b.
+(Functor f, Functor g) =&gt;
+AnIso s t a b -&gt; Iso (f s) (g t) (f a) (g b)
+</span><span class="hs-identifier hs-var">mapping</span></span><span> </span><span class="annot"><span class="annottext">AnIso (Textual Int32) (Textual Int32) Int32 Int32
+forall a b. (Coercible a b, Coercible b a) =&gt; Iso' a b
+</span><span class="hs-identifier hs-var">_Coerce</span></span><span>
+</span><span id="line-116"></span><span>
+</span><span id="line-117"></span><span class="hs-comment">-- | Time zone used in the response. Optional. The default is the time zone</span><span>
+</span><span id="line-118"></span><span class="hs-comment">-- of the calendar.</span><span>
+</span><span id="line-119"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#egTimeZone"><span class="hs-identifier hs-type">egTimeZone</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#EventsGet"><span class="hs-identifier hs-type">EventsGet</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-120"></span><span id="egTimeZone"><span class="annot"><span class="annottext">egTimeZone :: (Maybe Text -&gt; f (Maybe Text)) -&gt; EventsGet -&gt; f EventsGet
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#egTimeZone"><span class="hs-identifier hs-var hs-var">egTimeZone</span></a></span></span><span>
+</span><span id="line-121"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsGet -&gt; Maybe Text)
+-&gt; (EventsGet -&gt; Maybe Text -&gt; EventsGet)
+-&gt; Lens EventsGet EventsGet (Maybe Text) (Maybe Text)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsGet -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egTimeZone"><span class="hs-identifier hs-var hs-var">_egTimeZone</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329091"><span class="annot"><span class="annottext">s :: EventsGet
+</span><a href="#local-6989586621679329091"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329090"><span class="annot"><span class="annottext">a :: Maybe Text
+</span><a href="#local-6989586621679329090"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsGet
+</span><a href="#local-6989586621679329091"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_egTimeZone :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egTimeZone"><span class="hs-identifier hs-var">_egTimeZone</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679329090"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-122"></span><span>
+</span><span id="line-123"></span><span class="hs-comment">-- | Whether to always include a value in the email field for the organizer,</span><span>
+</span><span id="line-124"></span><span class="hs-comment">-- creator and attendees, even if no real email is available (i.e. a</span><span>
+</span><span id="line-125"></span><span class="hs-comment">-- generated, non-working value will be provided). The use of this option</span><span>
+</span><span id="line-126"></span><span class="hs-comment">-- is discouraged and should only be used by clients which cannot handle</span><span>
+</span><span id="line-127"></span><span class="hs-comment">-- the absence of an email address value in the mentioned places. Optional.</span><span>
+</span><span id="line-128"></span><span class="hs-comment">-- The default is False.</span><span>
+</span><span id="line-129"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#egAlwaysIncludeEmail"><span class="hs-identifier hs-type">egAlwaysIncludeEmail</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#EventsGet"><span class="hs-identifier hs-type">EventsGet</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-130"></span><span id="egAlwaysIncludeEmail"><span class="annot"><span class="annottext">egAlwaysIncludeEmail :: (Maybe Bool -&gt; f (Maybe Bool)) -&gt; EventsGet -&gt; f EventsGet
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#egAlwaysIncludeEmail"><span class="hs-identifier hs-var hs-var">egAlwaysIncludeEmail</span></a></span></span><span>
+</span><span id="line-131"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsGet -&gt; Maybe Bool)
+-&gt; (EventsGet -&gt; Maybe Bool -&gt; EventsGet)
+-&gt; Lens EventsGet EventsGet (Maybe Bool) (Maybe Bool)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsGet -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egAlwaysIncludeEmail"><span class="hs-identifier hs-var hs-var">_egAlwaysIncludeEmail</span></a></span><span>
+</span><span id="line-132"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329089"><span class="annot"><span class="annottext">s :: EventsGet
+</span><a href="#local-6989586621679329089"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329088"><span class="annot"><span class="annottext">a :: Maybe Bool
+</span><a href="#local-6989586621679329088"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsGet
+</span><a href="#local-6989586621679329089"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_egAlwaysIncludeEmail :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egAlwaysIncludeEmail"><span class="hs-identifier hs-var">_egAlwaysIncludeEmail</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679329088"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-133"></span><span>
+</span><span id="line-134"></span><span class="hs-comment">-- | Event identifier.</span><span>
+</span><span id="line-135"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#egEventId"><span class="hs-identifier hs-type">egEventId</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#EventsGet"><span class="hs-identifier hs-type">EventsGet</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-136"></span><span id="egEventId"><span class="annot"><span class="annottext">egEventId :: (Text -&gt; f Text) -&gt; EventsGet -&gt; f EventsGet
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#egEventId"><span class="hs-identifier hs-var hs-var">egEventId</span></a></span></span><span>
+</span><span id="line-137"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsGet -&gt; Text)
+-&gt; (EventsGet -&gt; Text -&gt; EventsGet)
+-&gt; Lens EventsGet EventsGet Text Text
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsGet -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egEventId"><span class="hs-identifier hs-var hs-var">_egEventId</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329087"><span class="annot"><span class="annottext">s :: EventsGet
+</span><a href="#local-6989586621679329087"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329086"><span class="annot"><span class="annottext">a :: Text
+</span><a href="#local-6989586621679329086"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsGet
+</span><a href="#local-6989586621679329087"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_egEventId :: Text
+</span><a href="Network.Google.Resource.Calendar.Events.Get.html#_egEventId"><span class="hs-identifier hs-var">_egEventId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679329086"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-138"></span><span>
+</span><span id="line-139"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">GoogleRequest</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#EventsGet"><span class="hs-identifier hs-type">EventsGet</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-140"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Rs"><span class="annot"><span class="hs-identifier hs-var">Rs</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#EventsGet"><span class="hs-identifier hs-type">EventsGet</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Event"><span class="hs-identifier hs-type">Event</span></a></span><span>
+</span><span id="line-141"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Scopes"><span class="annot"><span class="hs-identifier hs-var">Scopes</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#EventsGet"><span class="hs-identifier hs-type">EventsGet</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-142"></span><span>             </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-143"></span><span>               </span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar.events&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-144"></span><span>               </span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar.events.readonly&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-145"></span><span>               </span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar.readonly&quot;</span></span><span class="hs-special">]</span><span>
+</span><span id="line-146"></span><span>        </span><span id="local-6989586621679329082"><span class="annot"><span class="annottext">requestClient :: EventsGet -&gt; GClient (Rs EventsGet)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">requestClient</span></span></span><span> </span><span id="local-6989586621679329076"><span id="local-6989586621679329077"><span id="local-6989586621679329078"><span id="local-6989586621679329079"><span id="local-6989586621679329080"><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#EventsGet%27"><span class="hs-identifier hs-type">EventsGet'</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span></span></span><span>
+</span><span id="line-147"></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+-&gt; Text
+-&gt; Maybe (Textual Int32)
+-&gt; Maybe Text
+-&gt; Maybe Bool
+-&gt; Maybe AltJSON
+-&gt; ServiceConfig
+-&gt; GClient Event
+</span><a href="#local-6989586621679329075"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679329080"><span class="hs-identifier hs-var">_egCalendarId</span></a></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679329076"><span class="hs-identifier hs-var">_egEventId</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe (Textual Int32)
+</span><a href="#local-6989586621679329079"><span class="hs-identifier hs-var">_egMaxAttendees</span></a></span><span>
+</span><span id="line-148"></span><span>              </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679329078"><span class="hs-identifier hs-var">_egTimeZone</span></a></span><span>
+</span><span id="line-149"></span><span>              </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679329077"><span class="hs-identifier hs-var">_egAlwaysIncludeEmail</span></a></span><span>
+</span><span id="line-150"></span><span>              </span><span class="hs-special">(</span><span class="annot"><span class="annottext">AltJSON -&gt; Maybe AltJSON
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">AltJSON
+</span><span class="hs-identifier hs-var">AltJSON</span></span><span class="hs-special">)</span><span>
+</span><span id="line-151"></span><span>              </span><span class="annot"><span class="annottext">ServiceConfig
+</span><a href="Network.Google.AppsCalendar.Types.html#appsCalendarService"><span class="hs-identifier hs-var">appsCalendarService</span></a></span><span>
+</span><span id="line-152"></span><span>          </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679329075"><span class="annot"><span class="annottext">go :: Fn EventsGetResource
+</span><a href="#local-6989586621679329075"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span>
+</span><span id="line-153"></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Proxy EventsGetResource -&gt; Request -&gt; Fn EventsGetResource
+forall fn. GoogleClient fn =&gt; Proxy fn -&gt; Request -&gt; Fn fn
+</span><span class="hs-identifier hs-var">buildClient</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Proxy EventsGetResource
+forall k (t :: k). Proxy t
+</span><span class="hs-identifier hs-var">Proxy</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Proxy</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Get.html#EventsGetResource"><span class="hs-identifier hs-type">EventsGetResource</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-154"></span><span>                      </span><span class="annot"><span class="annottext">Request
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-155"></span></pre></body></html>

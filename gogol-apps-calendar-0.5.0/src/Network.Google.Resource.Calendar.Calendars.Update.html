@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE DataKinds          #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE DeriveDataTypeable #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# LANGUAGE DeriveGeneric      #-}</span><span>
+</span><span id="line-4"></span><span class="hs-pragma">{-# LANGUAGE FlexibleInstances  #-}</span><span>
+</span><span id="line-5"></span><span class="hs-pragma">{-# LANGUAGE NoImplicitPrelude  #-}</span><span>
+</span><span id="line-6"></span><span class="hs-pragma">{-# LANGUAGE OverloadedStrings  #-}</span><span>
+</span><span id="line-7"></span><span class="hs-pragma">{-# LANGUAGE RecordWildCards    #-}</span><span>
+</span><span id="line-8"></span><span class="hs-pragma">{-# LANGUAGE TypeFamilies       #-}</span><span>
+</span><span id="line-9"></span><span class="hs-pragma">{-# LANGUAGE TypeOperators      #-}</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-duplicate-exports #-}</span><span>
+</span><span id="line-12"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-binds      #-}</span><span>
+</span><span id="line-13"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-imports    #-}</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-16"></span><span class="hs-comment">-- Module      : Network.Google.Resource.Calendar.Calendars.Update</span><span>
+</span><span id="line-17"></span><span class="hs-comment">-- Copyright   : (c) 2015-2016 Brendan Hay</span><span>
+</span><span id="line-18"></span><span class="hs-comment">-- License     : Mozilla Public License, v. 2.0.</span><span>
+</span><span id="line-19"></span><span class="hs-comment">-- Maintainer  : Brendan Hay &lt;brendan.g.hay@gmail.com&gt;</span><span>
+</span><span id="line-20"></span><span class="hs-comment">-- Stability   : auto-generated</span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><span id="line-22"></span><span class="hs-comment">--</span><span>
+</span><span id="line-23"></span><span class="hs-comment">-- Updates metadata for a calendar.</span><span>
+</span><span id="line-24"></span><span class="hs-comment">--</span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- /See:/ &lt;https://developers.google.com/google-apps/calendar/firstapp Calendar API Reference&gt; for @calendar.calendars.update@.</span><span>
+</span><span id="line-26"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Network.Google.Resource.Calendar.Calendars.Update</span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">(</span><span>
+</span><span id="line-28"></span><span>    </span><span class="annot"><span class="hs-comment">-- * REST Resource</span></span><span>
+</span><span id="line-29"></span><span>      </span><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#CalendarsUpdateResource"><span class="hs-identifier">CalendarsUpdateResource</span></a></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Creating a Request</span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#calendarsUpdate"><span class="hs-identifier">calendarsUpdate</span></a></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#CalendarsUpdate"><span class="hs-identifier">CalendarsUpdate</span></a></span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Request Lenses</span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#cuCalendarId"><span class="hs-identifier">cuCalendarId</span></a></span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#cuPayload"><span class="hs-identifier">cuPayload</span></a></span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.html"><span class="hs-identifier">Network.Google.AppsCalendar.Types</span></a></span><span>
+</span><span id="line-41"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Network.Google.Prelude</span></span><span>
+</span><span id="line-42"></span><span>
+</span><span id="line-43"></span><span class="hs-comment">-- | A resource alias for @calendar.calendars.update@ method which the</span><span>
+</span><span id="line-44"></span><span class="hs-comment">-- 'CalendarsUpdate' request conforms to.</span><span>
+</span><span id="line-45"></span><span class="hs-keyword">type</span><span> </span><span id="CalendarsUpdateResource"><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#CalendarsUpdateResource"><span class="hs-identifier hs-var">CalendarsUpdateResource</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-46"></span><span>     </span><span class="annot"><span class="hs-string">&quot;calendar&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-47"></span><span>       </span><span class="annot"><span class="hs-string">&quot;v3&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-48"></span><span>         </span><span class="annot"><span class="hs-string">&quot;calendars&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-49"></span><span>           </span><span class="annot"><span class="hs-identifier hs-type">Capture</span></span><span> </span><span class="annot"><span class="hs-string">&quot;calendarId&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-50"></span><span>             </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;alt&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">AltJSON</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-51"></span><span>               </span><span class="annot"><span class="hs-identifier hs-type">ReqBody</span></span><span> </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">JSON</span></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Calendar"><span class="hs-identifier hs-type">Calendar</span></a></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Put</span></span><span> </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">JSON</span></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Calendar"><span class="hs-identifier hs-type">Calendar</span></a></span><span>
+</span><span id="line-52"></span><span>
+</span><span id="line-53"></span><span class="hs-comment">-- | Updates metadata for a calendar.</span><span>
+</span><span id="line-54"></span><span class="hs-comment">--</span><span>
+</span><span id="line-55"></span><span class="hs-comment">-- /See:/ 'calendarsUpdate' smart constructor.</span><span>
+</span><span id="line-56"></span><span id="local-6989586621679328497"><span id="local-6989586621679328498"></span></span><span class="hs-keyword">data</span><span> </span><span id="CalendarsUpdate"><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#CalendarsUpdate"><span class="hs-identifier hs-var">CalendarsUpdate</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-57"></span><span>  </span><span id="CalendarsUpdate%27"><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#CalendarsUpdate%27"><span class="hs-identifier hs-var">CalendarsUpdate'</span></a></span></span><span>
+</span><span id="line-58"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="_cuCalendarId"><span class="annot"><span class="annottext">CalendarsUpdate -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Calendars.Update.html#_cuCalendarId"><span class="hs-identifier hs-var hs-var">_cuCalendarId</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-59"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_cuPayload"><span class="annot"><span class="annottext">CalendarsUpdate -&gt; Calendar
+</span><a href="Network.Google.Resource.Calendar.Calendars.Update.html#_cuPayload"><span class="hs-identifier hs-var hs-var">_cuPayload</span></a></span></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Calendar"><span class="hs-identifier hs-type">Calendar</span></a></span><span>
+</span><span id="line-60"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-61"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679328490"><span id="local-6989586621679328492"><span class="annot"><span class="annottext">CalendarsUpdate -&gt; CalendarsUpdate -&gt; Bool
+(CalendarsUpdate -&gt; CalendarsUpdate -&gt; Bool)
+-&gt; (CalendarsUpdate -&gt; CalendarsUpdate -&gt; Bool)
+-&gt; Eq CalendarsUpdate
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: CalendarsUpdate -&gt; CalendarsUpdate -&gt; Bool
+$c/= :: CalendarsUpdate -&gt; CalendarsUpdate -&gt; Bool
+== :: CalendarsUpdate -&gt; CalendarsUpdate -&gt; Bool
+$c== :: CalendarsUpdate -&gt; CalendarsUpdate -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679328483"><span id="local-6989586621679328485"><span id="local-6989586621679328487"><span class="annot"><span class="annottext">Int -&gt; CalendarsUpdate -&gt; ShowS
+[CalendarsUpdate] -&gt; ShowS
+CalendarsUpdate -&gt; String
+(Int -&gt; CalendarsUpdate -&gt; ShowS)
+-&gt; (CalendarsUpdate -&gt; String)
+-&gt; ([CalendarsUpdate] -&gt; ShowS)
+-&gt; Show CalendarsUpdate
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [CalendarsUpdate] -&gt; ShowS
+$cshowList :: [CalendarsUpdate] -&gt; ShowS
+show :: CalendarsUpdate -&gt; String
+$cshow :: CalendarsUpdate -&gt; String
+showsPrec :: Int -&gt; CalendarsUpdate -&gt; ShowS
+$cshowsPrec :: Int -&gt; CalendarsUpdate -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="%24cCalendarsUpdate%27"><span id="%24tCalendarsUpdate"><span id="local-6989586621679328453"><span id="local-6989586621679328455"><span id="local-6989586621679328457"><span id="local-6989586621679328459"><span id="local-6989586621679328461"><span id="local-6989586621679328463"><span id="local-6989586621679328465"><span id="local-6989586621679328467"><span id="local-6989586621679328469"><span id="local-6989586621679328471"><span id="local-6989586621679328473"><span id="local-6989586621679328475"><span id="local-6989586621679328477"><span id="local-6989586621679328479"><span class="annot"><span class="annottext">Typeable CalendarsUpdate
+DataType
+Constr
+Typeable CalendarsUpdate =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; CalendarsUpdate -&gt; c CalendarsUpdate)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c CalendarsUpdate)
+-&gt; (CalendarsUpdate -&gt; Constr)
+-&gt; (CalendarsUpdate -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c CalendarsUpdate))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e))
+    -&gt; Maybe (c CalendarsUpdate))
+-&gt; ((forall b. Data b =&gt; b -&gt; b)
+    -&gt; CalendarsUpdate -&gt; CalendarsUpdate)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarsUpdate -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarsUpdate -&gt; r)
+-&gt; (forall u.
+    (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarsUpdate -&gt; [u])
+-&gt; (forall u.
+    Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarsUpdate -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d)
+    -&gt; CalendarsUpdate -&gt; m CalendarsUpdate)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d)
+    -&gt; CalendarsUpdate -&gt; m CalendarsUpdate)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d)
+    -&gt; CalendarsUpdate -&gt; m CalendarsUpdate)
+-&gt; Data CalendarsUpdate
+CalendarsUpdate -&gt; DataType
+CalendarsUpdate -&gt; Constr
+(forall b. Data b =&gt; b -&gt; b) -&gt; CalendarsUpdate -&gt; CalendarsUpdate
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; CalendarsUpdate -&gt; c CalendarsUpdate
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c CalendarsUpdate
+forall a.
+Typeable a =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; a -&gt; c a)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c a)
+-&gt; (a -&gt; Constr)
+-&gt; (a -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c a))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c a))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; a -&gt; a)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; Data a
+forall u.
+Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarsUpdate -&gt; u
+forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarsUpdate -&gt; [u]
+forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarsUpdate -&gt; r
+forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarsUpdate -&gt; r
+forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarsUpdate -&gt; m CalendarsUpdate
+forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarsUpdate -&gt; m CalendarsUpdate
+forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c CalendarsUpdate
+forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; CalendarsUpdate -&gt; c CalendarsUpdate
+forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c CalendarsUpdate)
+forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e))
+-&gt; Maybe (c CalendarsUpdate)
+$cCalendarsUpdate' :: Constr
+$tCalendarsUpdate :: DataType
+gmapMo :: (forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarsUpdate -&gt; m CalendarsUpdate
+$cgmapMo :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarsUpdate -&gt; m CalendarsUpdate
+gmapMp :: (forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarsUpdate -&gt; m CalendarsUpdate
+$cgmapMp :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarsUpdate -&gt; m CalendarsUpdate
+gmapM :: (forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarsUpdate -&gt; m CalendarsUpdate
+$cgmapM :: forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarsUpdate -&gt; m CalendarsUpdate
+gmapQi :: Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarsUpdate -&gt; u
+$cgmapQi :: forall u.
+Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarsUpdate -&gt; u
+gmapQ :: (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarsUpdate -&gt; [u]
+$cgmapQ :: forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarsUpdate -&gt; [u]
+gmapQr :: (r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarsUpdate -&gt; r
+$cgmapQr :: forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarsUpdate -&gt; r
+gmapQl :: (r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarsUpdate -&gt; r
+$cgmapQl :: forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarsUpdate -&gt; r
+gmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; CalendarsUpdate -&gt; CalendarsUpdate
+$cgmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; CalendarsUpdate -&gt; CalendarsUpdate
+dataCast2 :: (forall d e. (Data d, Data e) =&gt; c (t d e))
+-&gt; Maybe (c CalendarsUpdate)
+$cdataCast2 :: forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e))
+-&gt; Maybe (c CalendarsUpdate)
+dataCast1 :: (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c CalendarsUpdate)
+$cdataCast1 :: forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c CalendarsUpdate)
+dataTypeOf :: CalendarsUpdate -&gt; DataType
+$cdataTypeOf :: CalendarsUpdate -&gt; DataType
+toConstr :: CalendarsUpdate -&gt; Constr
+$ctoConstr :: CalendarsUpdate -&gt; Constr
+gunfold :: (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c CalendarsUpdate
+$cgunfold :: forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c CalendarsUpdate
+gfoldl :: (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; CalendarsUpdate -&gt; c CalendarsUpdate
+$cgfoldl :: forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; CalendarsUpdate -&gt; c CalendarsUpdate
+$cp1Data :: Typeable CalendarsUpdate
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Data</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Typeable</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(forall x. CalendarsUpdate -&gt; Rep CalendarsUpdate x)
+-&gt; (forall x. Rep CalendarsUpdate x -&gt; CalendarsUpdate)
+-&gt; Generic CalendarsUpdate
+forall x. Rep CalendarsUpdate x -&gt; CalendarsUpdate
+forall x. CalendarsUpdate -&gt; Rep CalendarsUpdate x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep CalendarsUpdate x -&gt; CalendarsUpdate
+$cfrom :: forall x. CalendarsUpdate -&gt; Rep CalendarsUpdate x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">)</span><span>
+</span><span id="line-62"></span><span>
+</span><span id="line-63"></span><span>
+</span><span id="line-64"></span><span class="hs-comment">-- | Creates a value of 'CalendarsUpdate' with the minimum fields required to make a request.</span><span>
+</span><span id="line-65"></span><span class="hs-comment">--</span><span>
+</span><span id="line-66"></span><span class="hs-comment">-- Use one of the following lenses to modify other fields as desired:</span><span>
+</span><span id="line-67"></span><span class="hs-comment">--</span><span>
+</span><span id="line-68"></span><span class="hs-comment">-- * 'cuCalendarId'</span><span>
+</span><span id="line-69"></span><span class="hs-comment">--</span><span>
+</span><span id="line-70"></span><span class="hs-comment">-- * 'cuPayload'</span><span>
+</span><span id="line-71"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#calendarsUpdate"><span class="hs-identifier hs-type">calendarsUpdate</span></a></span><span>
+</span><span id="line-72"></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ 'cuCalendarId'</span><span>
+</span><span id="line-73"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Calendar"><span class="hs-identifier hs-type">Calendar</span></a></span><span> </span><span class="hs-comment">-- ^ 'cuPayload'</span><span>
+</span><span id="line-74"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#CalendarsUpdate"><span class="hs-identifier hs-type">CalendarsUpdate</span></a></span><span>
+</span><span id="line-75"></span><span id="calendarsUpdate"><span class="annot"><span class="annottext">calendarsUpdate :: Text -&gt; Calendar -&gt; CalendarsUpdate
+</span><a href="Network.Google.Resource.Calendar.Calendars.Update.html#calendarsUpdate"><span class="hs-identifier hs-var hs-var">calendarsUpdate</span></a></span></span><span> </span><span id="local-6989586621679328446"><span class="annot"><span class="annottext">pCuCalendarId_ :: Text
+</span><a href="#local-6989586621679328446"><span class="hs-identifier hs-var">pCuCalendarId_</span></a></span></span><span> </span><span id="local-6989586621679328445"><span class="annot"><span class="annottext">pCuPayload_ :: Calendar
+</span><a href="#local-6989586621679328445"><span class="hs-identifier hs-var">pCuPayload_</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-76"></span><span>  </span><span class="annot"><span class="annottext">$WCalendarsUpdate' :: Text -&gt; Calendar -&gt; CalendarsUpdate
+</span><a href="Network.Google.Resource.Calendar.Calendars.Update.html#%24WCalendarsUpdate%27"><span class="hs-identifier hs-type hs-type">CalendarsUpdate'</span></a></span><span> </span><span class="hs-special">{</span><span class="annot"><span class="annottext">_cuCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.Calendars.Update.html#_cuCalendarId"><span class="hs-identifier hs-var">_cuCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679328446"><span class="hs-identifier hs-var">pCuCalendarId_</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_cuPayload :: Calendar
+</span><a href="Network.Google.Resource.Calendar.Calendars.Update.html#_cuPayload"><span class="hs-identifier hs-var">_cuPayload</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Calendar
+</span><a href="#local-6989586621679328445"><span class="hs-identifier hs-var">pCuPayload_</span></a></span><span class="hs-special">}</span><span>
+</span><span id="line-77"></span><span>
+</span><span id="line-78"></span><span>
+</span><span id="line-79"></span><span class="hs-comment">-- | Calendar identifier. To retrieve calendar IDs call the calendarList.list</span><span>
+</span><span id="line-80"></span><span class="hs-comment">-- method. If you want to access the primary calendar of the currently</span><span>
+</span><span id="line-81"></span><span class="hs-comment">-- logged in user, use the \&quot;primary\&quot; keyword.</span><span>
+</span><span id="line-82"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#cuCalendarId"><span class="hs-identifier hs-type">cuCalendarId</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#CalendarsUpdate"><span class="hs-identifier hs-type">CalendarsUpdate</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-83"></span><span id="cuCalendarId"><span class="annot"><span class="annottext">cuCalendarId :: (Text -&gt; f Text) -&gt; CalendarsUpdate -&gt; f CalendarsUpdate
+</span><a href="Network.Google.Resource.Calendar.Calendars.Update.html#cuCalendarId"><span class="hs-identifier hs-var hs-var">cuCalendarId</span></a></span></span><span>
+</span><span id="line-84"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(CalendarsUpdate -&gt; Text)
+-&gt; (CalendarsUpdate -&gt; Text -&gt; CalendarsUpdate)
+-&gt; Lens CalendarsUpdate CalendarsUpdate Text Text
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">CalendarsUpdate -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Calendars.Update.html#_cuCalendarId"><span class="hs-identifier hs-var hs-var">_cuCalendarId</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679328441"><span class="annot"><span class="annottext">s :: CalendarsUpdate
+</span><a href="#local-6989586621679328441"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679328440"><span class="annot"><span class="annottext">a :: Text
+</span><a href="#local-6989586621679328440"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">CalendarsUpdate
+</span><a href="#local-6989586621679328441"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_cuCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.Calendars.Update.html#_cuCalendarId"><span class="hs-identifier hs-var">_cuCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679328440"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-85"></span><span>
+</span><span id="line-86"></span><span class="hs-comment">-- | Multipart request metadata.</span><span>
+</span><span id="line-87"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#cuPayload"><span class="hs-identifier hs-type">cuPayload</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#CalendarsUpdate"><span class="hs-identifier hs-type">CalendarsUpdate</span></a></span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Calendar"><span class="hs-identifier hs-type">Calendar</span></a></span><span>
+</span><span id="line-88"></span><span id="cuPayload"><span class="annot"><span class="annottext">cuPayload :: (Calendar -&gt; f Calendar) -&gt; CalendarsUpdate -&gt; f CalendarsUpdate
+</span><a href="Network.Google.Resource.Calendar.Calendars.Update.html#cuPayload"><span class="hs-identifier hs-var hs-var">cuPayload</span></a></span></span><span>
+</span><span id="line-89"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(CalendarsUpdate -&gt; Calendar)
+-&gt; (CalendarsUpdate -&gt; Calendar -&gt; CalendarsUpdate)
+-&gt; Lens CalendarsUpdate CalendarsUpdate Calendar Calendar
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">CalendarsUpdate -&gt; Calendar
+</span><a href="Network.Google.Resource.Calendar.Calendars.Update.html#_cuPayload"><span class="hs-identifier hs-var hs-var">_cuPayload</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679328439"><span class="annot"><span class="annottext">s :: CalendarsUpdate
+</span><a href="#local-6989586621679328439"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679328438"><span class="annot"><span class="annottext">a :: Calendar
+</span><a href="#local-6989586621679328438"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">CalendarsUpdate
+</span><a href="#local-6989586621679328439"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_cuPayload :: Calendar
+</span><a href="Network.Google.Resource.Calendar.Calendars.Update.html#_cuPayload"><span class="hs-identifier hs-var">_cuPayload</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Calendar
+</span><a href="#local-6989586621679328438"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-90"></span><span>
+</span><span id="line-91"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">GoogleRequest</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#CalendarsUpdate"><span class="hs-identifier hs-type">CalendarsUpdate</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-92"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Rs"><span class="annot"><span class="hs-identifier hs-var">Rs</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#CalendarsUpdate"><span class="hs-identifier hs-type">CalendarsUpdate</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Calendar"><span class="hs-identifier hs-type">Calendar</span></a></span><span>
+</span><span id="line-93"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Scopes"><span class="annot"><span class="hs-identifier hs-var">Scopes</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#CalendarsUpdate"><span class="hs-identifier hs-type">CalendarsUpdate</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-94"></span><span>             </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar&quot;</span></span><span class="hs-special">]</span><span>
+</span><span id="line-95"></span><span>        </span><span id="local-6989586621679328434"><span class="annot"><span class="annottext">requestClient :: CalendarsUpdate -&gt; GClient (Rs CalendarsUpdate)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">requestClient</span></span></span><span> </span><span id="local-6989586621679328431"><span id="local-6989586621679328432"><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#CalendarsUpdate%27"><span class="hs-identifier hs-type">CalendarsUpdate'</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span><span>
+</span><span id="line-96"></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+-&gt; Maybe AltJSON -&gt; Calendar -&gt; ServiceConfig -&gt; GClient Calendar
+</span><a href="#local-6989586621679328430"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679328432"><span class="hs-identifier hs-var">_cuCalendarId</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">AltJSON -&gt; Maybe AltJSON
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">AltJSON
+</span><span class="hs-identifier hs-var">AltJSON</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Calendar
+</span><a href="#local-6989586621679328431"><span class="hs-identifier hs-var">_cuPayload</span></a></span><span>
+</span><span id="line-97"></span><span>              </span><span class="annot"><span class="annottext">ServiceConfig
+</span><a href="Network.Google.AppsCalendar.Types.html#appsCalendarService"><span class="hs-identifier hs-var">appsCalendarService</span></a></span><span>
+</span><span id="line-98"></span><span>          </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679328430"><span class="annot"><span class="annottext">go :: Fn CalendarsUpdateResource
+</span><a href="#local-6989586621679328430"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span>
+</span><span id="line-99"></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Proxy CalendarsUpdateResource
+-&gt; Request -&gt; Fn CalendarsUpdateResource
+forall fn. GoogleClient fn =&gt; Proxy fn -&gt; Request -&gt; Fn fn
+</span><span class="hs-identifier hs-var">buildClient</span></span><span>
+</span><span id="line-100"></span><span>                      </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Proxy CalendarsUpdateResource
+forall k (t :: k). Proxy t
+</span><span class="hs-identifier hs-var">Proxy</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Proxy</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Calendars.Update.html#CalendarsUpdateResource"><span class="hs-identifier hs-type">CalendarsUpdateResource</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-101"></span><span>                      </span><span class="annot"><span class="annottext">Request
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-102"></span></pre></body></html>

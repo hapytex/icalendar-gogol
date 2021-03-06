@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE OverloadedStrings #-}</span><span>
+</span><span id="line-2"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-3"></span><span class="hs-comment">-- Module       : Data.Text.Encoding.Base32.Hex</span><span>
+</span><span id="line-4"></span><span class="hs-comment">-- Copyright 	: (c) 2019 Emily Pillmore</span><span>
+</span><span id="line-5"></span><span class="hs-comment">-- License	: BSD-style</span><span>
+</span><span id="line-6"></span><span class="hs-comment">--</span><span>
+</span><span id="line-7"></span><span class="hs-comment">-- Maintainer	: Emily Pillmore &lt;emilypi@cohomolo.gy&gt;</span><span>
+</span><span id="line-8"></span><span class="hs-comment">-- Stability	: Experimental</span><span>
+</span><span id="line-9"></span><span class="hs-comment">-- Portability	: portable</span><span>
+</span><span id="line-10"></span><span class="hs-comment">--</span><span>
+</span><span id="line-11"></span><span class="hs-comment">-- This module contains the combinators implementing the</span><span>
+</span><span id="line-12"></span><span class="hs-comment">-- RFC 4648 specification for the Base32-Hex encoding including</span><span>
+</span><span id="line-13"></span><span class="hs-comment">-- unpadded and lenient variants</span><span>
+</span><span id="line-14"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.Text.Encoding.Base32.Hex</span><span>
+</span><span id="line-15"></span><span class="hs-special">(</span><span> </span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#encodeBase32"><span class="hs-identifier">encodeBase32</span></a></span><span>
+</span><span id="line-16"></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#decodeBase32"><span class="hs-identifier">decodeBase32</span></a></span><span>
+</span><span id="line-17"></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#encodeBase32Unpadded"><span class="hs-identifier">encodeBase32Unpadded</span></a></span><span>
+</span><span id="line-18"></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#decodeBase32Unpadded"><span class="hs-identifier">decodeBase32Unpadded</span></a></span><span>
+</span><span id="line-19"></span><span class="hs-comment">-- , decodeBase32Lenient</span><span>
+</span><span id="line-20"></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#isBase32Hex"><span class="hs-identifier">isBase32Hex</span></a></span><span>
+</span><span id="line-21"></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#isValidBase32Hex"><span class="hs-identifier">isValidBase32Hex</span></a></span><span>
+</span><span id="line-22"></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-23"></span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="Data.ByteString.Base32.Hex.html"><span class="hs-identifier">Data.ByteString.Base32.Hex</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">B32U</span></span><span>
+</span><span id="line-26"></span><span>
+</span><span id="line-27"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-28"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text.Encoding</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-29"></span><span>
+</span><span id="line-30"></span><span class="hs-comment">-- | Encode a 'Text' value in Base32hex with padding.</span><span>
+</span><span id="line-31"></span><span class="hs-comment">--</span><span>
+</span><span id="line-32"></span><span class="hs-comment">-- See: &lt;https://tools.ietf.org/html/rfc4648#section-7 RFC-4648 section 7&gt;</span><span>
+</span><span id="line-33"></span><span class="hs-comment">--</span><span>
+</span><span id="line-34"></span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#encodeBase32"><span class="hs-identifier hs-type">encodeBase32</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-35"></span><span id="encodeBase32"><span class="annot"><span class="annottext">encodeBase32 :: Text -&gt; Text
+</span><a href="Data.Text.Encoding.Base32.Hex.html#encodeBase32"><span class="hs-identifier hs-var hs-var">encodeBase32</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Text
+</span><a href="Data.ByteString.Base32.Hex.html#encodeBase32"><span class="hs-identifier hs-var">B32U.encodeBase32</span></a></span><span> </span><span class="annot"><span class="annottext">(ByteString -&gt; Text) -&gt; (Text -&gt; ByteString) -&gt; Text -&gt; Text
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ByteString
+</span><span class="hs-identifier hs-var">T.encodeUtf8</span></span><span>
+</span><span id="line-36"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#encodeBase32"><span class="hs-pragma hs-type">encodeBase32</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-37"></span><span>
+</span><span id="line-38"></span><span class="hs-comment">-- | Decode a padded Base32hex-encoded 'Text' value.</span><span>
+</span><span id="line-39"></span><span class="hs-comment">--</span><span>
+</span><span id="line-40"></span><span class="hs-comment">-- See: &lt;https://tools.ietf.org/html/rfc4648#section-7 RFC-4648 section 7&gt;</span><span>
+</span><span id="line-41"></span><span class="hs-comment">--</span><span>
+</span><span id="line-42"></span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#decodeBase32"><span class="hs-identifier hs-type">decodeBase32</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-43"></span><span id="decodeBase32"><span class="annot"><span class="annottext">decodeBase32 :: Text -&gt; Either Text Text
+</span><a href="Data.Text.Encoding.Base32.Hex.html#decodeBase32"><span class="hs-identifier hs-var hs-var">decodeBase32</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ByteString -&gt; Text) -&gt; Either Text ByteString -&gt; Either Text Text
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Text
+</span><span class="hs-identifier hs-var">T.decodeUtf8</span></span><span> </span><span class="annot"><span class="annottext">(Either Text ByteString -&gt; Either Text Text)
+-&gt; (Text -&gt; Either Text ByteString) -&gt; Text -&gt; Either Text Text
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Either Text ByteString
+</span><a href="Data.ByteString.Base32.Hex.html#decodeBase32"><span class="hs-identifier hs-var">B32U.decodeBase32</span></a></span><span> </span><span class="annot"><span class="annottext">(ByteString -&gt; Either Text ByteString)
+-&gt; (Text -&gt; ByteString) -&gt; Text -&gt; Either Text ByteString
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ByteString
+</span><span class="hs-identifier hs-var">T.encodeUtf8</span></span><span>
+</span><span id="line-44"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#decodeBase32"><span class="hs-pragma hs-type">decodeBase32</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-45"></span><span>
+</span><span id="line-46"></span><span class="hs-comment">-- | Encode a 'Text' value in Base32hex without padding.</span><span>
+</span><span id="line-47"></span><span class="hs-comment">--</span><span>
+</span><span id="line-48"></span><span class="hs-comment">-- See: &lt;https://tools.ietf.org/html/rfc4648#section-7 RFC-4648 section 7&gt;,</span><span>
+</span><span id="line-49"></span><span class="hs-comment">--      &lt;https://tools.ietf.org/html/rfc4648#section-3.2 RFC-4648 section 3.2&gt;</span><span>
+</span><span id="line-50"></span><span class="hs-comment">--</span><span>
+</span><span id="line-51"></span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#encodeBase32Unpadded"><span class="hs-identifier hs-type">encodeBase32Unpadded</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-52"></span><span id="encodeBase32Unpadded"><span class="annot"><span class="annottext">encodeBase32Unpadded :: Text -&gt; Text
+</span><a href="Data.Text.Encoding.Base32.Hex.html#encodeBase32Unpadded"><span class="hs-identifier hs-var hs-var">encodeBase32Unpadded</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Text
+</span><a href="Data.ByteString.Base32.Hex.html#encodeBase32Unpadded"><span class="hs-identifier hs-var">B32U.encodeBase32Unpadded</span></a></span><span> </span><span class="annot"><span class="annottext">(ByteString -&gt; Text) -&gt; (Text -&gt; ByteString) -&gt; Text -&gt; Text
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ByteString
+</span><span class="hs-identifier hs-var">T.encodeUtf8</span></span><span>
+</span><span id="line-53"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#encodeBase32Unpadded"><span class="hs-pragma hs-type">encodeBase32Unpadded</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-54"></span><span>
+</span><span id="line-55"></span><span class="hs-comment">-- | Decode an arbitrarily padded Base32hex encoded 'Text' value</span><span>
+</span><span id="line-56"></span><span class="hs-comment">--</span><span>
+</span><span id="line-57"></span><span class="hs-comment">-- See: &lt;https://tools.ietf.org/html/rfc4648#section-7 RFC-4648 section 7&gt;,</span><span>
+</span><span id="line-58"></span><span class="hs-comment">--      &lt;https://tools.ietf.org/html/rfc4648#section-3.2 RFC-4648 section 3.2&gt;</span><span>
+</span><span id="line-59"></span><span class="hs-comment">--</span><span>
+</span><span id="line-60"></span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#decodeBase32Unpadded"><span class="hs-identifier hs-type">decodeBase32Unpadded</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-61"></span><span id="decodeBase32Unpadded"><span class="annot"><span class="annottext">decodeBase32Unpadded :: Text -&gt; Either Text Text
+</span><a href="Data.Text.Encoding.Base32.Hex.html#decodeBase32Unpadded"><span class="hs-identifier hs-var hs-var">decodeBase32Unpadded</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ByteString -&gt; Text) -&gt; Either Text ByteString -&gt; Either Text Text
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Text
+</span><span class="hs-identifier hs-var">T.decodeUtf8</span></span><span>
+</span><span id="line-62"></span><span>    </span><span class="annot"><span class="annottext">(Either Text ByteString -&gt; Either Text Text)
+-&gt; (Text -&gt; Either Text ByteString) -&gt; Text -&gt; Either Text Text
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Either Text ByteString
+</span><a href="Data.ByteString.Base32.Hex.html#decodeBase32Unpadded"><span class="hs-identifier hs-var">B32U.decodeBase32Unpadded</span></a></span><span>
+</span><span id="line-63"></span><span>    </span><span class="annot"><span class="annottext">(ByteString -&gt; Either Text ByteString)
+-&gt; (Text -&gt; ByteString) -&gt; Text -&gt; Either Text ByteString
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ByteString
+</span><span class="hs-identifier hs-var">T.encodeUtf8</span></span><span>
+</span><span id="line-64"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#decodeBase32Unpadded"><span class="hs-pragma hs-type">decodeBase32Unpadded</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-65"></span><span>
+</span><span id="line-66"></span><span class="hs-comment">-- -- -- | Leniently decode an unpadded Base32hex-encoded 'Text'. This function</span><span>
+</span><span id="line-67"></span><span class="hs-comment">-- -- -- will not generate parse errors. If input data contains padding chars,</span><span>
+</span><span id="line-68"></span><span class="hs-comment">-- -- -- then the input will be parsed up until the first pad character.</span><span>
+</span><span id="line-69"></span><span class="hs-comment">-- -- --</span><span>
+</span><span id="line-70"></span><span class="hs-comment">-- -- -- __Note:__ This is not RFC 4648-compliant.</span><span>
+</span><span id="line-71"></span><span class="hs-comment">-- -- --</span><span>
+</span><span id="line-72"></span><span class="hs-comment">-- -- decodeBase32Lenient :: Text -&gt; Text</span><span>
+</span><span id="line-73"></span><span class="hs-comment">-- -- decodeBase32Lenient = T.decodeUtf8</span><span>
+</span><span id="line-74"></span><span class="hs-comment">-- --     . B32U.decodeBase32Lenient</span><span>
+</span><span id="line-75"></span><span class="hs-comment">-- --     . T.encodeUtf8</span><span>
+</span><span id="line-76"></span><span class="hs-comment">-- -- {-# INLINE decodeBase32Lenient #-}</span><span>
+</span><span id="line-77"></span><span>
+</span><span id="line-78"></span><span class="hs-comment">-- | Tell whether a 'Text' value is Base32hex-encoded.</span><span>
+</span><span id="line-79"></span><span class="hs-comment">--</span><span>
+</span><span id="line-80"></span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#isBase32Hex"><span class="hs-identifier hs-type">isBase32Hex</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-81"></span><span id="isBase32Hex"><span class="annot"><span class="annottext">isBase32Hex :: Text -&gt; Bool
+</span><a href="Data.Text.Encoding.Base32.Hex.html#isBase32Hex"><span class="hs-identifier hs-var hs-var">isBase32Hex</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Bool
+</span><a href="Data.ByteString.Base32.Hex.html#isBase32Hex"><span class="hs-identifier hs-var">B32U.isBase32Hex</span></a></span><span> </span><span class="annot"><span class="annottext">(ByteString -&gt; Bool) -&gt; (Text -&gt; ByteString) -&gt; Text -&gt; Bool
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ByteString
+</span><span class="hs-identifier hs-var">T.encodeUtf8</span></span><span>
+</span><span id="line-82"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#isBase32Hex"><span class="hs-pragma hs-type">isBase32Hex</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-83"></span><span>
+</span><span id="line-84"></span><span class="hs-comment">-- | Tell whether a 'Text' value is a valid Base32hex format.</span><span>
+</span><span id="line-85"></span><span class="hs-comment">--</span><span>
+</span><span id="line-86"></span><span class="hs-comment">-- This will not tell you whether or not this is a correct Base32hex representation,</span><span>
+</span><span id="line-87"></span><span class="hs-comment">-- only that it conforms to the correct shape. To check whether it is a true</span><span>
+</span><span id="line-88"></span><span class="hs-comment">-- Base32 encoded 'Text' value, use 'isBase32Hex'.</span><span>
+</span><span id="line-89"></span><span class="hs-comment">--</span><span>
+</span><span id="line-90"></span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#isValidBase32Hex"><span class="hs-identifier hs-type">isValidBase32Hex</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-91"></span><span id="isValidBase32Hex"><span class="annot"><span class="annottext">isValidBase32Hex :: Text -&gt; Bool
+</span><a href="Data.Text.Encoding.Base32.Hex.html#isValidBase32Hex"><span class="hs-identifier hs-var hs-var">isValidBase32Hex</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Bool
+</span><a href="Data.ByteString.Base32.Hex.html#isValidBase32Hex"><span class="hs-identifier hs-var">B32U.isValidBase32Hex</span></a></span><span> </span><span class="annot"><span class="annottext">(ByteString -&gt; Bool) -&gt; (Text -&gt; ByteString) -&gt; Text -&gt; Bool
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ByteString
+</span><span class="hs-identifier hs-var">T.encodeUtf8</span></span><span>
+</span><span id="line-92"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.Text.Encoding.Base32.Hex.html#isValidBase32Hex"><span class="hs-pragma hs-type">isValidBase32Hex</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-93"></span></pre></body></html>

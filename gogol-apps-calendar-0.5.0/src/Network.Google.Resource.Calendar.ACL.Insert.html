@@ -1,0 +1,376 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE DataKinds          #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE DeriveDataTypeable #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# LANGUAGE DeriveGeneric      #-}</span><span>
+</span><span id="line-4"></span><span class="hs-pragma">{-# LANGUAGE FlexibleInstances  #-}</span><span>
+</span><span id="line-5"></span><span class="hs-pragma">{-# LANGUAGE NoImplicitPrelude  #-}</span><span>
+</span><span id="line-6"></span><span class="hs-pragma">{-# LANGUAGE OverloadedStrings  #-}</span><span>
+</span><span id="line-7"></span><span class="hs-pragma">{-# LANGUAGE RecordWildCards    #-}</span><span>
+</span><span id="line-8"></span><span class="hs-pragma">{-# LANGUAGE TypeFamilies       #-}</span><span>
+</span><span id="line-9"></span><span class="hs-pragma">{-# LANGUAGE TypeOperators      #-}</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-duplicate-exports #-}</span><span>
+</span><span id="line-12"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-binds      #-}</span><span>
+</span><span id="line-13"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-imports    #-}</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-16"></span><span class="hs-comment">-- Module      : Network.Google.Resource.Calendar.ACL.Insert</span><span>
+</span><span id="line-17"></span><span class="hs-comment">-- Copyright   : (c) 2015-2016 Brendan Hay</span><span>
+</span><span id="line-18"></span><span class="hs-comment">-- License     : Mozilla Public License, v. 2.0.</span><span>
+</span><span id="line-19"></span><span class="hs-comment">-- Maintainer  : Brendan Hay &lt;brendan.g.hay@gmail.com&gt;</span><span>
+</span><span id="line-20"></span><span class="hs-comment">-- Stability   : auto-generated</span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><span id="line-22"></span><span class="hs-comment">--</span><span>
+</span><span id="line-23"></span><span class="hs-comment">-- Creates an access control rule.</span><span>
+</span><span id="line-24"></span><span class="hs-comment">--</span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- /See:/ &lt;https://developers.google.com/google-apps/calendar/firstapp Calendar API Reference&gt; for @calendar.acl.insert@.</span><span>
+</span><span id="line-26"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Network.Google.Resource.Calendar.ACL.Insert</span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">(</span><span>
+</span><span id="line-28"></span><span>    </span><span class="annot"><span class="hs-comment">-- * REST Resource</span></span><span>
+</span><span id="line-29"></span><span>      </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#ACLInsertResource"><span class="hs-identifier">ACLInsertResource</span></a></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Creating a Request</span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#aclInsert"><span class="hs-identifier">aclInsert</span></a></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#ACLInsert"><span class="hs-identifier">ACLInsert</span></a></span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Request Lenses</span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#aiCalendarId"><span class="hs-identifier">aiCalendarId</span></a></span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#aiPayload"><span class="hs-identifier">aiPayload</span></a></span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#aiSendNotifications"><span class="hs-identifier">aiSendNotifications</span></a></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-40"></span><span>
+</span><span id="line-41"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.html"><span class="hs-identifier">Network.Google.AppsCalendar.Types</span></a></span><span>
+</span><span id="line-42"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Network.Google.Prelude</span></span><span>
+</span><span id="line-43"></span><span>
+</span><span id="line-44"></span><span class="hs-comment">-- | A resource alias for @calendar.acl.insert@ method which the</span><span>
+</span><span id="line-45"></span><span class="hs-comment">-- 'ACLInsert' request conforms to.</span><span>
+</span><span id="line-46"></span><span class="hs-keyword">type</span><span> </span><span id="ACLInsertResource"><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#ACLInsertResource"><span class="hs-identifier hs-var">ACLInsertResource</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-47"></span><span>     </span><span class="annot"><span class="hs-string">&quot;calendar&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-48"></span><span>       </span><span class="annot"><span class="hs-string">&quot;v3&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-49"></span><span>         </span><span class="annot"><span class="hs-string">&quot;calendars&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-50"></span><span>           </span><span class="annot"><span class="hs-identifier hs-type">Capture</span></span><span> </span><span class="annot"><span class="hs-string">&quot;calendarId&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-51"></span><span>             </span><span class="annot"><span class="hs-string">&quot;acl&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-52"></span><span>               </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;sendNotifications&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-53"></span><span>                 </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;alt&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">AltJSON</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-54"></span><span>                   </span><span class="annot"><span class="hs-identifier hs-type">ReqBody</span></span><span> </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">JSON</span></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#ACLRule"><span class="hs-identifier hs-type">ACLRule</span></a></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Post</span></span><span> </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">JSON</span></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#ACLRule"><span class="hs-identifier hs-type">ACLRule</span></a></span><span>
+</span><span id="line-55"></span><span>
+</span><span id="line-56"></span><span class="hs-comment">-- | Creates an access control rule.</span><span>
+</span><span id="line-57"></span><span class="hs-comment">--</span><span>
+</span><span id="line-58"></span><span class="hs-comment">-- /See:/ 'aclInsert' smart constructor.</span><span>
+</span><span id="line-59"></span><span id="local-6989586621679325511"><span id="local-6989586621679325512"></span></span><span class="hs-keyword">data</span><span> </span><span id="ACLInsert"><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#ACLInsert"><span class="hs-identifier hs-var">ACLInsert</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-60"></span><span>  </span><span id="ACLInsert%27"><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#ACLInsert%27"><span class="hs-identifier hs-var">ACLInsert'</span></a></span></span><span>
+</span><span id="line-61"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="_aiCalendarId"><span class="annot"><span class="annottext">ACLInsert -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Insert.html#_aiCalendarId"><span class="hs-identifier hs-var hs-var">_aiCalendarId</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-62"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_aiPayload"><span class="annot"><span class="annottext">ACLInsert -&gt; ACLRule
+</span><a href="Network.Google.Resource.Calendar.ACL.Insert.html#_aiPayload"><span class="hs-identifier hs-var hs-var">_aiPayload</span></a></span></span><span>           </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#ACLRule"><span class="hs-identifier hs-type">ACLRule</span></a></span><span>
+</span><span id="line-63"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_aiSendNotifications"><span class="annot"><span class="annottext">ACLInsert -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.ACL.Insert.html#_aiSendNotifications"><span class="hs-identifier hs-var hs-var">_aiSendNotifications</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-64"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-65"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679325503"><span id="local-6989586621679325505"><span class="annot"><span class="annottext">ACLInsert -&gt; ACLInsert -&gt; Bool
+(ACLInsert -&gt; ACLInsert -&gt; Bool)
+-&gt; (ACLInsert -&gt; ACLInsert -&gt; Bool) -&gt; Eq ACLInsert
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: ACLInsert -&gt; ACLInsert -&gt; Bool
+$c/= :: ACLInsert -&gt; ACLInsert -&gt; Bool
+== :: ACLInsert -&gt; ACLInsert -&gt; Bool
+$c== :: ACLInsert -&gt; ACLInsert -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679325496"><span id="local-6989586621679325498"><span id="local-6989586621679325500"><span class="annot"><span class="annottext">Int -&gt; ACLInsert -&gt; ShowS
+[ACLInsert] -&gt; ShowS
+ACLInsert -&gt; String
+(Int -&gt; ACLInsert -&gt; ShowS)
+-&gt; (ACLInsert -&gt; String)
+-&gt; ([ACLInsert] -&gt; ShowS)
+-&gt; Show ACLInsert
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [ACLInsert] -&gt; ShowS
+$cshowList :: [ACLInsert] -&gt; ShowS
+show :: ACLInsert -&gt; String
+$cshow :: ACLInsert -&gt; String
+showsPrec :: Int -&gt; ACLInsert -&gt; ShowS
+$cshowsPrec :: Int -&gt; ACLInsert -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="%24cACLInsert%27"><span id="%24tACLInsert"><span id="local-6989586621679325466"><span id="local-6989586621679325468"><span id="local-6989586621679325470"><span id="local-6989586621679325472"><span id="local-6989586621679325474"><span id="local-6989586621679325476"><span id="local-6989586621679325478"><span id="local-6989586621679325480"><span id="local-6989586621679325482"><span id="local-6989586621679325484"><span id="local-6989586621679325486"><span id="local-6989586621679325488"><span id="local-6989586621679325490"><span id="local-6989586621679325492"><span class="annot"><span class="annottext">Typeable ACLInsert
+DataType
+Constr
+Typeable ACLInsert =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; ACLInsert -&gt; c ACLInsert)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLInsert)
+-&gt; (ACLInsert -&gt; Constr)
+-&gt; (ACLInsert -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c ACLInsert))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c ACLInsert))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; ACLInsert -&gt; ACLInsert)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLInsert -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLInsert -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; ACLInsert -&gt; [u])
+-&gt; (forall u.
+    Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; ACLInsert -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLInsert -&gt; m ACLInsert)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLInsert -&gt; m ACLInsert)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLInsert -&gt; m ACLInsert)
+-&gt; Data ACLInsert
+ACLInsert -&gt; DataType
+ACLInsert -&gt; Constr
+(forall b. Data b =&gt; b -&gt; b) -&gt; ACLInsert -&gt; ACLInsert
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; ACLInsert -&gt; c ACLInsert
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLInsert
+forall a.
+Typeable a =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; a -&gt; c a)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c a)
+-&gt; (a -&gt; Constr)
+-&gt; (a -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c a))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c a))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; a -&gt; a)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; Data a
+forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; ACLInsert -&gt; u
+forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; ACLInsert -&gt; [u]
+forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLInsert -&gt; r
+forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLInsert -&gt; r
+forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLInsert -&gt; m ACLInsert
+forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLInsert -&gt; m ACLInsert
+forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLInsert
+forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; ACLInsert -&gt; c ACLInsert
+forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c ACLInsert)
+forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c ACLInsert)
+$cACLInsert' :: Constr
+$tACLInsert :: DataType
+gmapMo :: (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLInsert -&gt; m ACLInsert
+$cgmapMo :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLInsert -&gt; m ACLInsert
+gmapMp :: (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLInsert -&gt; m ACLInsert
+$cgmapMp :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLInsert -&gt; m ACLInsert
+gmapM :: (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLInsert -&gt; m ACLInsert
+$cgmapM :: forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLInsert -&gt; m ACLInsert
+gmapQi :: Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; ACLInsert -&gt; u
+$cgmapQi :: forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; ACLInsert -&gt; u
+gmapQ :: (forall d. Data d =&gt; d -&gt; u) -&gt; ACLInsert -&gt; [u]
+$cgmapQ :: forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; ACLInsert -&gt; [u]
+gmapQr :: (r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLInsert -&gt; r
+$cgmapQr :: forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLInsert -&gt; r
+gmapQl :: (r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLInsert -&gt; r
+$cgmapQl :: forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLInsert -&gt; r
+gmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; ACLInsert -&gt; ACLInsert
+$cgmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; ACLInsert -&gt; ACLInsert
+dataCast2 :: (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c ACLInsert)
+$cdataCast2 :: forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c ACLInsert)
+dataCast1 :: (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c ACLInsert)
+$cdataCast1 :: forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c ACLInsert)
+dataTypeOf :: ACLInsert -&gt; DataType
+$cdataTypeOf :: ACLInsert -&gt; DataType
+toConstr :: ACLInsert -&gt; Constr
+$ctoConstr :: ACLInsert -&gt; Constr
+gunfold :: (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLInsert
+$cgunfold :: forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLInsert
+gfoldl :: (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; ACLInsert -&gt; c ACLInsert
+$cgfoldl :: forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; ACLInsert -&gt; c ACLInsert
+$cp1Data :: Typeable ACLInsert
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Data</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Typeable</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(forall x. ACLInsert -&gt; Rep ACLInsert x)
+-&gt; (forall x. Rep ACLInsert x -&gt; ACLInsert) -&gt; Generic ACLInsert
+forall x. Rep ACLInsert x -&gt; ACLInsert
+forall x. ACLInsert -&gt; Rep ACLInsert x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep ACLInsert x -&gt; ACLInsert
+$cfrom :: forall x. ACLInsert -&gt; Rep ACLInsert x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">)</span><span>
+</span><span id="line-66"></span><span>
+</span><span id="line-67"></span><span>
+</span><span id="line-68"></span><span class="hs-comment">-- | Creates a value of 'ACLInsert' with the minimum fields required to make a request.</span><span>
+</span><span id="line-69"></span><span class="hs-comment">--</span><span>
+</span><span id="line-70"></span><span class="hs-comment">-- Use one of the following lenses to modify other fields as desired:</span><span>
+</span><span id="line-71"></span><span class="hs-comment">--</span><span>
+</span><span id="line-72"></span><span class="hs-comment">-- * 'aiCalendarId'</span><span>
+</span><span id="line-73"></span><span class="hs-comment">--</span><span>
+</span><span id="line-74"></span><span class="hs-comment">-- * 'aiPayload'</span><span>
+</span><span id="line-75"></span><span class="hs-comment">--</span><span>
+</span><span id="line-76"></span><span class="hs-comment">-- * 'aiSendNotifications'</span><span>
+</span><span id="line-77"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#aclInsert"><span class="hs-identifier hs-type">aclInsert</span></a></span><span>
+</span><span id="line-78"></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ 'aiCalendarId'</span><span>
+</span><span id="line-79"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#ACLRule"><span class="hs-identifier hs-type">ACLRule</span></a></span><span> </span><span class="hs-comment">-- ^ 'aiPayload'</span><span>
+</span><span id="line-80"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#ACLInsert"><span class="hs-identifier hs-type">ACLInsert</span></a></span><span>
+</span><span id="line-81"></span><span id="aclInsert"><span class="annot"><span class="annottext">aclInsert :: Text -&gt; ACLRule -&gt; ACLInsert
+</span><a href="Network.Google.Resource.Calendar.ACL.Insert.html#aclInsert"><span class="hs-identifier hs-var hs-var">aclInsert</span></a></span></span><span> </span><span id="local-6989586621679325459"><span class="annot"><span class="annottext">pAiCalendarId_ :: Text
+</span><a href="#local-6989586621679325459"><span class="hs-identifier hs-var">pAiCalendarId_</span></a></span></span><span> </span><span id="local-6989586621679325458"><span class="annot"><span class="annottext">pAiPayload_ :: ACLRule
+</span><a href="#local-6989586621679325458"><span class="hs-identifier hs-var">pAiPayload_</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-82"></span><span>  </span><span class="annot"><span class="annottext">$WACLInsert' :: Text -&gt; ACLRule -&gt; Maybe Bool -&gt; ACLInsert
+</span><a href="Network.Google.Resource.Calendar.ACL.Insert.html#%24WACLInsert%27"><span class="hs-identifier hs-type hs-type">ACLInsert'</span></a></span><span>
+</span><span id="line-83"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_aiCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Insert.html#_aiCalendarId"><span class="hs-identifier hs-var">_aiCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679325459"><span class="hs-identifier hs-var">pAiCalendarId_</span></a></span><span>
+</span><span id="line-84"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_aiPayload :: ACLRule
+</span><a href="Network.Google.Resource.Calendar.ACL.Insert.html#_aiPayload"><span class="hs-identifier hs-var">_aiPayload</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ACLRule
+</span><a href="#local-6989586621679325458"><span class="hs-identifier hs-var">pAiPayload_</span></a></span><span>
+</span><span id="line-85"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_aiSendNotifications :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.ACL.Insert.html#_aiSendNotifications"><span class="hs-identifier hs-var">_aiSendNotifications</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-86"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-87"></span><span>
+</span><span id="line-88"></span><span>
+</span><span id="line-89"></span><span class="hs-comment">-- | Calendar identifier. To retrieve calendar IDs call the calendarList.list</span><span>
+</span><span id="line-90"></span><span class="hs-comment">-- method. If you want to access the primary calendar of the currently</span><span>
+</span><span id="line-91"></span><span class="hs-comment">-- logged in user, use the \&quot;primary\&quot; keyword.</span><span>
+</span><span id="line-92"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#aiCalendarId"><span class="hs-identifier hs-type">aiCalendarId</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#ACLInsert"><span class="hs-identifier hs-type">ACLInsert</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-93"></span><span id="aiCalendarId"><span class="annot"><span class="annottext">aiCalendarId :: (Text -&gt; f Text) -&gt; ACLInsert -&gt; f ACLInsert
+</span><a href="Network.Google.Resource.Calendar.ACL.Insert.html#aiCalendarId"><span class="hs-identifier hs-var hs-var">aiCalendarId</span></a></span></span><span>
+</span><span id="line-94"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLInsert -&gt; Text)
+-&gt; (ACLInsert -&gt; Text -&gt; ACLInsert)
+-&gt; Lens ACLInsert ACLInsert Text Text
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLInsert -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Insert.html#_aiCalendarId"><span class="hs-identifier hs-var hs-var">_aiCalendarId</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679325454"><span class="annot"><span class="annottext">s :: ACLInsert
+</span><a href="#local-6989586621679325454"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679325453"><span class="annot"><span class="annottext">a :: Text
+</span><a href="#local-6989586621679325453"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLInsert
+</span><a href="#local-6989586621679325454"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_aiCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Insert.html#_aiCalendarId"><span class="hs-identifier hs-var">_aiCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679325453"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-95"></span><span>
+</span><span id="line-96"></span><span class="hs-comment">-- | Multipart request metadata.</span><span>
+</span><span id="line-97"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#aiPayload"><span class="hs-identifier hs-type">aiPayload</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#ACLInsert"><span class="hs-identifier hs-type">ACLInsert</span></a></span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#ACLRule"><span class="hs-identifier hs-type">ACLRule</span></a></span><span>
+</span><span id="line-98"></span><span id="aiPayload"><span class="annot"><span class="annottext">aiPayload :: (ACLRule -&gt; f ACLRule) -&gt; ACLInsert -&gt; f ACLInsert
+</span><a href="Network.Google.Resource.Calendar.ACL.Insert.html#aiPayload"><span class="hs-identifier hs-var hs-var">aiPayload</span></a></span></span><span>
+</span><span id="line-99"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLInsert -&gt; ACLRule)
+-&gt; (ACLInsert -&gt; ACLRule -&gt; ACLInsert)
+-&gt; Lens ACLInsert ACLInsert ACLRule ACLRule
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLInsert -&gt; ACLRule
+</span><a href="Network.Google.Resource.Calendar.ACL.Insert.html#_aiPayload"><span class="hs-identifier hs-var hs-var">_aiPayload</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679325452"><span class="annot"><span class="annottext">s :: ACLInsert
+</span><a href="#local-6989586621679325452"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679325451"><span class="annot"><span class="annottext">a :: ACLRule
+</span><a href="#local-6989586621679325451"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLInsert
+</span><a href="#local-6989586621679325452"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_aiPayload :: ACLRule
+</span><a href="Network.Google.Resource.Calendar.ACL.Insert.html#_aiPayload"><span class="hs-identifier hs-var">_aiPayload</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ACLRule
+</span><a href="#local-6989586621679325451"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-100"></span><span>
+</span><span id="line-101"></span><span class="hs-comment">-- | Whether to send notifications about the calendar sharing change.</span><span>
+</span><span id="line-102"></span><span class="hs-comment">-- Optional. The default is True.</span><span>
+</span><span id="line-103"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#aiSendNotifications"><span class="hs-identifier hs-type">aiSendNotifications</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#ACLInsert"><span class="hs-identifier hs-type">ACLInsert</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-104"></span><span id="aiSendNotifications"><span class="annot"><span class="annottext">aiSendNotifications :: (Maybe Bool -&gt; f (Maybe Bool)) -&gt; ACLInsert -&gt; f ACLInsert
+</span><a href="Network.Google.Resource.Calendar.ACL.Insert.html#aiSendNotifications"><span class="hs-identifier hs-var hs-var">aiSendNotifications</span></a></span></span><span>
+</span><span id="line-105"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLInsert -&gt; Maybe Bool)
+-&gt; (ACLInsert -&gt; Maybe Bool -&gt; ACLInsert)
+-&gt; Lens ACLInsert ACLInsert (Maybe Bool) (Maybe Bool)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLInsert -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.ACL.Insert.html#_aiSendNotifications"><span class="hs-identifier hs-var hs-var">_aiSendNotifications</span></a></span><span>
+</span><span id="line-106"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679325450"><span class="annot"><span class="annottext">s :: ACLInsert
+</span><a href="#local-6989586621679325450"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679325449"><span class="annot"><span class="annottext">a :: Maybe Bool
+</span><a href="#local-6989586621679325449"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLInsert
+</span><a href="#local-6989586621679325450"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_aiSendNotifications :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.ACL.Insert.html#_aiSendNotifications"><span class="hs-identifier hs-var">_aiSendNotifications</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679325449"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-107"></span><span>
+</span><span id="line-108"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">GoogleRequest</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#ACLInsert"><span class="hs-identifier hs-type">ACLInsert</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-109"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Rs"><span class="annot"><span class="hs-identifier hs-var">Rs</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#ACLInsert"><span class="hs-identifier hs-type">ACLInsert</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#ACLRule"><span class="hs-identifier hs-type">ACLRule</span></a></span><span>
+</span><span id="line-110"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Scopes"><span class="annot"><span class="hs-identifier hs-var">Scopes</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#ACLInsert"><span class="hs-identifier hs-type">ACLInsert</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-111"></span><span>             </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar&quot;</span></span><span class="hs-special">]</span><span>
+</span><span id="line-112"></span><span>        </span><span id="local-6989586621679325445"><span class="annot"><span class="annottext">requestClient :: ACLInsert -&gt; GClient (Rs ACLInsert)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">requestClient</span></span></span><span> </span><span id="local-6989586621679325441"><span id="local-6989586621679325442"><span id="local-6989586621679325443"><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#ACLInsert%27"><span class="hs-identifier hs-type">ACLInsert'</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span><span>
+</span><span id="line-113"></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+-&gt; Maybe Bool
+-&gt; Maybe AltJSON
+-&gt; ACLRule
+-&gt; ServiceConfig
+-&gt; GClient ACLRule
+</span><a href="#local-6989586621679325440"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679325443"><span class="hs-identifier hs-var">_aiCalendarId</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679325441"><span class="hs-identifier hs-var">_aiSendNotifications</span></a></span><span>
+</span><span id="line-114"></span><span>              </span><span class="hs-special">(</span><span class="annot"><span class="annottext">AltJSON -&gt; Maybe AltJSON
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">AltJSON
+</span><span class="hs-identifier hs-var">AltJSON</span></span><span class="hs-special">)</span><span>
+</span><span id="line-115"></span><span>              </span><span class="annot"><span class="annottext">ACLRule
+</span><a href="#local-6989586621679325442"><span class="hs-identifier hs-var">_aiPayload</span></a></span><span>
+</span><span id="line-116"></span><span>              </span><span class="annot"><span class="annottext">ServiceConfig
+</span><a href="Network.Google.AppsCalendar.Types.html#appsCalendarService"><span class="hs-identifier hs-var">appsCalendarService</span></a></span><span>
+</span><span id="line-117"></span><span>          </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679325440"><span class="annot"><span class="annottext">go :: Fn ACLInsertResource
+</span><a href="#local-6989586621679325440"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span>
+</span><span id="line-118"></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Proxy ACLInsertResource -&gt; Request -&gt; Fn ACLInsertResource
+forall fn. GoogleClient fn =&gt; Proxy fn -&gt; Request -&gt; Fn fn
+</span><span class="hs-identifier hs-var">buildClient</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Proxy ACLInsertResource
+forall k (t :: k). Proxy t
+</span><span class="hs-identifier hs-var">Proxy</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Proxy</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Insert.html#ACLInsertResource"><span class="hs-identifier hs-type">ACLInsertResource</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-119"></span><span>                      </span><span class="annot"><span class="annottext">Request
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-120"></span></pre></body></html>

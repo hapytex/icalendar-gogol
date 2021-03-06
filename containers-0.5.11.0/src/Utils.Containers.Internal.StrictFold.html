@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE CPP #-}</span><span class="hs-cpp">
+#if !defined(TESTING) &amp;&amp; __GLASGOW_HASKELL__ &gt;= 703
+</span><span class="hs-pragma">{-# LANGUAGE Safe #-}</span><span class="hs-cpp">
+#endif
+</span><span class="hs-cpp">
+#include &quot;containers.h&quot;
+</span><span class="hs-pragma">{-# OPTIONS_HADDOCK hide #-}</span><span>
+</span><span id="line-8"></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Utils.Containers.Internal.StrictFold</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Utils.Containers.Internal.StrictFold.html#foldlStrict"><span class="hs-identifier">foldlStrict</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-comment">-- | Same as regular 'Data.List.foldl'', but marked INLINE so that it is always</span><span>
+</span><span id="line-12"></span><span class="hs-comment">-- inlined. This allows further optimization of the call to f, which can be</span><span>
+</span><span id="line-13"></span><span class="hs-comment">-- optimized/specialised/inlined.</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span id="local-6989586621679161007"><span id="local-6989586621679161008"><span class="annot"><a href="Utils.Containers.Internal.StrictFold.html#foldlStrict"><span class="hs-identifier hs-type">foldlStrict</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679161008"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679161007"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679161008"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679161008"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679161007"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679161008"><span class="hs-identifier hs-type">a</span></a></span></span></span><span>
+</span><span id="line-16"></span><span id="foldlStrict"><span class="annot"><span class="annottext">foldlStrict :: (a -&gt; b -&gt; a) -&gt; a -&gt; [b] -&gt; a
+</span><a href="Utils.Containers.Internal.StrictFold.html#foldlStrict"><span class="hs-identifier hs-var hs-var">foldlStrict</span></a></span></span><span> </span><span id="local-6989586621679161006"><span class="annot"><span class="annottext">f :: a -&gt; b -&gt; a
+</span><a href="#local-6989586621679161006"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; [b] -&gt; a
+</span><a href="#local-6989586621679161005"><span class="hs-identifier hs-var">go</span></a></span><span>
+</span><span id="line-17"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-18"></span><span>    </span><span id="local-6989586621679161005"><span class="annot"><span class="annottext">go :: a -&gt; [b] -&gt; a
+</span><a href="#local-6989586621679161005"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span> </span><span id="local-6989586621679161004"><span class="annot"><span class="annottext">z :: a
+</span><a href="#local-6989586621679161004"><span class="hs-identifier hs-var">z</span></a></span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679161004"><span class="hs-identifier hs-var">z</span></a></span><span>
+</span><span id="line-19"></span><span>    </span><span class="annot"><a href="#local-6989586621679161005"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span id="local-6989586621679161003"><span class="annot"><span class="annottext">z :: a
+</span><a href="#local-6989586621679161003"><span class="hs-identifier hs-var">z</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679161002"><span class="annot"><span class="annottext">x :: b
+</span><a href="#local-6989586621679161002"><span class="hs-identifier hs-var">x</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679161001"><span class="annot"><span class="annottext">xs :: [b]
+</span><a href="#local-6989586621679161001"><span class="hs-identifier hs-var">xs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679161000"><span class="annot"><span class="annottext">z' :: a
+</span><a href="#local-6989586621679161000"><span class="hs-identifier hs-var hs-var">z'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; b -&gt; a
+</span><a href="#local-6989586621679161006"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679161003"><span class="hs-identifier hs-var">z</span></a></span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679161002"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="hs-keyword">in</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679161000"><span class="hs-identifier hs-var">z'</span></a></span><span> </span><span class="annot"><span class="annottext">a -&gt; a -&gt; a
+forall a b. a -&gt; b -&gt; b
+</span><span class="hs-operator hs-var">`seq`</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; [b] -&gt; a
+</span><a href="#local-6989586621679161005"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679161000"><span class="hs-identifier hs-var">z'</span></a></span><span> </span><span class="annot"><span class="annottext">[b]
+</span><a href="#local-6989586621679161001"><span class="hs-identifier hs-var">xs</span></a></span><span>
+</span><span id="line-20"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Utils.Containers.Internal.StrictFold.html#foldlStrict"><span class="hs-pragma hs-type">foldlStrict</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-21"></span></pre></body></html>

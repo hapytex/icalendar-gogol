@@ -1,0 +1,587 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE DataKinds          #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE DeriveDataTypeable #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# LANGUAGE DeriveGeneric      #-}</span><span>
+</span><span id="line-4"></span><span class="hs-pragma">{-# LANGUAGE FlexibleInstances  #-}</span><span>
+</span><span id="line-5"></span><span class="hs-pragma">{-# LANGUAGE NoImplicitPrelude  #-}</span><span>
+</span><span id="line-6"></span><span class="hs-pragma">{-# LANGUAGE OverloadedStrings  #-}</span><span>
+</span><span id="line-7"></span><span class="hs-pragma">{-# LANGUAGE RecordWildCards    #-}</span><span>
+</span><span id="line-8"></span><span class="hs-pragma">{-# LANGUAGE TypeFamilies       #-}</span><span>
+</span><span id="line-9"></span><span class="hs-pragma">{-# LANGUAGE TypeOperators      #-}</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-duplicate-exports #-}</span><span>
+</span><span id="line-12"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-binds      #-}</span><span>
+</span><span id="line-13"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-imports    #-}</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-16"></span><span class="hs-comment">-- Module      : Network.Google.Resource.Calendar.CalendarList.Watch</span><span>
+</span><span id="line-17"></span><span class="hs-comment">-- Copyright   : (c) 2015-2016 Brendan Hay</span><span>
+</span><span id="line-18"></span><span class="hs-comment">-- License     : Mozilla Public License, v. 2.0.</span><span>
+</span><span id="line-19"></span><span class="hs-comment">-- Maintainer  : Brendan Hay &lt;brendan.g.hay@gmail.com&gt;</span><span>
+</span><span id="line-20"></span><span class="hs-comment">-- Stability   : auto-generated</span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><span id="line-22"></span><span class="hs-comment">--</span><span>
+</span><span id="line-23"></span><span class="hs-comment">-- Watch for changes to CalendarList resources.</span><span>
+</span><span id="line-24"></span><span class="hs-comment">--</span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- /See:/ &lt;https://developers.google.com/google-apps/calendar/firstapp Calendar API Reference&gt; for @calendar.calendarList.watch@.</span><span>
+</span><span id="line-26"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Network.Google.Resource.Calendar.CalendarList.Watch</span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">(</span><span>
+</span><span id="line-28"></span><span>    </span><span class="annot"><span class="hs-comment">-- * REST Resource</span></span><span>
+</span><span id="line-29"></span><span>      </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatchResource"><span class="hs-identifier">CalendarListWatchResource</span></a></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Creating a Request</span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#calendarListWatch"><span class="hs-identifier">calendarListWatch</span></a></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatch"><span class="hs-identifier">CalendarListWatch</span></a></span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Request Lenses</span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwSyncToken"><span class="hs-identifier">clwSyncToken</span></a></span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwMinAccessRole"><span class="hs-identifier">clwMinAccessRole</span></a></span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwShowDeleted"><span class="hs-identifier">clwShowDeleted</span></a></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwPayload"><span class="hs-identifier">clwPayload</span></a></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwShowHidden"><span class="hs-identifier">clwShowHidden</span></a></span><span>
+</span><span id="line-41"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwPageToken"><span class="hs-identifier">clwPageToken</span></a></span><span>
+</span><span id="line-42"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwMaxResults"><span class="hs-identifier">clwMaxResults</span></a></span><span>
+</span><span id="line-43"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-44"></span><span>
+</span><span id="line-45"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.html"><span class="hs-identifier">Network.Google.AppsCalendar.Types</span></a></span><span>
+</span><span id="line-46"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Network.Google.Prelude</span></span><span>
+</span><span id="line-47"></span><span>
+</span><span id="line-48"></span><span class="hs-comment">-- | A resource alias for @calendar.calendarList.watch@ method which the</span><span>
+</span><span id="line-49"></span><span class="hs-comment">-- 'CalendarListWatch' request conforms to.</span><span>
+</span><span id="line-50"></span><span class="hs-keyword">type</span><span> </span><span id="CalendarListWatchResource"><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatchResource"><span class="hs-identifier hs-var">CalendarListWatchResource</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-51"></span><span>     </span><span class="annot"><span class="hs-string">&quot;calendar&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-52"></span><span>       </span><span class="annot"><span class="hs-string">&quot;v3&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-53"></span><span>         </span><span class="annot"><span class="hs-string">&quot;users&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-54"></span><span>           </span><span class="annot"><span class="hs-string">&quot;me&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-55"></span><span>             </span><span class="annot"><span class="hs-string">&quot;calendarList&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-56"></span><span>               </span><span class="annot"><span class="hs-string">&quot;watch&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-57"></span><span>                 </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;syncToken&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-58"></span><span>                   </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;minAccessRole&quot;</span></span><span>
+</span><span id="line-59"></span><span>                     </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Sum.html#CalendarListWatchMinAccessRole"><span class="hs-identifier hs-type">CalendarListWatchMinAccessRole</span></a></span><span>
+</span><span id="line-60"></span><span>                     </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-61"></span><span>                     </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;showDeleted&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-62"></span><span>                       </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;showHidden&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-63"></span><span>                         </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;pageToken&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-64"></span><span>                           </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;maxResults&quot;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Textual</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-65"></span><span>                             </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;alt&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">AltJSON</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-66"></span><span>                               </span><span class="annot"><span class="hs-identifier hs-type">ReqBody</span></span><span> </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">JSON</span></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Channel"><span class="hs-identifier hs-type">Channel</span></a></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Post</span></span><span> </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">JSON</span></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Channel"><span class="hs-identifier hs-type">Channel</span></a></span><span>
+</span><span id="line-67"></span><span>
+</span><span id="line-68"></span><span class="hs-comment">-- | Watch for changes to CalendarList resources.</span><span>
+</span><span id="line-69"></span><span class="hs-comment">--</span><span>
+</span><span id="line-70"></span><span class="hs-comment">-- /See:/ 'calendarListWatch' smart constructor.</span><span>
+</span><span id="line-71"></span><span id="local-6989586621679327505"><span id="local-6989586621679327506"></span></span><span class="hs-keyword">data</span><span> </span><span id="CalendarListWatch"><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatch"><span class="hs-identifier hs-var">CalendarListWatch</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-72"></span><span>  </span><span id="CalendarListWatch%27"><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatch%27"><span class="hs-identifier hs-var">CalendarListWatch'</span></a></span></span><span>
+</span><span id="line-73"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="_clwSyncToken"><span class="annot"><span class="annottext">CalendarListWatch -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwSyncToken"><span class="hs-identifier hs-var hs-var">_clwSyncToken</span></a></span></span><span>     </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-74"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_clwMinAccessRole"><span class="annot"><span class="annottext">CalendarListWatch -&gt; Maybe CalendarListWatchMinAccessRole
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwMinAccessRole"><span class="hs-identifier hs-var hs-var">_clwMinAccessRole</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Sum.html#CalendarListWatchMinAccessRole"><span class="hs-identifier hs-type">CalendarListWatchMinAccessRole</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-75"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_clwShowDeleted"><span class="annot"><span class="annottext">CalendarListWatch -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwShowDeleted"><span class="hs-identifier hs-var hs-var">_clwShowDeleted</span></a></span></span><span>   </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-76"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_clwPayload"><span class="annot"><span class="annottext">CalendarListWatch -&gt; Channel
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwPayload"><span class="hs-identifier hs-var hs-var">_clwPayload</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Channel"><span class="hs-identifier hs-type">Channel</span></a></span><span>
+</span><span id="line-77"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_clwShowHidden"><span class="annot"><span class="annottext">CalendarListWatch -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwShowHidden"><span class="hs-identifier hs-var hs-var">_clwShowHidden</span></a></span></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-78"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_clwPageToken"><span class="annot"><span class="annottext">CalendarListWatch -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwPageToken"><span class="hs-identifier hs-var hs-var">_clwPageToken</span></a></span></span><span>     </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-79"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_clwMaxResults"><span class="annot"><span class="annottext">CalendarListWatch -&gt; Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwMaxResults"><span class="hs-identifier hs-var hs-var">_clwMaxResults</span></a></span></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Textual</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-80"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-81"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679327493"><span id="local-6989586621679327495"><span class="annot"><span class="annottext">CalendarListWatch -&gt; CalendarListWatch -&gt; Bool
+(CalendarListWatch -&gt; CalendarListWatch -&gt; Bool)
+-&gt; (CalendarListWatch -&gt; CalendarListWatch -&gt; Bool)
+-&gt; Eq CalendarListWatch
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: CalendarListWatch -&gt; CalendarListWatch -&gt; Bool
+$c/= :: CalendarListWatch -&gt; CalendarListWatch -&gt; Bool
+== :: CalendarListWatch -&gt; CalendarListWatch -&gt; Bool
+$c== :: CalendarListWatch -&gt; CalendarListWatch -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679327486"><span id="local-6989586621679327488"><span id="local-6989586621679327490"><span class="annot"><span class="annottext">Int -&gt; CalendarListWatch -&gt; ShowS
+[CalendarListWatch] -&gt; ShowS
+CalendarListWatch -&gt; String
+(Int -&gt; CalendarListWatch -&gt; ShowS)
+-&gt; (CalendarListWatch -&gt; String)
+-&gt; ([CalendarListWatch] -&gt; ShowS)
+-&gt; Show CalendarListWatch
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [CalendarListWatch] -&gt; ShowS
+$cshowList :: [CalendarListWatch] -&gt; ShowS
+show :: CalendarListWatch -&gt; String
+$cshow :: CalendarListWatch -&gt; String
+showsPrec :: Int -&gt; CalendarListWatch -&gt; ShowS
+$cshowsPrec :: Int -&gt; CalendarListWatch -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="%24cCalendarListWatch%27"><span id="%24tCalendarListWatch"><span id="local-6989586621679327456"><span id="local-6989586621679327458"><span id="local-6989586621679327460"><span id="local-6989586621679327462"><span id="local-6989586621679327464"><span id="local-6989586621679327466"><span id="local-6989586621679327468"><span id="local-6989586621679327470"><span id="local-6989586621679327472"><span id="local-6989586621679327474"><span id="local-6989586621679327476"><span id="local-6989586621679327478"><span id="local-6989586621679327480"><span id="local-6989586621679327482"><span class="annot"><span class="annottext">Typeable CalendarListWatch
+DataType
+Constr
+Typeable CalendarListWatch =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g)
+ -&gt; CalendarListWatch
+ -&gt; c CalendarListWatch)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c CalendarListWatch)
+-&gt; (CalendarListWatch -&gt; Constr)
+-&gt; (CalendarListWatch -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c CalendarListWatch))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e))
+    -&gt; Maybe (c CalendarListWatch))
+-&gt; ((forall b. Data b =&gt; b -&gt; b)
+    -&gt; CalendarListWatch -&gt; CalendarListWatch)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarListWatch -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarListWatch -&gt; r)
+-&gt; (forall u.
+    (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarListWatch -&gt; [u])
+-&gt; (forall u.
+    Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarListWatch -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d)
+    -&gt; CalendarListWatch -&gt; m CalendarListWatch)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d)
+    -&gt; CalendarListWatch -&gt; m CalendarListWatch)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d)
+    -&gt; CalendarListWatch -&gt; m CalendarListWatch)
+-&gt; Data CalendarListWatch
+CalendarListWatch -&gt; DataType
+CalendarListWatch -&gt; Constr
+(forall b. Data b =&gt; b -&gt; b)
+-&gt; CalendarListWatch -&gt; CalendarListWatch
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; CalendarListWatch -&gt; c CalendarListWatch
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c CalendarListWatch
+forall a.
+Typeable a =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; a -&gt; c a)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c a)
+-&gt; (a -&gt; Constr)
+-&gt; (a -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c a))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c a))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; a -&gt; a)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; Data a
+forall u.
+Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarListWatch -&gt; u
+forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarListWatch -&gt; [u]
+forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarListWatch -&gt; r
+forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarListWatch -&gt; r
+forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarListWatch -&gt; m CalendarListWatch
+forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarListWatch -&gt; m CalendarListWatch
+forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c CalendarListWatch
+forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; CalendarListWatch -&gt; c CalendarListWatch
+forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c CalendarListWatch)
+forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e))
+-&gt; Maybe (c CalendarListWatch)
+$cCalendarListWatch' :: Constr
+$tCalendarListWatch :: DataType
+gmapMo :: (forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarListWatch -&gt; m CalendarListWatch
+$cgmapMo :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarListWatch -&gt; m CalendarListWatch
+gmapMp :: (forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarListWatch -&gt; m CalendarListWatch
+$cgmapMp :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarListWatch -&gt; m CalendarListWatch
+gmapM :: (forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarListWatch -&gt; m CalendarListWatch
+$cgmapM :: forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d)
+-&gt; CalendarListWatch -&gt; m CalendarListWatch
+gmapQi :: Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarListWatch -&gt; u
+$cgmapQi :: forall u.
+Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarListWatch -&gt; u
+gmapQ :: (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarListWatch -&gt; [u]
+$cgmapQ :: forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; CalendarListWatch -&gt; [u]
+gmapQr :: (r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarListWatch -&gt; r
+$cgmapQr :: forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarListWatch -&gt; r
+gmapQl :: (r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarListWatch -&gt; r
+$cgmapQl :: forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; CalendarListWatch -&gt; r
+gmapT :: (forall b. Data b =&gt; b -&gt; b)
+-&gt; CalendarListWatch -&gt; CalendarListWatch
+$cgmapT :: (forall b. Data b =&gt; b -&gt; b)
+-&gt; CalendarListWatch -&gt; CalendarListWatch
+dataCast2 :: (forall d e. (Data d, Data e) =&gt; c (t d e))
+-&gt; Maybe (c CalendarListWatch)
+$cdataCast2 :: forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e))
+-&gt; Maybe (c CalendarListWatch)
+dataCast1 :: (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c CalendarListWatch)
+$cdataCast1 :: forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c CalendarListWatch)
+dataTypeOf :: CalendarListWatch -&gt; DataType
+$cdataTypeOf :: CalendarListWatch -&gt; DataType
+toConstr :: CalendarListWatch -&gt; Constr
+$ctoConstr :: CalendarListWatch -&gt; Constr
+gunfold :: (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c CalendarListWatch
+$cgunfold :: forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c CalendarListWatch
+gfoldl :: (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; CalendarListWatch -&gt; c CalendarListWatch
+$cgfoldl :: forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; CalendarListWatch -&gt; c CalendarListWatch
+$cp1Data :: Typeable CalendarListWatch
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Data</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Typeable</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(forall x. CalendarListWatch -&gt; Rep CalendarListWatch x)
+-&gt; (forall x. Rep CalendarListWatch x -&gt; CalendarListWatch)
+-&gt; Generic CalendarListWatch
+forall x. Rep CalendarListWatch x -&gt; CalendarListWatch
+forall x. CalendarListWatch -&gt; Rep CalendarListWatch x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep CalendarListWatch x -&gt; CalendarListWatch
+$cfrom :: forall x. CalendarListWatch -&gt; Rep CalendarListWatch x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">)</span><span>
+</span><span id="line-82"></span><span>
+</span><span id="line-83"></span><span>
+</span><span id="line-84"></span><span class="hs-comment">-- | Creates a value of 'CalendarListWatch' with the minimum fields required to make a request.</span><span>
+</span><span id="line-85"></span><span class="hs-comment">--</span><span>
+</span><span id="line-86"></span><span class="hs-comment">-- Use one of the following lenses to modify other fields as desired:</span><span>
+</span><span id="line-87"></span><span class="hs-comment">--</span><span>
+</span><span id="line-88"></span><span class="hs-comment">-- * 'clwSyncToken'</span><span>
+</span><span id="line-89"></span><span class="hs-comment">--</span><span>
+</span><span id="line-90"></span><span class="hs-comment">-- * 'clwMinAccessRole'</span><span>
+</span><span id="line-91"></span><span class="hs-comment">--</span><span>
+</span><span id="line-92"></span><span class="hs-comment">-- * 'clwShowDeleted'</span><span>
+</span><span id="line-93"></span><span class="hs-comment">--</span><span>
+</span><span id="line-94"></span><span class="hs-comment">-- * 'clwPayload'</span><span>
+</span><span id="line-95"></span><span class="hs-comment">--</span><span>
+</span><span id="line-96"></span><span class="hs-comment">-- * 'clwShowHidden'</span><span>
+</span><span id="line-97"></span><span class="hs-comment">--</span><span>
+</span><span id="line-98"></span><span class="hs-comment">-- * 'clwPageToken'</span><span>
+</span><span id="line-99"></span><span class="hs-comment">--</span><span>
+</span><span id="line-100"></span><span class="hs-comment">-- * 'clwMaxResults'</span><span>
+</span><span id="line-101"></span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#calendarListWatch"><span class="hs-identifier hs-type">calendarListWatch</span></a></span><span>
+</span><span id="line-102"></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Channel"><span class="hs-identifier hs-type">Channel</span></a></span><span> </span><span class="hs-comment">-- ^ 'clwPayload'</span><span>
+</span><span id="line-103"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatch"><span class="hs-identifier hs-type">CalendarListWatch</span></a></span><span>
+</span><span id="line-104"></span><span id="calendarListWatch"><span class="annot"><span class="annottext">calendarListWatch :: Channel -&gt; CalendarListWatch
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#calendarListWatch"><span class="hs-identifier hs-var hs-var">calendarListWatch</span></a></span></span><span> </span><span id="local-6989586621679327449"><span class="annot"><span class="annottext">pClwPayload_ :: Channel
+</span><a href="#local-6989586621679327449"><span class="hs-identifier hs-var">pClwPayload_</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-105"></span><span>  </span><span class="annot"><span class="annottext">$WCalendarListWatch' :: Maybe Text
+-&gt; Maybe CalendarListWatchMinAccessRole
+-&gt; Maybe Bool
+-&gt; Channel
+-&gt; Maybe Bool
+-&gt; Maybe Text
+-&gt; Maybe (Textual Int32)
+-&gt; CalendarListWatch
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#%24WCalendarListWatch%27"><span class="hs-identifier hs-type hs-type">CalendarListWatch'</span></a></span><span>
+</span><span id="line-106"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_clwSyncToken :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwSyncToken"><span class="hs-identifier hs-var">_clwSyncToken</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-107"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_clwMinAccessRole :: Maybe CalendarListWatchMinAccessRole
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwMinAccessRole"><span class="hs-identifier hs-var">_clwMinAccessRole</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe CalendarListWatchMinAccessRole
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-108"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_clwShowDeleted :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwShowDeleted"><span class="hs-identifier hs-var">_clwShowDeleted</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-109"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_clwPayload :: Channel
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwPayload"><span class="hs-identifier hs-var">_clwPayload</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Channel
+</span><a href="#local-6989586621679327449"><span class="hs-identifier hs-var">pClwPayload_</span></a></span><span>
+</span><span id="line-110"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_clwShowHidden :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwShowHidden"><span class="hs-identifier hs-var">_clwShowHidden</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-111"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_clwPageToken :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwPageToken"><span class="hs-identifier hs-var">_clwPageToken</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-112"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_clwMaxResults :: Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwMaxResults"><span class="hs-identifier hs-var">_clwMaxResults</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe (Textual Int32)
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-113"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-114"></span><span>
+</span><span id="line-115"></span><span>
+</span><span id="line-116"></span><span class="hs-comment">-- | Token obtained from the nextSyncToken field returned on the last page of</span><span>
+</span><span id="line-117"></span><span class="hs-comment">-- results from the previous list request. It makes the result of this list</span><span>
+</span><span id="line-118"></span><span class="hs-comment">-- request contain only entries that have changed since then. If only</span><span>
+</span><span id="line-119"></span><span class="hs-comment">-- read-only fields such as calendar properties or ACLs have changed, the</span><span>
+</span><span id="line-120"></span><span class="hs-comment">-- entry won\'t be returned. All entries deleted and hidden since the</span><span>
+</span><span id="line-121"></span><span class="hs-comment">-- previous list request will always be in the result set and it is not</span><span>
+</span><span id="line-122"></span><span class="hs-comment">-- allowed to set showDeleted neither showHidden to False. To ensure client</span><span>
+</span><span id="line-123"></span><span class="hs-comment">-- state consistency minAccessRole query parameter cannot be specified</span><span>
+</span><span id="line-124"></span><span class="hs-comment">-- together with nextSyncToken. If the syncToken expires, the server will</span><span>
+</span><span id="line-125"></span><span class="hs-comment">-- respond with a 410 GONE response code and the client should clear its</span><span>
+</span><span id="line-126"></span><span class="hs-comment">-- storage and perform a full synchronization without any syncToken. Learn</span><span>
+</span><span id="line-127"></span><span class="hs-comment">-- more about incremental synchronization. Optional. The default is to</span><span>
+</span><span id="line-128"></span><span class="hs-comment">-- return all entries.</span><span>
+</span><span id="line-129"></span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwSyncToken"><span class="hs-identifier hs-type">clwSyncToken</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatch"><span class="hs-identifier hs-type">CalendarListWatch</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-130"></span><span id="clwSyncToken"><span class="annot"><span class="annottext">clwSyncToken :: (Maybe Text -&gt; f (Maybe Text))
+-&gt; CalendarListWatch -&gt; f CalendarListWatch
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwSyncToken"><span class="hs-identifier hs-var hs-var">clwSyncToken</span></a></span></span><span>
+</span><span id="line-131"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(CalendarListWatch -&gt; Maybe Text)
+-&gt; (CalendarListWatch -&gt; Maybe Text -&gt; CalendarListWatch)
+-&gt; Lens
+     CalendarListWatch CalendarListWatch (Maybe Text) (Maybe Text)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">CalendarListWatch -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwSyncToken"><span class="hs-identifier hs-var hs-var">_clwSyncToken</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679327445"><span class="annot"><span class="annottext">s :: CalendarListWatch
+</span><a href="#local-6989586621679327445"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679327444"><span class="annot"><span class="annottext">a :: Maybe Text
+</span><a href="#local-6989586621679327444"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">CalendarListWatch
+</span><a href="#local-6989586621679327445"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_clwSyncToken :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwSyncToken"><span class="hs-identifier hs-var">_clwSyncToken</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679327444"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-132"></span><span>
+</span><span id="line-133"></span><span class="hs-comment">-- | The minimum access role for the user in the returned entries. Optional.</span><span>
+</span><span id="line-134"></span><span class="hs-comment">-- The default is no restriction.</span><span>
+</span><span id="line-135"></span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwMinAccessRole"><span class="hs-identifier hs-type">clwMinAccessRole</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatch"><span class="hs-identifier hs-type">CalendarListWatch</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Sum.html#CalendarListWatchMinAccessRole"><span class="hs-identifier hs-type">CalendarListWatchMinAccessRole</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-136"></span><span id="clwMinAccessRole"><span class="annot"><span class="annottext">clwMinAccessRole :: (Maybe CalendarListWatchMinAccessRole
+ -&gt; f (Maybe CalendarListWatchMinAccessRole))
+-&gt; CalendarListWatch -&gt; f CalendarListWatch
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwMinAccessRole"><span class="hs-identifier hs-var hs-var">clwMinAccessRole</span></a></span></span><span>
+</span><span id="line-137"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(CalendarListWatch -&gt; Maybe CalendarListWatchMinAccessRole)
+-&gt; (CalendarListWatch
+    -&gt; Maybe CalendarListWatchMinAccessRole -&gt; CalendarListWatch)
+-&gt; Lens
+     CalendarListWatch
+     CalendarListWatch
+     (Maybe CalendarListWatchMinAccessRole)
+     (Maybe CalendarListWatchMinAccessRole)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">CalendarListWatch -&gt; Maybe CalendarListWatchMinAccessRole
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwMinAccessRole"><span class="hs-identifier hs-var hs-var">_clwMinAccessRole</span></a></span><span>
+</span><span id="line-138"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679327443"><span class="annot"><span class="annottext">s :: CalendarListWatch
+</span><a href="#local-6989586621679327443"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679327442"><span class="annot"><span class="annottext">a :: Maybe CalendarListWatchMinAccessRole
+</span><a href="#local-6989586621679327442"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">CalendarListWatch
+</span><a href="#local-6989586621679327443"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_clwMinAccessRole :: Maybe CalendarListWatchMinAccessRole
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwMinAccessRole"><span class="hs-identifier hs-var">_clwMinAccessRole</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe CalendarListWatchMinAccessRole
+</span><a href="#local-6989586621679327442"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-139"></span><span>
+</span><span id="line-140"></span><span class="hs-comment">-- | Whether to include deleted calendar list entries in the result.</span><span>
+</span><span id="line-141"></span><span class="hs-comment">-- Optional. The default is False.</span><span>
+</span><span id="line-142"></span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwShowDeleted"><span class="hs-identifier hs-type">clwShowDeleted</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatch"><span class="hs-identifier hs-type">CalendarListWatch</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-143"></span><span id="clwShowDeleted"><span class="annot"><span class="annottext">clwShowDeleted :: (Maybe Bool -&gt; f (Maybe Bool))
+-&gt; CalendarListWatch -&gt; f CalendarListWatch
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwShowDeleted"><span class="hs-identifier hs-var hs-var">clwShowDeleted</span></a></span></span><span>
+</span><span id="line-144"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(CalendarListWatch -&gt; Maybe Bool)
+-&gt; (CalendarListWatch -&gt; Maybe Bool -&gt; CalendarListWatch)
+-&gt; Lens
+     CalendarListWatch CalendarListWatch (Maybe Bool) (Maybe Bool)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">CalendarListWatch -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwShowDeleted"><span class="hs-identifier hs-var hs-var">_clwShowDeleted</span></a></span><span>
+</span><span id="line-145"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679327441"><span class="annot"><span class="annottext">s :: CalendarListWatch
+</span><a href="#local-6989586621679327441"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679327440"><span class="annot"><span class="annottext">a :: Maybe Bool
+</span><a href="#local-6989586621679327440"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">CalendarListWatch
+</span><a href="#local-6989586621679327441"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_clwShowDeleted :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwShowDeleted"><span class="hs-identifier hs-var">_clwShowDeleted</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679327440"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-146"></span><span>
+</span><span id="line-147"></span><span class="hs-comment">-- | Multipart request metadata.</span><span>
+</span><span id="line-148"></span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwPayload"><span class="hs-identifier hs-type">clwPayload</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatch"><span class="hs-identifier hs-type">CalendarListWatch</span></a></span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Channel"><span class="hs-identifier hs-type">Channel</span></a></span><span>
+</span><span id="line-149"></span><span id="clwPayload"><span class="annot"><span class="annottext">clwPayload :: (Channel -&gt; f Channel) -&gt; CalendarListWatch -&gt; f CalendarListWatch
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwPayload"><span class="hs-identifier hs-var hs-var">clwPayload</span></a></span></span><span>
+</span><span id="line-150"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(CalendarListWatch -&gt; Channel)
+-&gt; (CalendarListWatch -&gt; Channel -&gt; CalendarListWatch)
+-&gt; Lens CalendarListWatch CalendarListWatch Channel Channel
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">CalendarListWatch -&gt; Channel
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwPayload"><span class="hs-identifier hs-var hs-var">_clwPayload</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679327439"><span class="annot"><span class="annottext">s :: CalendarListWatch
+</span><a href="#local-6989586621679327439"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679327438"><span class="annot"><span class="annottext">a :: Channel
+</span><a href="#local-6989586621679327438"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">CalendarListWatch
+</span><a href="#local-6989586621679327439"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_clwPayload :: Channel
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwPayload"><span class="hs-identifier hs-var">_clwPayload</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Channel
+</span><a href="#local-6989586621679327438"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-151"></span><span>
+</span><span id="line-152"></span><span class="hs-comment">-- | Whether to show hidden entries. Optional. The default is False.</span><span>
+</span><span id="line-153"></span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwShowHidden"><span class="hs-identifier hs-type">clwShowHidden</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatch"><span class="hs-identifier hs-type">CalendarListWatch</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-154"></span><span id="clwShowHidden"><span class="annot"><span class="annottext">clwShowHidden :: (Maybe Bool -&gt; f (Maybe Bool))
+-&gt; CalendarListWatch -&gt; f CalendarListWatch
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwShowHidden"><span class="hs-identifier hs-var hs-var">clwShowHidden</span></a></span></span><span>
+</span><span id="line-155"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(CalendarListWatch -&gt; Maybe Bool)
+-&gt; (CalendarListWatch -&gt; Maybe Bool -&gt; CalendarListWatch)
+-&gt; Lens
+     CalendarListWatch CalendarListWatch (Maybe Bool) (Maybe Bool)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">CalendarListWatch -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwShowHidden"><span class="hs-identifier hs-var hs-var">_clwShowHidden</span></a></span><span>
+</span><span id="line-156"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679327437"><span class="annot"><span class="annottext">s :: CalendarListWatch
+</span><a href="#local-6989586621679327437"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679327436"><span class="annot"><span class="annottext">a :: Maybe Bool
+</span><a href="#local-6989586621679327436"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">CalendarListWatch
+</span><a href="#local-6989586621679327437"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_clwShowHidden :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwShowHidden"><span class="hs-identifier hs-var">_clwShowHidden</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679327436"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-157"></span><span>
+</span><span id="line-158"></span><span class="hs-comment">-- | Token specifying which result page to return. Optional.</span><span>
+</span><span id="line-159"></span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwPageToken"><span class="hs-identifier hs-type">clwPageToken</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatch"><span class="hs-identifier hs-type">CalendarListWatch</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-160"></span><span id="clwPageToken"><span class="annot"><span class="annottext">clwPageToken :: (Maybe Text -&gt; f (Maybe Text))
+-&gt; CalendarListWatch -&gt; f CalendarListWatch
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwPageToken"><span class="hs-identifier hs-var hs-var">clwPageToken</span></a></span></span><span>
+</span><span id="line-161"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(CalendarListWatch -&gt; Maybe Text)
+-&gt; (CalendarListWatch -&gt; Maybe Text -&gt; CalendarListWatch)
+-&gt; Lens
+     CalendarListWatch CalendarListWatch (Maybe Text) (Maybe Text)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">CalendarListWatch -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwPageToken"><span class="hs-identifier hs-var hs-var">_clwPageToken</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679327435"><span class="annot"><span class="annottext">s :: CalendarListWatch
+</span><a href="#local-6989586621679327435"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679327434"><span class="annot"><span class="annottext">a :: Maybe Text
+</span><a href="#local-6989586621679327434"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">CalendarListWatch
+</span><a href="#local-6989586621679327435"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_clwPageToken :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwPageToken"><span class="hs-identifier hs-var">_clwPageToken</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679327434"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-162"></span><span>
+</span><span id="line-163"></span><span class="hs-comment">-- | Maximum number of entries returned on one result page. By default the</span><span>
+</span><span id="line-164"></span><span class="hs-comment">-- value is 100 entries. The page size can never be larger than 250</span><span>
+</span><span id="line-165"></span><span class="hs-comment">-- entries. Optional.</span><span>
+</span><span id="line-166"></span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwMaxResults"><span class="hs-identifier hs-type">clwMaxResults</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatch"><span class="hs-identifier hs-type">CalendarListWatch</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span class="hs-special">)</span><span>
+</span><span id="line-167"></span><span id="clwMaxResults"><span class="annot"><span class="annottext">clwMaxResults :: (Maybe Int32 -&gt; f (Maybe Int32))
+-&gt; CalendarListWatch -&gt; f CalendarListWatch
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#clwMaxResults"><span class="hs-identifier hs-var hs-var">clwMaxResults</span></a></span></span><span>
+</span><span id="line-168"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(CalendarListWatch -&gt; Maybe (Textual Int32))
+-&gt; (CalendarListWatch
+    -&gt; Maybe (Textual Int32) -&gt; CalendarListWatch)
+-&gt; Lens
+     CalendarListWatch
+     CalendarListWatch
+     (Maybe (Textual Int32))
+     (Maybe (Textual Int32))
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">CalendarListWatch -&gt; Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwMaxResults"><span class="hs-identifier hs-var hs-var">_clwMaxResults</span></a></span><span>
+</span><span id="line-169"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679327433"><span class="annot"><span class="annottext">s :: CalendarListWatch
+</span><a href="#local-6989586621679327433"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679327432"><span class="annot"><span class="annottext">a :: Maybe (Textual Int32)
+</span><a href="#local-6989586621679327432"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">CalendarListWatch
+</span><a href="#local-6989586621679327433"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_clwMaxResults :: Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#_clwMaxResults"><span class="hs-identifier hs-var">_clwMaxResults</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe (Textual Int32)
+</span><a href="#local-6989586621679327432"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-170"></span><span>      </span><span class="annot"><span class="annottext">((Maybe (Textual Int32) -&gt; f (Maybe (Textual Int32)))
+ -&gt; CalendarListWatch -&gt; f CalendarListWatch)
+-&gt; ((Maybe Int32 -&gt; f (Maybe Int32))
+    -&gt; Maybe (Textual Int32) -&gt; f (Maybe (Textual Int32)))
+-&gt; (Maybe Int32 -&gt; f (Maybe Int32))
+-&gt; CalendarListWatch
+-&gt; f CalendarListWatch
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">AnIso (Textual Int32) (Textual Int32) Int32 Int32
+-&gt; Iso
+     (Maybe (Textual Int32))
+     (Maybe (Textual Int32))
+     (Maybe Int32)
+     (Maybe Int32)
+forall (f :: * -&gt; *) (g :: * -&gt; *) s t a b.
+(Functor f, Functor g) =&gt;
+AnIso s t a b -&gt; Iso (f s) (g t) (f a) (g b)
+</span><span class="hs-identifier hs-var">mapping</span></span><span> </span><span class="annot"><span class="annottext">AnIso (Textual Int32) (Textual Int32) Int32 Int32
+forall a b. (Coercible a b, Coercible b a) =&gt; Iso' a b
+</span><span class="hs-identifier hs-var">_Coerce</span></span><span>
+</span><span id="line-171"></span><span>
+</span><span id="line-172"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">GoogleRequest</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatch"><span class="hs-identifier hs-type">CalendarListWatch</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-173"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Rs"><span class="annot"><span class="hs-identifier hs-var">Rs</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatch"><span class="hs-identifier hs-type">CalendarListWatch</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Channel"><span class="hs-identifier hs-type">Channel</span></a></span><span>
+</span><span id="line-174"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Scopes"><span class="annot"><span class="hs-identifier hs-var">Scopes</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatch"><span class="hs-identifier hs-type">CalendarListWatch</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-175"></span><span>             </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-176"></span><span>               </span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar.readonly&quot;</span></span><span class="hs-special">]</span><span>
+</span><span id="line-177"></span><span>        </span><span id="local-6989586621679327425"><span class="annot"><span class="annottext">requestClient :: CalendarListWatch -&gt; GClient (Rs CalendarListWatch)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">requestClient</span></span></span><span> </span><span id="local-6989586621679327417"><span id="local-6989586621679327418"><span id="local-6989586621679327419"><span id="local-6989586621679327420"><span id="local-6989586621679327421"><span id="local-6989586621679327422"><span id="local-6989586621679327423"><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatch%27"><span class="hs-identifier hs-type">CalendarListWatch'</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span></span></span></span></span><span>
+</span><span id="line-178"></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+-&gt; Maybe CalendarListWatchMinAccessRole
+-&gt; Maybe Bool
+-&gt; Maybe Bool
+-&gt; Maybe Text
+-&gt; Maybe (Textual Int32)
+-&gt; Maybe AltJSON
+-&gt; Channel
+-&gt; ServiceConfig
+-&gt; GClient Channel
+</span><a href="#local-6989586621679327416"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679327423"><span class="hs-identifier hs-var">_clwSyncToken</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe CalendarListWatchMinAccessRole
+</span><a href="#local-6989586621679327422"><span class="hs-identifier hs-var">_clwMinAccessRole</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679327421"><span class="hs-identifier hs-var">_clwShowDeleted</span></a></span><span>
+</span><span id="line-179"></span><span>              </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679327419"><span class="hs-identifier hs-var">_clwShowHidden</span></a></span><span>
+</span><span id="line-180"></span><span>              </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679327418"><span class="hs-identifier hs-var">_clwPageToken</span></a></span><span>
+</span><span id="line-181"></span><span>              </span><span class="annot"><span class="annottext">Maybe (Textual Int32)
+</span><a href="#local-6989586621679327417"><span class="hs-identifier hs-var">_clwMaxResults</span></a></span><span>
+</span><span id="line-182"></span><span>              </span><span class="hs-special">(</span><span class="annot"><span class="annottext">AltJSON -&gt; Maybe AltJSON
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">AltJSON
+</span><span class="hs-identifier hs-var">AltJSON</span></span><span class="hs-special">)</span><span>
+</span><span id="line-183"></span><span>              </span><span class="annot"><span class="annottext">Channel
+</span><a href="#local-6989586621679327420"><span class="hs-identifier hs-var">_clwPayload</span></a></span><span>
+</span><span id="line-184"></span><span>              </span><span class="annot"><span class="annottext">ServiceConfig
+</span><a href="Network.Google.AppsCalendar.Types.html#appsCalendarService"><span class="hs-identifier hs-var">appsCalendarService</span></a></span><span>
+</span><span id="line-185"></span><span>          </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679327416"><span class="annot"><span class="annottext">go :: Fn CalendarListWatchResource
+</span><a href="#local-6989586621679327416"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span>
+</span><span id="line-186"></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Proxy CalendarListWatchResource
+-&gt; Request -&gt; Fn CalendarListWatchResource
+forall fn. GoogleClient fn =&gt; Proxy fn -&gt; Request -&gt; Fn fn
+</span><span class="hs-identifier hs-var">buildClient</span></span><span>
+</span><span id="line-187"></span><span>                      </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Proxy CalendarListWatchResource
+forall k (t :: k). Proxy t
+</span><span class="hs-identifier hs-var">Proxy</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Proxy</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.CalendarList.Watch.html#CalendarListWatchResource"><span class="hs-identifier hs-type">CalendarListWatchResource</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-188"></span><span>                      </span><span class="annot"><span class="annottext">Request
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-189"></span></pre></body></html>

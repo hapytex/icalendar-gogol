@@ -1,0 +1,482 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE FlexibleInstances    #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE OverloadedStrings    #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# LANGUAGE ScopedTypeVariables  #-}</span><span>
+</span><span id="line-4"></span><span class="hs-pragma">{-# LANGUAGE TypeSynonymInstances #-}</span><span>
+</span><span id="line-5"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Text.ICalendar.Parser</span><span>
+</span><span id="line-6"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="Text.ICalendar.Parser.html#parseICalendar"><span class="hs-identifier">parseICalendar</span></a></span><span>
+</span><span id="line-7"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Text.ICalendar.Parser.html#parseICalendarFile"><span class="hs-identifier">parseICalendarFile</span></a></span><span>
+</span><span id="line-8"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Text.ICalendar.Parser.html#parseICal"><span class="hs-identifier">parseICal</span></a></span><span>
+</span><span id="line-9"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Text.ICalendar.Parser.html#parseICalFile"><span class="hs-identifier">parseICalFile</span></a></span><span>
+</span><span id="line-10"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Text.ICalendar.Parser.Common.html#DecodingFunctions"><span class="hs-identifier">DecodingFunctions</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-12"></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Control.Applicative</span></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Control.Monad</span></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Control.Monad.Error</span></span><span>
+</span><span id="line-16"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Control.Monad.RWS</span></span><span>          </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">runRWS</span></span><span class="hs-special">)</span><span>
+</span><span id="line-17"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.ByteString.Lazy</span></span><span>       </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">ByteString</span></span><span class="hs-special">)</span><span>
+</span><span id="line-18"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.ByteString.Lazy.Char8</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">B</span></span><span>
+</span><span id="line-19"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Monoid</span></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Prelude</span></span><span>
+</span><span id="line-21"></span><span>
+</span><span id="line-22"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Text.Parsec.ByteString.Lazy</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-23"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Text.Parsec.Pos</span></span><span>
+</span><span id="line-24"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Text.Parsec.Prim</span></span><span>            </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">many</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-operator">(&lt;|&gt;)</span></span><span class="hs-special">)</span><span>
+</span><span id="line-25"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Text.Parsec.Text.Lazy</span></span><span>       </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-26"></span><span>
+</span><span id="line-27"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Text.ICalendar.Parser.Common.html"><span class="hs-identifier">Text.ICalendar.Parser.Common</span></a></span><span>
+</span><span id="line-28"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Text.ICalendar.Parser.Components.html"><span class="hs-identifier">Text.ICalendar.Parser.Components</span></a></span><span>
+</span><span id="line-29"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Text.ICalendar.Parser.Content.html"><span class="hs-identifier">Text.ICalendar.Parser.Content</span></a></span><span>
+</span><span id="line-30"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Text.ICalendar.Types.html"><span class="hs-identifier">Text.ICalendar.Types</span></a></span><span>
+</span><span id="line-31"></span><span>
+</span><span id="line-32"></span><span>
+</span><span id="line-33"></span><span class="hs-comment">-- | Parse a ByteString containing iCalendar data.</span><span>
+</span><span id="line-34"></span><span class="hs-comment">--</span><span>
+</span><span id="line-35"></span><span class="hs-comment">-- Returns either an error, or a tuple of the result and a list of warnings.</span><span>
+</span><span id="line-36"></span><span class="annot"><a href="Text.ICalendar.Parser.html#parseICalendar"><span class="hs-identifier hs-type">parseICalendar</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Text.ICalendar.Parser.Common.html#DecodingFunctions"><span class="hs-identifier hs-type">DecodingFunctions</span></a></span><span>
+</span><span id="line-37"></span><span>               </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">FilePath</span></span><span> </span><span class="hs-comment">-- ^ Used in error messages.</span><span>
+</span><span id="line-38"></span><span>               </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">ByteString</span></span><span>
+</span><span id="line-39"></span><span>               </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="Text.ICalendar.Types.html#VCalendar"><span class="hs-identifier hs-type">VCalendar</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span class="hs-special">)</span><span>
+</span><span id="line-40"></span><span id="parseICalendar"><span class="annot"><span class="annottext">parseICalendar :: DecodingFunctions
+-&gt; FilePath
+-&gt; ByteString
+-&gt; Either FilePath ([VCalendar], [FilePath])
+</span><a href="Text.ICalendar.Parser.html#parseICalendar"><span class="hs-identifier hs-var hs-var">parseICalendar</span></a></span></span><span> </span><span id="local-6989586621679156481"><span class="annot"><span class="annottext">s :: DecodingFunctions
+</span><a href="#local-6989586621679156481"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679156480"><span class="annot"><span class="annottext">f :: FilePath
+</span><a href="#local-6989586621679156480"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679156479"><span class="annot"><span class="annottext">bs :: ByteString
+</span><a href="#local-6989586621679156479"><span class="hs-identifier hs-var">bs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-41"></span><span>    </span><span id="local-6989586621679156478"><span class="annot"><span class="annottext">[Content]
+</span><a href="#local-6989586621679156478"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(ParseError -&gt; Either FilePath [Content])
+-&gt; ([Content] -&gt; Either FilePath [Content])
+-&gt; Either ParseError [Content]
+-&gt; Either FilePath [Content]
+forall a c b. (a -&gt; c) -&gt; (b -&gt; c) -&gt; Either a b -&gt; c
+</span><span class="hs-identifier hs-var">either</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">FilePath -&gt; Either FilePath [Content]
+forall a b. a -&gt; Either a b
+</span><span class="hs-identifier hs-var">Left</span></span><span> </span><span class="annot"><span class="annottext">(FilePath -&gt; Either FilePath [Content])
+-&gt; (ParseError -&gt; FilePath)
+-&gt; ParseError
+-&gt; Either FilePath [Content]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">ParseError -&gt; FilePath
+forall a. Show a =&gt; a -&gt; FilePath
+</span><span class="hs-identifier hs-var">show</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Content] -&gt; Either FilePath [Content]
+forall a b. b -&gt; Either a b
+</span><span class="hs-identifier hs-var">Right</span></span><span> </span><span class="annot"><span class="annottext">(Either ParseError [Content] -&gt; Either FilePath [Content])
+-&gt; Either ParseError [Content] -&gt; Either FilePath [Content]
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Parsec ByteString DecodingFunctions [Content]
+-&gt; DecodingFunctions
+-&gt; FilePath
+-&gt; ByteString
+-&gt; Either ParseError [Content]
+forall s t u a.
+Stream s Identity t =&gt;
+Parsec s u a -&gt; u -&gt; FilePath -&gt; s -&gt; Either ParseError a
+</span><span class="hs-identifier hs-var">runParser</span></span><span> </span><span class="annot"><span class="annottext">Parsec ByteString DecodingFunctions [Content]
+</span><a href="Text.ICalendar.Parser.Content.html#parseToContent"><span class="hs-identifier hs-var">parseToContent</span></a></span><span> </span><span class="annot"><span class="annottext">DecodingFunctions
+</span><a href="#local-6989586621679156481"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679156480"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">ByteString
+</span><a href="#local-6989586621679156479"><span class="hs-identifier hs-var">bs</span></a></span><span>
+</span><span id="line-42"></span><span>    </span><span class="annot"><span class="annottext">Bool -&gt; Either FilePath () -&gt; Either FilePath ()
+forall (f :: * -&gt; *). Applicative f =&gt; Bool -&gt; f () -&gt; f ()
+</span><span class="hs-identifier hs-var">when</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Content] -&gt; Bool
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Bool
+</span><span class="hs-identifier hs-var">null</span></span><span> </span><span class="annot"><span class="annottext">[Content]
+</span><a href="#local-6989586621679156478"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(Either FilePath () -&gt; Either FilePath ())
+-&gt; Either FilePath () -&gt; Either FilePath ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; Either FilePath ()
+forall e (m :: * -&gt; *) a. MonadError e m =&gt; e -&gt; m a
+</span><span class="hs-identifier hs-var">throwError</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Missing content.&quot;</span></span><span>
+</span><span id="line-43"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679156469"><span class="annot"><span class="annottext">xs :: [(Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])]
+</span><a href="#local-6989586621679156469"><span class="hs-identifier hs-var hs-var">xs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Content
+ -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath]))
+-&gt; [Content]
+-&gt; [(Either FilePath VCalendar, (SourcePos, [Content]),
+     [FilePath])]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">DecodingFunctions
+-&gt; ContentParser VCalendar
+-&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+forall a.
+DecodingFunctions
+-&gt; ContentParser a
+-&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath])
+</span><a href="Text.ICalendar.Parser.html#runCP"><span class="hs-identifier hs-var">runCP</span></a></span><span> </span><span class="annot"><span class="annottext">DecodingFunctions
+</span><a href="#local-6989586621679156481"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">(ContentParser VCalendar
+ -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath]))
+-&gt; (Content -&gt; ContentParser VCalendar)
+-&gt; Content
+-&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Content -&gt; ContentParser VCalendar
+</span><a href="Text.ICalendar.Parser.Components.html#parseVCalendar"><span class="hs-identifier hs-var">parseVCalendar</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Content]
+</span><a href="#local-6989586621679156478"><span class="hs-identifier hs-var">a</span></a></span><span>
+</span><span id="line-44"></span><span>    </span><span class="hs-special">(</span><span id="local-6989586621679156466"><span class="annot"><span class="annottext">x :: [VCalendar]
+</span><a href="#local-6989586621679156466"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679156465"><span class="annot"><span class="annottext">w :: [FilePath]
+</span><a href="#local-6989586621679156465"><span class="hs-identifier hs-var">w</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">((([VCalendar], [FilePath])
+  -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+  -&gt; Either FilePath ([VCalendar], [FilePath]))
+ -&gt; [(Either FilePath VCalendar, (SourcePos, [Content]),
+      [FilePath])]
+ -&gt; Either FilePath ([VCalendar], [FilePath]))
+-&gt; [(Either FilePath VCalendar, (SourcePos, [Content]),
+     [FilePath])]
+-&gt; (([VCalendar], [FilePath])
+    -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+    -&gt; Either FilePath ([VCalendar], [FilePath]))
+-&gt; Either FilePath ([VCalendar], [FilePath])
+forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
+</span><span class="hs-identifier hs-var">flip</span></span><span class="annot"><span class="annottext">(((([VCalendar], [FilePath])
+   -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+   -&gt; Either FilePath ([VCalendar], [FilePath]))
+  -&gt; [(Either FilePath VCalendar, (SourcePos, [Content]),
+       [FilePath])]
+  -&gt; Either FilePath ([VCalendar], [FilePath]))
+ -&gt; [(Either FilePath VCalendar, (SourcePos, [Content]),
+      [FilePath])]
+ -&gt; (([VCalendar], [FilePath])
+     -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+     -&gt; Either FilePath ([VCalendar], [FilePath]))
+ -&gt; Either FilePath ([VCalendar], [FilePath]))
+-&gt; (([VCalendar], [FilePath])
+    -&gt; (([VCalendar], [FilePath])
+        -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+        -&gt; Either FilePath ([VCalendar], [FilePath]))
+    -&gt; [(Either FilePath VCalendar, (SourcePos, [Content]),
+         [FilePath])]
+    -&gt; Either FilePath ([VCalendar], [FilePath]))
+-&gt; ([VCalendar], [FilePath])
+-&gt; [(Either FilePath VCalendar, (SourcePos, [Content]),
+     [FilePath])]
+-&gt; (([VCalendar], [FilePath])
+    -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+    -&gt; Either FilePath ([VCalendar], [FilePath]))
+-&gt; Either FilePath ([VCalendar], [FilePath])
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="hs-special">)</span><span class="annot"><span class="annottext">((([VCalendar], [FilePath])
+  -&gt; (([VCalendar], [FilePath])
+      -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+      -&gt; Either FilePath ([VCalendar], [FilePath]))
+  -&gt; [(Either FilePath VCalendar, (SourcePos, [Content]),
+       [FilePath])]
+  -&gt; Either FilePath ([VCalendar], [FilePath]))
+ -&gt; ([VCalendar], [FilePath])
+ -&gt; [(Either FilePath VCalendar, (SourcePos, [Content]),
+      [FilePath])]
+ -&gt; (([VCalendar], [FilePath])
+     -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+     -&gt; Either FilePath ([VCalendar], [FilePath]))
+ -&gt; Either FilePath ([VCalendar], [FilePath]))
+-&gt; (((([VCalendar], [FilePath])
+      -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+      -&gt; Either FilePath ([VCalendar], [FilePath]))
+     -&gt; ([VCalendar], [FilePath])
+     -&gt; [(Either FilePath VCalendar, (SourcePos, [Content]),
+          [FilePath])]
+     -&gt; Either FilePath ([VCalendar], [FilePath]))
+    -&gt; ([VCalendar], [FilePath])
+    -&gt; (([VCalendar], [FilePath])
+        -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+        -&gt; Either FilePath ([VCalendar], [FilePath]))
+    -&gt; [(Either FilePath VCalendar, (SourcePos, [Content]),
+         [FilePath])]
+    -&gt; Either FilePath ([VCalendar], [FilePath]))
+-&gt; ((([VCalendar], [FilePath])
+     -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+     -&gt; Either FilePath ([VCalendar], [FilePath]))
+    -&gt; ([VCalendar], [FilePath])
+    -&gt; [(Either FilePath VCalendar, (SourcePos, [Content]),
+         [FilePath])]
+    -&gt; Either FilePath ([VCalendar], [FilePath]))
+-&gt; ([VCalendar], [FilePath])
+-&gt; [(Either FilePath VCalendar, (SourcePos, [Content]),
+     [FilePath])]
+-&gt; (([VCalendar], [FilePath])
+    -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+    -&gt; Either FilePath ([VCalendar], [FilePath]))
+-&gt; Either FilePath ([VCalendar], [FilePath])
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">((([VCalendar], [FilePath])
+  -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+  -&gt; Either FilePath ([VCalendar], [FilePath]))
+ -&gt; ([VCalendar], [FilePath])
+ -&gt; [(Either FilePath VCalendar, (SourcePos, [Content]),
+      [FilePath])]
+ -&gt; Either FilePath ([VCalendar], [FilePath]))
+-&gt; ([VCalendar], [FilePath])
+-&gt; (([VCalendar], [FilePath])
+    -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+    -&gt; Either FilePath ([VCalendar], [FilePath]))
+-&gt; [(Either FilePath VCalendar, (SourcePos, [Content]),
+     [FilePath])]
+-&gt; Either FilePath ([VCalendar], [FilePath])
+forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
+</span><span class="hs-identifier hs-var">flip</span></span><span> </span><span class="annot"><span class="annottext">(([VCalendar], [FilePath])
+ -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+ -&gt; Either FilePath ([VCalendar], [FilePath]))
+-&gt; ([VCalendar], [FilePath])
+-&gt; [(Either FilePath VCalendar, (SourcePos, [Content]),
+     [FilePath])]
+-&gt; Either FilePath ([VCalendar], [FilePath])
+forall (t :: * -&gt; *) (m :: * -&gt; *) b a.
+(Foldable t, Monad m) =&gt;
+(b -&gt; a -&gt; m b) -&gt; b -&gt; t a -&gt; m b
+</span><span class="hs-identifier hs-var">foldM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[(Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])]
+</span><a href="#local-6989586621679156469"><span class="hs-identifier hs-var">xs</span></a></span><span> </span><span class="annot"><span class="annottext">((([VCalendar], [FilePath])
+  -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+  -&gt; Either FilePath ([VCalendar], [FilePath]))
+ -&gt; Either FilePath ([VCalendar], [FilePath]))
+-&gt; (([VCalendar], [FilePath])
+    -&gt; (Either FilePath VCalendar, (SourcePos, [Content]), [FilePath])
+    -&gt; Either FilePath ([VCalendar], [FilePath]))
+-&gt; Either FilePath ([VCalendar], [FilePath])
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span class="hs-special">(</span><span id="local-6989586621679156462"><span class="annot"><span class="annottext">x :: [VCalendar]
+</span><a href="#local-6989586621679156462"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679156461"><span class="annot"><span class="annottext">ws :: [FilePath]
+</span><a href="#local-6989586621679156461"><span class="hs-identifier hs-var">ws</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679156460"><span class="annot"><span class="annottext">g :: Either FilePath VCalendar
+</span><a href="#local-6989586621679156460"><span class="hs-identifier hs-var">g</span></a></span></span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679156459"><span class="annot"><span class="annottext">pos :: SourcePos
+</span><a href="#local-6989586621679156459"><span class="hs-identifier hs-var">pos</span></a></span></span><span class="hs-special">,</span><span> </span><span class="hs-identifier">_</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span id="local-6989586621679156458"><span class="annot"><span class="annottext">w :: [FilePath]
+</span><a href="#local-6989586621679156458"><span class="hs-identifier hs-var">w</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-45"></span><span>             </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Either FilePath VCalendar
+</span><a href="#local-6989586621679156460"><span class="hs-identifier hs-var">g</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-46"></span><span>                  </span><span class="annot"><span class="hs-identifier hs-type">Left</span></span><span> </span><span id="local-6989586621679156457"><span class="annot"><span class="annottext">e :: FilePath
+</span><a href="#local-6989586621679156457"><span class="hs-identifier hs-var">e</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; Either FilePath ([VCalendar], [FilePath])
+forall a b. a -&gt; Either a b
+</span><span class="hs-identifier hs-var">Left</span></span><span> </span><span class="annot"><span class="annottext">(FilePath -&gt; Either FilePath ([VCalendar], [FilePath]))
+-&gt; FilePath -&gt; Either FilePath ([VCalendar], [FilePath])
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SourcePos -&gt; FilePath
+forall a. Show a =&gt; a -&gt; FilePath
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">SourcePos
+</span><a href="#local-6989586621679156459"><span class="hs-identifier hs-var">pos</span></a></span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; FilePath -&gt; FilePath
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="hs-string">&quot;: &quot;</span></span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; FilePath -&gt; FilePath
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679156457"><span class="hs-identifier hs-var">e</span></a></span><span>
+</span><span id="line-47"></span><span>                  </span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span id="local-6989586621679156456"><span class="annot"><span class="annottext">y :: VCalendar
+</span><a href="#local-6989586621679156456"><span class="hs-identifier hs-var">y</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">([VCalendar], [FilePath])
+-&gt; Either FilePath ([VCalendar], [FilePath])
+forall a b. b -&gt; Either a b
+</span><span class="hs-identifier hs-var">Right</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">VCalendar
+</span><a href="#local-6989586621679156456"><span class="hs-identifier hs-var">y</span></a></span><span class="annot"><span class="annottext">VCalendar -&gt; [VCalendar] -&gt; [VCalendar]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">[VCalendar]
+</span><a href="#local-6989586621679156462"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[FilePath]
+</span><a href="#local-6989586621679156458"><span class="hs-identifier hs-var">w</span></a></span><span> </span><span class="annot"><span class="annottext">[FilePath] -&gt; [FilePath] -&gt; [FilePath]
+forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">[FilePath]
+</span><a href="#local-6989586621679156461"><span class="hs-identifier hs-var">ws</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-48"></span><span>    </span><span class="annot"><span class="annottext">([VCalendar], [FilePath])
+-&gt; Either FilePath ([VCalendar], [FilePath])
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[VCalendar]
+</span><a href="#local-6989586621679156466"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[FilePath]
+</span><a href="#local-6989586621679156465"><span class="hs-identifier hs-var">w</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-49"></span><span>
+</span><span id="line-50"></span><span class="hs-comment">-- | Deprecated synonym for parseICalendar</span><span>
+</span><span id="line-51"></span><span class="annot"><a href="Text.ICalendar.Parser.html#parseICal"><span class="hs-identifier hs-type">parseICal</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Text.ICalendar.Parser.Common.html#DecodingFunctions"><span class="hs-identifier hs-type">DecodingFunctions</span></a></span><span>
+</span><span id="line-52"></span><span>          </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">FilePath</span></span><span>
+</span><span id="line-53"></span><span>          </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">ByteString</span></span><span>
+</span><span id="line-54"></span><span>          </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="Text.ICalendar.Types.html#VCalendar"><span class="hs-identifier hs-type">VCalendar</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span class="hs-special">)</span><span>
+</span><span id="line-55"></span><span id="parseICal"><span class="annot"><span class="annottext">parseICal :: DecodingFunctions
+-&gt; FilePath
+-&gt; ByteString
+-&gt; Either FilePath ([VCalendar], [FilePath])
+</span><a href="Text.ICalendar.Parser.html#parseICal"><span class="hs-identifier hs-var hs-var">parseICal</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">DecodingFunctions
+-&gt; FilePath
+-&gt; ByteString
+-&gt; Either FilePath ([VCalendar], [FilePath])
+</span><a href="Text.ICalendar.Parser.html#parseICalendar"><span class="hs-identifier hs-var">parseICalendar</span></a></span><span>
+</span><span id="line-56"></span><span class="hs-pragma">{-# DEPRECATED</span><span> </span><span class="hs-pragma">parseICal</span><span> </span><span class="hs-pragma">&quot;Use parseICalendar instead&quot;</span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-57"></span><span>
+</span><span id="line-58"></span><span class="hs-comment">-- | Parse an iCalendar file.</span><span>
+</span><span id="line-59"></span><span class="annot"><a href="Text.ICalendar.Parser.html#parseICalendarFile"><span class="hs-identifier hs-type">parseICalendarFile</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Text.ICalendar.Parser.Common.html#DecodingFunctions"><span class="hs-identifier hs-type">DecodingFunctions</span></a></span><span>
+</span><span id="line-60"></span><span>                   </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">FilePath</span></span><span>
+</span><span id="line-61"></span><span>                   </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="Text.ICalendar.Types.html#VCalendar"><span class="hs-identifier hs-type">VCalendar</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-62"></span><span id="parseICalendarFile"><span class="annot"><span class="annottext">parseICalendarFile :: DecodingFunctions
+-&gt; FilePath -&gt; IO (Either FilePath ([VCalendar], [FilePath]))
+</span><a href="Text.ICalendar.Parser.html#parseICalendarFile"><span class="hs-identifier hs-var hs-var">parseICalendarFile</span></a></span></span><span> </span><span id="local-6989586621679156455"><span class="annot"><span class="annottext">s :: DecodingFunctions
+</span><a href="#local-6989586621679156455"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679156454"><span class="annot"><span class="annottext">f :: FilePath
+</span><a href="#local-6989586621679156454"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">DecodingFunctions
+-&gt; FilePath
+-&gt; ByteString
+-&gt; Either FilePath ([VCalendar], [FilePath])
+</span><a href="Text.ICalendar.Parser.html#parseICal"><span class="hs-identifier hs-var">parseICal</span></a></span><span> </span><span class="annot"><span class="annottext">DecodingFunctions
+</span><a href="#local-6989586621679156455"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679156454"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">(ByteString -&gt; Either FilePath ([VCalendar], [FilePath]))
+-&gt; IO ByteString -&gt; IO (Either FilePath ([VCalendar], [FilePath]))
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; IO ByteString
+</span><span class="hs-identifier hs-var">B.readFile</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679156454"><span class="hs-identifier hs-var">f</span></a></span><span>
+</span><span id="line-63"></span><span>
+</span><span id="line-64"></span><span class="hs-comment">-- | Deprecated synonym for parseICalendarFile</span><span>
+</span><span id="line-65"></span><span class="annot"><a href="Text.ICalendar.Parser.html#parseICalFile"><span class="hs-identifier hs-type">parseICalFile</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Text.ICalendar.Parser.Common.html#DecodingFunctions"><span class="hs-identifier hs-type">DecodingFunctions</span></a></span><span>
+</span><span id="line-66"></span><span>              </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">FilePath</span></span><span>
+</span><span id="line-67"></span><span>              </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="annot"><a href="Text.ICalendar.Types.html#VCalendar"><span class="hs-identifier hs-type">VCalendar</span></a></span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-68"></span><span id="parseICalFile"><span class="annot"><span class="annottext">parseICalFile :: DecodingFunctions
+-&gt; FilePath -&gt; IO (Either FilePath ([VCalendar], [FilePath]))
+</span><a href="Text.ICalendar.Parser.html#parseICalFile"><span class="hs-identifier hs-var hs-var">parseICalFile</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">DecodingFunctions
+-&gt; FilePath -&gt; IO (Either FilePath ([VCalendar], [FilePath]))
+</span><a href="Text.ICalendar.Parser.html#parseICalendarFile"><span class="hs-identifier hs-var">parseICalendarFile</span></a></span><span>
+</span><span id="line-69"></span><span class="hs-pragma">{-# DEPRECATED</span><span> </span><span class="hs-pragma">parseICalFile</span><span> </span><span class="hs-pragma">&quot;Use parseICalendarFile instead&quot;</span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-70"></span><span>
+</span><span id="line-71"></span><span id="local-6989586621679156518"><span class="annot"><a href="Text.ICalendar.Parser.html#runCP"><span class="hs-identifier hs-type">runCP</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Text.ICalendar.Parser.Common.html#DecodingFunctions"><span class="hs-identifier hs-type">DecodingFunctions</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Text.ICalendar.Parser.Common.html#ContentParser"><span class="hs-identifier hs-type">ContentParser</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679156518"><span class="hs-identifier hs-type">a</span></a></span><span>
+</span><span id="line-72"></span><span>      </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><a href="#local-6989586621679156518"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">SourcePos</span></span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Text.ICalendar.Parser.Common.html#Content"><span class="hs-identifier hs-type">Content</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span class="hs-special">)</span></span><span>
+</span><span id="line-73"></span><span id="runCP"><span class="annot"><span class="annottext">runCP :: DecodingFunctions
+-&gt; ContentParser a
+-&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath])
+</span><a href="Text.ICalendar.Parser.html#runCP"><span class="hs-identifier hs-var hs-var">runCP</span></a></span></span><span> </span><span id="local-6989586621679156451"><span class="annot"><span class="annottext">s :: DecodingFunctions
+</span><a href="#local-6989586621679156451"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">(RWS
+   DecodingFunctions
+   [FilePath]
+   (SourcePos, [Content])
+   (Either FilePath a)
+ -&gt; (SourcePos, [Content])
+ -&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath]))
+-&gt; (SourcePos, [Content])
+-&gt; RWS
+     DecodingFunctions
+     [FilePath]
+     (SourcePos, [Content])
+     (Either FilePath a)
+-&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath])
+forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
+</span><span class="hs-identifier hs-var">flip</span></span><span> </span><span class="annot"><span class="annottext">((RWS
+    DecodingFunctions
+    [FilePath]
+    (SourcePos, [Content])
+    (Either FilePath a)
+  -&gt; (SourcePos, [Content])
+  -&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath]))
+ -&gt; (SourcePos, [Content])
+ -&gt; RWS
+      DecodingFunctions
+      [FilePath]
+      (SourcePos, [Content])
+      (Either FilePath a)
+ -&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath]))
+-&gt; (DecodingFunctions
+    -&gt; RWS
+         DecodingFunctions
+         [FilePath]
+         (SourcePos, [Content])
+         (Either FilePath a)
+    -&gt; (SourcePos, [Content])
+    -&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath]))
+-&gt; DecodingFunctions
+-&gt; (SourcePos, [Content])
+-&gt; RWS
+     DecodingFunctions
+     [FilePath]
+     (SourcePos, [Content])
+     (Either FilePath a)
+-&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath])
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">((DecodingFunctions
+  -&gt; RWS
+       DecodingFunctions
+       [FilePath]
+       (SourcePos, [Content])
+       (Either FilePath a)
+  -&gt; (SourcePos, [Content])
+  -&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath]))
+ -&gt; DecodingFunctions
+ -&gt; (SourcePos, [Content])
+ -&gt; RWS
+      DecodingFunctions
+      [FilePath]
+      (SourcePos, [Content])
+      (Either FilePath a)
+ -&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath]))
+-&gt; ((RWS
+       DecodingFunctions
+       [FilePath]
+       (SourcePos, [Content])
+       (Either FilePath a)
+     -&gt; DecodingFunctions
+     -&gt; (SourcePos, [Content])
+     -&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath]))
+    -&gt; DecodingFunctions
+    -&gt; RWS
+         DecodingFunctions
+         [FilePath]
+         (SourcePos, [Content])
+         (Either FilePath a)
+    -&gt; (SourcePos, [Content])
+    -&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath]))
+-&gt; (RWS
+      DecodingFunctions
+      [FilePath]
+      (SourcePos, [Content])
+      (Either FilePath a)
+    -&gt; DecodingFunctions
+    -&gt; (SourcePos, [Content])
+    -&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath]))
+-&gt; DecodingFunctions
+-&gt; (SourcePos, [Content])
+-&gt; RWS
+     DecodingFunctions
+     [FilePath]
+     (SourcePos, [Content])
+     (Either FilePath a)
+-&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath])
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(RWS
+   DecodingFunctions
+   [FilePath]
+   (SourcePos, [Content])
+   (Either FilePath a)
+ -&gt; DecodingFunctions
+ -&gt; (SourcePos, [Content])
+ -&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath]))
+-&gt; DecodingFunctions
+-&gt; RWS
+     DecodingFunctions
+     [FilePath]
+     (SourcePos, [Content])
+     (Either FilePath a)
+-&gt; (SourcePos, [Content])
+-&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath])
+forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
+</span><span class="hs-identifier hs-var">flip</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">RWS
+  DecodingFunctions
+  [FilePath]
+  (SourcePos, [Content])
+  (Either FilePath a)
+-&gt; DecodingFunctions
+-&gt; (SourcePos, [Content])
+-&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath])
+forall r w s a. RWS r w s a -&gt; r -&gt; s -&gt; (a, s, w)
+</span><span class="hs-identifier hs-var">runRWS</span></span><span> </span><span class="annot"><span class="annottext">DecodingFunctions
+</span><a href="#local-6989586621679156451"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">SourcePos
+forall a. HasCallStack =&gt; a
+</span><span class="hs-identifier hs-var">undefined</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[Content]
+forall a. HasCallStack =&gt; a
+</span><span class="hs-identifier hs-var">undefined</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(RWS
+   DecodingFunctions
+   [FilePath]
+   (SourcePos, [Content])
+   (Either FilePath a)
+ -&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath]))
+-&gt; (ContentParser a
+    -&gt; RWS
+         DecodingFunctions
+         [FilePath]
+         (SourcePos, [Content])
+         (Either FilePath a))
+-&gt; ContentParser a
+-&gt; (Either FilePath a, (SourcePos, [Content]), [FilePath])
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">ContentParser a
+-&gt; RWS
+     DecodingFunctions
+     [FilePath]
+     (SourcePos, [Content])
+     (Either FilePath a)
+forall e (m :: * -&gt; *) a. ErrorT e m a -&gt; m (Either e a)
+</span><span class="hs-identifier hs-var hs-var">runErrorT</span></span><span>
+</span><span id="line-74"></span></pre></body></html>

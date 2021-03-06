@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">--------------------------------------------------------------------</span><span>
+</span><span id="line-2"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-3"></span><span class="hs-comment">-- Module    : Codec.MIME.QuotedPrintable</span><span>
+</span><span id="line-4"></span><span class="hs-comment">-- Copyright : (c) 2006-2009, Galois, Inc. </span><span>
+</span><span id="line-5"></span><span class="hs-comment">-- License   : BSD3</span><span>
+</span><span id="line-6"></span><span class="hs-comment">--</span><span>
+</span><span id="line-7"></span><span class="hs-comment">-- Maintainer: Sigbjorn Finne &lt;sigbjorn.finne@gmail.com&gt;</span><span>
+</span><span id="line-8"></span><span class="hs-comment">-- Stability : provisional</span><span>
+</span><span id="line-9"></span><span class="hs-comment">-- Portability:</span><span>
+</span><span id="line-10"></span><span class="hs-comment">--</span><span>
+</span><span id="line-11"></span><span class="hs-comment">-- To and from QP content encoding.</span><span>
+</span><span id="line-12"></span><span class="hs-comment">--</span><span>
+</span><span id="line-13"></span><span class="hs-comment">--------------------------------------------------------------------</span><span>
+</span><span id="line-14"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Codec.MIME.QuotedPrintable</span><span> </span><span>
+</span><span id="line-15"></span><span>       </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="Codec.MIME.QuotedPrintable.html#decode"><span class="hs-identifier">decode</span></a></span><span> </span><span class="hs-comment">-- :: String -&gt; String</span><span>
+</span><span id="line-16"></span><span>       </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Codec.MIME.QuotedPrintable.html#encode"><span class="hs-identifier">encode</span></a></span><span> </span><span class="hs-comment">-- :: String -&gt; String</span><span>
+</span><span id="line-17"></span><span>       </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-18"></span><span>
+</span><span id="line-19"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Char</span></span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- | 'decode' incoming quoted-printable content, stripping</span><span>
+</span><span id="line-22"></span><span class="hs-comment">-- out soft line breaks and translating @=XY@ sequences</span><span>
+</span><span id="line-23"></span><span class="hs-comment">-- into their decoded byte\/octet. The output encoding\/representation </span><span>
+</span><span id="line-24"></span><span class="hs-comment">-- is still a String, not a sequence of bytes.</span><span>
+</span><span id="line-25"></span><span class="annot"><a href="Codec.MIME.QuotedPrintable.html#decode"><span class="hs-identifier hs-type">decode</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-26"></span><span id="decode"><span class="annot"><span class="annottext">decode :: String -&gt; String
+</span><a href="Codec.MIME.QuotedPrintable.html#decode"><span class="hs-identifier hs-var hs-var">decode</span></a></span></span><span> </span><span class="hs-string">&quot;&quot;</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-string">&quot;&quot;</span></span><span>
+</span><span id="line-27"></span><span class="annot"><a href="Codec.MIME.QuotedPrintable.html#decode"><span class="hs-identifier hs-var">decode</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-char">'='</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span class="hs-char">'\r'</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span class="hs-char">'\n'</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679051781"><span class="annot"><span class="annottext">xs :: String
+</span><a href="#local-6989586621679051781"><span class="hs-identifier hs-var">xs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String
+</span><a href="Codec.MIME.QuotedPrintable.html#decode"><span class="hs-identifier hs-var">decode</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051781"><span class="hs-identifier hs-var">xs</span></a></span><span> </span><span class="hs-comment">-- soft line break.</span><span>
+</span><span id="line-28"></span><span class="annot"><a href="Codec.MIME.QuotedPrintable.html#decode"><span class="hs-identifier hs-var">decode</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-char">'='</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679051780"><span class="annot"><span class="annottext">x1 :: Char
+</span><a href="#local-6989586621679051780"><span class="hs-identifier hs-var">x1</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679051779"><span class="annot"><span class="annottext">x2 :: Char
+</span><a href="#local-6989586621679051779"><span class="hs-identifier hs-var">x2</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679051778"><span class="annot"><span class="annottext">xs :: String
+</span><a href="#local-6989586621679051778"><span class="hs-identifier hs-var">xs</span></a></span></span><span class="hs-special">)</span><span>
+</span><span id="line-29"></span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Bool
+</span><span class="hs-identifier hs-var">isHexDigit</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051780"><span class="hs-identifier hs-var">x1</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Bool
+</span><span class="hs-identifier hs-var">isHexDigit</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051779"><span class="hs-identifier hs-var">x2</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-30"></span><span>    </span><span class="annot"><span class="annottext">Int -&gt; Char
+</span><span class="hs-identifier hs-var">chr</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; Int
+</span><span class="hs-identifier hs-var">digitToInt</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051780"><span class="hs-identifier hs-var">x1</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">*</span></span><span> </span><span class="annot"><span class="hs-number">16</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Int
+</span><span class="hs-identifier hs-var">digitToInt</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051779"><span class="hs-identifier hs-var">x2</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String
+</span><a href="Codec.MIME.QuotedPrintable.html#decode"><span class="hs-identifier hs-var">decode</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051778"><span class="hs-identifier hs-var">xs</span></a></span><span>
+</span><span id="line-31"></span><span class="annot"><a href="Codec.MIME.QuotedPrintable.html#decode"><span class="hs-identifier hs-var">decode</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-char">'='</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679051771"><span class="annot"><span class="annottext">xs :: String
+</span><a href="#local-6989586621679051771"><span class="hs-identifier hs-var">xs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-char">'='</span></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">String -&gt; String
+</span><a href="Codec.MIME.QuotedPrintable.html#decode"><span class="hs-identifier hs-var">decode</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051771"><span class="hs-identifier hs-var">xs</span></a></span><span>
+</span><span id="line-32"></span><span>              </span><span class="hs-comment">-- make it explicit that we propagate other '=' occurrences.</span><span>
+</span><span id="line-33"></span><span class="annot"><a href="Codec.MIME.QuotedPrintable.html#decode"><span class="hs-identifier hs-var">decode</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679051770"><span class="annot"><span class="annottext">x1 :: Char
+</span><a href="#local-6989586621679051770"><span class="hs-identifier hs-var">x1</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679051769"><span class="annot"><span class="annottext">xs :: String
+</span><a href="#local-6989586621679051769"><span class="hs-identifier hs-var">xs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051770"><span class="hs-identifier hs-var">x1</span></a></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">String -&gt; String
+</span><a href="Codec.MIME.QuotedPrintable.html#decode"><span class="hs-identifier hs-var">decode</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051769"><span class="hs-identifier hs-var">xs</span></a></span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span class="hs-comment">-- | 'encode' converts a sequence of characeter _octets_ into</span><span>
+</span><span id="line-36"></span><span class="hs-comment">-- quoted-printable form; suitable for transmission in MIME</span><span>
+</span><span id="line-37"></span><span class="hs-comment">-- payloads. Note the stress on _octets_; it is assumed that</span><span>
+</span><span id="line-38"></span><span class="hs-comment">-- you have already converted Unicode into a &lt;=8-bit encoding</span><span>
+</span><span id="line-39"></span><span class="hs-comment">-- (UTF-8, most likely.)</span><span>
+</span><span id="line-40"></span><span class="annot"><a href="Codec.MIME.QuotedPrintable.html#encode"><span class="hs-identifier hs-type">encode</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-41"></span><span id="encode"><span class="annot"><span class="annottext">encode :: String -&gt; String
+</span><a href="Codec.MIME.QuotedPrintable.html#encode"><span class="hs-identifier hs-var hs-var">encode</span></a></span></span><span> </span><span id="local-6989586621679051768"><span class="annot"><span class="annottext">xs :: String
+</span><a href="#local-6989586621679051768"><span class="hs-identifier hs-var">xs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; String -&gt; String
+</span><a href="Codec.MIME.QuotedPrintable.html#encodeLength"><span class="hs-identifier hs-var">encodeLength</span></a></span><span> </span><span class="annot"><span class="hs-number">0</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051768"><span class="hs-identifier hs-var">xs</span></a></span><span>
+</span><span id="line-42"></span><span>
+</span><span id="line-43"></span><span class="hs-comment">-- | @encodeLength llen str@ is the worker function during encoding.</span><span>
+</span><span id="line-44"></span><span class="hs-comment">-- The extra argument @llen@ tracks the current column for the line</span><span>
+</span><span id="line-45"></span><span class="hs-comment">-- being processed. Soft line breaks are inserted if a line exceeds</span><span>
+</span><span id="line-46"></span><span class="hs-comment">-- a max length.</span><span>
+</span><span id="line-47"></span><span class="annot"><a href="Codec.MIME.QuotedPrintable.html#encodeLength"><span class="hs-identifier hs-type">encodeLength</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-48"></span><span id="encodeLength"><span class="annot"><span class="annottext">encodeLength :: Int -&gt; String -&gt; String
+</span><a href="Codec.MIME.QuotedPrintable.html#encodeLength"><span class="hs-identifier hs-var hs-var">encodeLength</span></a></span></span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-string">&quot;&quot;</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-string">&quot;&quot;</span></span><span>
+</span><span id="line-49"></span><span class="annot"><a href="Codec.MIME.QuotedPrintable.html#encodeLength"><span class="hs-identifier hs-var">encodeLength</span></a></span><span> </span><span id="local-6989586621679051766"><span class="annot"><span class="annottext">n :: Int
+</span><a href="#local-6989586621679051766"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679051765"><span class="annot"><span class="annottext">x :: Char
+</span><a href="#local-6989586621679051765"><span class="hs-identifier hs-var">x</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679051764"><span class="annot"><span class="annottext">xs :: String
+</span><a href="#local-6989586621679051764"><span class="hs-identifier hs-var">xs</span></a></span></span><span class="hs-special">)</span><span>
+</span><span id="line-50"></span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051766"><span class="hs-identifier hs-var">n</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&gt;=</span></span><span> </span><span class="annot"><span class="hs-number">72</span></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-char">'='</span></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="hs-char">'\r'</span></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="hs-char">'\n'</span></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">Int -&gt; String -&gt; String
+</span><a href="Codec.MIME.QuotedPrintable.html#encodeLength"><span class="hs-identifier hs-var">encodeLength</span></a></span><span> </span><span class="annot"><span class="hs-number">0</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051765"><span class="hs-identifier hs-var">x</span></a></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051764"><span class="hs-identifier hs-var">xs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-51"></span><span class="annot"><a href="Codec.MIME.QuotedPrintable.html#encodeLength"><span class="hs-identifier hs-var">encodeLength</span></a></span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-special">(</span><span class="hs-char">'='</span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679051763"><span class="annot"><span class="annottext">xs :: String
+</span><a href="#local-6989586621679051763"><span class="hs-identifier hs-var">xs</span></a></span></span><span class="hs-special">)</span><span> </span><span>
+</span><span id="line-52"></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-char">'='</span></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="hs-char">'3'</span></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="hs-char">'D'</span></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">Int -&gt; String -&gt; String
+</span><a href="Codec.MIME.QuotedPrintable.html#encodeLength"><span class="hs-identifier hs-var">encodeLength</span></a></span><span> </span><span class="annot"><span class="hs-number">0</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051763"><span class="hs-identifier hs-var">xs</span></a></span><span>
+</span><span id="line-53"></span><span class="annot"><a href="Codec.MIME.QuotedPrintable.html#encodeLength"><span class="hs-identifier hs-var">encodeLength</span></a></span><span> </span><span id="local-6989586621679051762"><span class="annot"><span class="annottext">n :: Int
+</span><a href="#local-6989586621679051762"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679051761"><span class="annot"><span class="annottext">x :: Char
+</span><a href="#local-6989586621679051761"><span class="hs-identifier hs-var">x</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679051760"><span class="annot"><span class="annottext">xs :: String
+</span><a href="#local-6989586621679051760"><span class="hs-identifier hs-var">xs</span></a></span></span><span class="hs-special">)</span><span>
+</span><span id="line-54"></span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051759"><span class="hs-identifier hs-var">ox</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&gt;=</span></span><span> </span><span class="annot"><span class="hs-number">0x100</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String
+forall a. HasCallStack =&gt; String -&gt; a
+</span><span class="hs-identifier hs-var">error</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-string">&quot;QuotedPrintable.encode: encountered &gt; 8 bit character: &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">(Char, Int) -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051761"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">,</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051759"><span class="hs-identifier hs-var">ox</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-55"></span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051762"><span class="hs-identifier hs-var">n</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&gt;=</span></span><span> </span><span class="annot"><span class="hs-number">72</span></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-char">'='</span></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="hs-char">'\r'</span></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="hs-char">'\n'</span></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">Int -&gt; String -&gt; String
+</span><a href="Codec.MIME.QuotedPrintable.html#encodeLength"><span class="hs-identifier hs-var">encodeLength</span></a></span><span> </span><span class="annot"><span class="hs-number">0</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051761"><span class="hs-identifier hs-var">x</span></a></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051760"><span class="hs-identifier hs-var">xs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-56"></span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051759"><span class="hs-identifier hs-var">ox</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&gt;=</span></span><span> </span><span class="annot"><span class="hs-number">0x21</span></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051759"><span class="hs-identifier hs-var">ox</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&lt;=</span></span><span> </span><span class="annot"><span class="hs-number">0x7e</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051761"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; String -&gt; String
+</span><a href="Codec.MIME.QuotedPrintable.html#encodeLength"><span class="hs-identifier hs-var">encodeLength</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051762"><span class="hs-identifier hs-var">n</span></a></span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span class="annot"><span class="hs-number">1</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051760"><span class="hs-identifier hs-var">xs</span></a></span><span>
+</span><span id="line-57"></span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051759"><span class="hs-identifier hs-var">ox</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="hs-number">0x09</span></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">||</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051759"><span class="hs-identifier hs-var">ox</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="hs-number">0x20</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051761"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; String -&gt; String
+</span><a href="Codec.MIME.QuotedPrintable.html#encodeLength"><span class="hs-identifier hs-var">encodeLength</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051762"><span class="hs-identifier hs-var">n</span></a></span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span class="annot"><span class="hs-number">1</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051760"><span class="hs-identifier hs-var">xs</span></a></span><span>
+</span><span id="line-58"></span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-char">'='</span></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">Int -&gt; Char
+</span><a href="#local-6989586621679051754"><span class="hs-identifier hs-var">showH</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051759"><span class="hs-identifier hs-var">ox</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Integral a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">`div`</span></span><span> </span><span class="annot"><span class="hs-number">0x10</span></span><span class="hs-special">)</span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Char
+</span><a href="#local-6989586621679051754"><span class="hs-identifier hs-var">showH</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051759"><span class="hs-identifier hs-var">ox</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Integral a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">`mod`</span></span><span> </span><span class="annot"><span class="hs-number">0x10</span></span><span class="hs-special">)</span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">Int -&gt; String -&gt; String
+</span><a href="Codec.MIME.QuotedPrintable.html#encodeLength"><span class="hs-identifier hs-var">encodeLength</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051762"><span class="hs-identifier hs-var">n</span></a></span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span class="annot"><span class="hs-number">3</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679051760"><span class="hs-identifier hs-var">xs</span></a></span><span>
+</span><span id="line-59"></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-60"></span><span>  </span><span id="local-6989586621679051759"><span class="annot"><span class="annottext">ox :: Int
+</span><a href="#local-6989586621679051759"><span class="hs-identifier hs-var hs-var">ox</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Int
+</span><span class="hs-identifier hs-var">ord</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679051761"><span class="hs-identifier hs-var">x</span></a></span><span>
+</span><span id="line-61"></span><span>  </span><span id="local-6989586621679051754"><span class="annot"><span class="annottext">showH :: Int -&gt; Char
+</span><a href="#local-6989586621679051754"><span class="hs-identifier hs-var hs-var">showH</span></a></span></span><span> </span><span id="local-6989586621679051750"><span class="annot"><span class="annottext">v :: Int
+</span><a href="#local-6989586621679051750"><span class="hs-identifier hs-var">v</span></a></span></span><span>
+</span><span id="line-62"></span><span>   </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051750"><span class="hs-identifier hs-var">v</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&lt;</span></span><span> </span><span class="annot"><span class="hs-number">10</span></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Char
+</span><span class="hs-identifier hs-var">chr</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051748"><span class="hs-identifier hs-var">ord_0</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051750"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-63"></span><span>   </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Char
+</span><span class="hs-identifier hs-var">chr</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051747"><span class="hs-identifier hs-var">ord_A</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679051750"><span class="hs-identifier hs-var">v</span></a></span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-glyph hs-var">-</span></span><span class="annot"><span class="hs-number">10</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-64"></span><span>   </span><span>
+</span><span id="line-65"></span><span>  </span><span id="local-6989586621679051748"><span class="annot"><span class="annottext">ord_0 :: Int
+</span><a href="#local-6989586621679051748"><span class="hs-identifier hs-var hs-var">ord_0</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Int
+</span><span class="hs-identifier hs-var">ord</span></span><span> </span><span class="annot"><span class="hs-char">'0'</span></span><span>
+</span><span id="line-66"></span><span>  </span><span id="local-6989586621679051747"><span class="annot"><span class="annottext">ord_A :: Int
+</span><a href="#local-6989586621679051747"><span class="hs-identifier hs-var hs-var">ord_A</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Int
+</span><span class="hs-identifier hs-var">ord</span></span><span> </span><span class="annot"><span class="hs-char">'A'</span></span><span>
+</span><span id="line-67"></span></pre></body></html>

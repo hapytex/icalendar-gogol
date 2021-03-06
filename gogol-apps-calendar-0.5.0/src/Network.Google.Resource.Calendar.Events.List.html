@@ -1,0 +1,1026 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE DataKinds          #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE DeriveDataTypeable #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# LANGUAGE DeriveGeneric      #-}</span><span>
+</span><span id="line-4"></span><span class="hs-pragma">{-# LANGUAGE FlexibleInstances  #-}</span><span>
+</span><span id="line-5"></span><span class="hs-pragma">{-# LANGUAGE NoImplicitPrelude  #-}</span><span>
+</span><span id="line-6"></span><span class="hs-pragma">{-# LANGUAGE OverloadedStrings  #-}</span><span>
+</span><span id="line-7"></span><span class="hs-pragma">{-# LANGUAGE RecordWildCards    #-}</span><span>
+</span><span id="line-8"></span><span class="hs-pragma">{-# LANGUAGE TypeFamilies       #-}</span><span>
+</span><span id="line-9"></span><span class="hs-pragma">{-# LANGUAGE TypeOperators      #-}</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-duplicate-exports #-}</span><span>
+</span><span id="line-12"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-binds      #-}</span><span>
+</span><span id="line-13"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-imports    #-}</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-16"></span><span class="hs-comment">-- Module      : Network.Google.Resource.Calendar.Events.List</span><span>
+</span><span id="line-17"></span><span class="hs-comment">-- Copyright   : (c) 2015-2016 Brendan Hay</span><span>
+</span><span id="line-18"></span><span class="hs-comment">-- License     : Mozilla Public License, v. 2.0.</span><span>
+</span><span id="line-19"></span><span class="hs-comment">-- Maintainer  : Brendan Hay &lt;brendan.g.hay@gmail.com&gt;</span><span>
+</span><span id="line-20"></span><span class="hs-comment">-- Stability   : auto-generated</span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><span id="line-22"></span><span class="hs-comment">--</span><span>
+</span><span id="line-23"></span><span class="hs-comment">-- Returns events on the specified calendar.</span><span>
+</span><span id="line-24"></span><span class="hs-comment">--</span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- /See:/ &lt;https://developers.google.com/google-apps/calendar/firstapp Calendar API Reference&gt; for @calendar.events.list@.</span><span>
+</span><span id="line-26"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Network.Google.Resource.Calendar.Events.List</span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">(</span><span>
+</span><span id="line-28"></span><span>    </span><span class="annot"><span class="hs-comment">-- * REST Resource</span></span><span>
+</span><span id="line-29"></span><span>      </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsListResource"><span class="hs-identifier">EventsListResource</span></a></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Creating a Request</span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#eventsList"><span class="hs-identifier">eventsList</span></a></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier">EventsList</span></a></span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Request Lenses</span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elSyncToken"><span class="hs-identifier">elSyncToken</span></a></span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elCalendarId"><span class="hs-identifier">elCalendarId</span></a></span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elTimeMin"><span class="hs-identifier">elTimeMin</span></a></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elOrderBy"><span class="hs-identifier">elOrderBy</span></a></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elSingleEvents"><span class="hs-identifier">elSingleEvents</span></a></span><span>
+</span><span id="line-41"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elPrivateExtendedProperty"><span class="hs-identifier">elPrivateExtendedProperty</span></a></span><span>
+</span><span id="line-42"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elShowDeleted"><span class="hs-identifier">elShowDeleted</span></a></span><span>
+</span><span id="line-43"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elQ"><span class="hs-identifier">elQ</span></a></span><span>
+</span><span id="line-44"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elSharedExtendedProperty"><span class="hs-identifier">elSharedExtendedProperty</span></a></span><span>
+</span><span id="line-45"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elMaxAttendees"><span class="hs-identifier">elMaxAttendees</span></a></span><span>
+</span><span id="line-46"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elICalUId"><span class="hs-identifier">elICalUId</span></a></span><span>
+</span><span id="line-47"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elUpdatedMin"><span class="hs-identifier">elUpdatedMin</span></a></span><span>
+</span><span id="line-48"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elPageToken"><span class="hs-identifier">elPageToken</span></a></span><span>
+</span><span id="line-49"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elTimeZone"><span class="hs-identifier">elTimeZone</span></a></span><span>
+</span><span id="line-50"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elShowHiddenInvitations"><span class="hs-identifier">elShowHiddenInvitations</span></a></span><span>
+</span><span id="line-51"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elMaxResults"><span class="hs-identifier">elMaxResults</span></a></span><span>
+</span><span id="line-52"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elAlwaysIncludeEmail"><span class="hs-identifier">elAlwaysIncludeEmail</span></a></span><span>
+</span><span id="line-53"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elTimeMax"><span class="hs-identifier">elTimeMax</span></a></span><span>
+</span><span id="line-54"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-55"></span><span>
+</span><span id="line-56"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.html"><span class="hs-identifier">Network.Google.AppsCalendar.Types</span></a></span><span>
+</span><span id="line-57"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Network.Google.Prelude</span></span><span>
+</span><span id="line-58"></span><span>
+</span><span id="line-59"></span><span class="hs-comment">-- | A resource alias for @calendar.events.list@ method which the</span><span>
+</span><span id="line-60"></span><span class="hs-comment">-- 'EventsList' request conforms to.</span><span>
+</span><span id="line-61"></span><span class="hs-keyword">type</span><span> </span><span id="EventsListResource"><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsListResource"><span class="hs-identifier hs-var">EventsListResource</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-62"></span><span>     </span><span class="annot"><span class="hs-string">&quot;calendar&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-63"></span><span>       </span><span class="annot"><span class="hs-string">&quot;v3&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-64"></span><span>         </span><span class="annot"><span class="hs-string">&quot;calendars&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-65"></span><span>           </span><span class="annot"><span class="hs-identifier hs-type">Capture</span></span><span> </span><span class="annot"><span class="hs-string">&quot;calendarId&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-66"></span><span>             </span><span class="annot"><span class="hs-string">&quot;events&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-67"></span><span>               </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;syncToken&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-68"></span><span>                 </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;timeMin&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">DateTime'</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-69"></span><span>                   </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;orderBy&quot;</span></span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Sum.html#EventsListOrderBy"><span class="hs-identifier hs-type">EventsListOrderBy</span></a></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-70"></span><span>                     </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;singleEvents&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-71"></span><span>                       </span><span class="annot"><span class="hs-identifier hs-type">QueryParams</span></span><span> </span><span class="annot"><span class="hs-string">&quot;privateExtendedProperty&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-72"></span><span>                         </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;showDeleted&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-73"></span><span>                           </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;q&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-74"></span><span>                             </span><span class="annot"><span class="hs-identifier hs-type">QueryParams</span></span><span> </span><span class="annot"><span class="hs-string">&quot;sharedExtendedProperty&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-75"></span><span>                               </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;maxAttendees&quot;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Textual</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-76"></span><span>                                 </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;iCalUID&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-77"></span><span>                                   </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;updatedMin&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">DateTime'</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-78"></span><span>                                     </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;pageToken&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-79"></span><span>                                       </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;timeZone&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-80"></span><span>                                         </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;showHiddenInvitations&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-81"></span><span>                                           </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-82"></span><span>                                           </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;maxResults&quot;</span></span><span>
+</span><span id="line-83"></span><span>                                             </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Textual</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span class="hs-special">)</span><span>
+</span><span id="line-84"></span><span>                                             </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-85"></span><span>                                             </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;alwaysIncludeEmail&quot;</span></span><span>
+</span><span id="line-86"></span><span>                                               </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-87"></span><span>                                               </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-88"></span><span>                                               </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;timeMax&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">DateTime'</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-89"></span><span>                                                 </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;alt&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">AltJSON</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-90"></span><span>                                                   </span><span class="annot"><span class="hs-identifier hs-type">Get</span></span><span> </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">JSON</span></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Events"><span class="hs-identifier hs-type">Events</span></a></span><span>
+</span><span id="line-91"></span><span>
+</span><span id="line-92"></span><span class="hs-comment">-- | Returns events on the specified calendar.</span><span>
+</span><span id="line-93"></span><span class="hs-comment">--</span><span>
+</span><span id="line-94"></span><span class="hs-comment">-- /See:/ 'eventsList' smart constructor.</span><span>
+</span><span id="line-95"></span><span id="local-6989586621679330067"><span id="local-6989586621679330068"></span></span><span class="hs-keyword">data</span><span> </span><span id="EventsList"><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-var">EventsList</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-96"></span><span>  </span><span id="EventsList%27"><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList%27"><span class="hs-identifier hs-var">EventsList'</span></a></span></span><span>
+</span><span id="line-97"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="_elSyncToken"><span class="annot"><span class="annottext">EventsList -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elSyncToken"><span class="hs-identifier hs-var hs-var">_elSyncToken</span></a></span></span><span>               </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-98"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_elCalendarId"><span class="annot"><span class="annottext">EventsList -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elCalendarId"><span class="hs-identifier hs-var hs-var">_elCalendarId</span></a></span></span><span>              </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-99"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_elTimeMin"><span class="annot"><span class="annottext">EventsList -&gt; Maybe DateTime'
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elTimeMin"><span class="hs-identifier hs-var hs-var">_elTimeMin</span></a></span></span><span>                 </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">DateTime'</span></span><span class="hs-special">)</span><span>
+</span><span id="line-100"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_elOrderBy"><span class="annot"><span class="annottext">EventsList -&gt; Maybe EventsListOrderBy
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elOrderBy"><span class="hs-identifier hs-var hs-var">_elOrderBy</span></a></span></span><span>                 </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Sum.html#EventsListOrderBy"><span class="hs-identifier hs-type">EventsListOrderBy</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-101"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_elSingleEvents"><span class="annot"><span class="annottext">EventsList -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elSingleEvents"><span class="hs-identifier hs-var hs-var">_elSingleEvents</span></a></span></span><span>            </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-102"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_elPrivateExtendedProperty"><span class="annot"><span class="annottext">EventsList -&gt; Maybe [Text]
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elPrivateExtendedProperty"><span class="hs-identifier hs-var hs-var">_elPrivateExtendedProperty</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">]</span><span class="hs-special">)</span><span>
+</span><span id="line-103"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_elShowDeleted"><span class="annot"><span class="annottext">EventsList -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elShowDeleted"><span class="hs-identifier hs-var hs-var">_elShowDeleted</span></a></span></span><span>             </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-104"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_elQ"><span class="annot"><span class="annottext">EventsList -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elQ"><span class="hs-identifier hs-var hs-var">_elQ</span></a></span></span><span>                       </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-105"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_elSharedExtendedProperty"><span class="annot"><span class="annottext">EventsList -&gt; Maybe [Text]
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elSharedExtendedProperty"><span class="hs-identifier hs-var hs-var">_elSharedExtendedProperty</span></a></span></span><span>  </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">]</span><span class="hs-special">)</span><span>
+</span><span id="line-106"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_elMaxAttendees"><span class="annot"><span class="annottext">EventsList -&gt; Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elMaxAttendees"><span class="hs-identifier hs-var hs-var">_elMaxAttendees</span></a></span></span><span>            </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Textual</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-107"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_elICalUId"><span class="annot"><span class="annottext">EventsList -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elICalUId"><span class="hs-identifier hs-var hs-var">_elICalUId</span></a></span></span><span>                 </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-108"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_elUpdatedMin"><span class="annot"><span class="annottext">EventsList -&gt; Maybe DateTime'
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elUpdatedMin"><span class="hs-identifier hs-var hs-var">_elUpdatedMin</span></a></span></span><span>              </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">DateTime'</span></span><span class="hs-special">)</span><span>
+</span><span id="line-109"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_elPageToken"><span class="annot"><span class="annottext">EventsList -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elPageToken"><span class="hs-identifier hs-var hs-var">_elPageToken</span></a></span></span><span>               </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-110"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_elTimeZone"><span class="annot"><span class="annottext">EventsList -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elTimeZone"><span class="hs-identifier hs-var hs-var">_elTimeZone</span></a></span></span><span>                </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-111"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_elShowHiddenInvitations"><span class="annot"><span class="annottext">EventsList -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elShowHiddenInvitations"><span class="hs-identifier hs-var hs-var">_elShowHiddenInvitations</span></a></span></span><span>   </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-112"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_elMaxResults"><span class="annot"><span class="annottext">EventsList -&gt; Textual Int32
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elMaxResults"><span class="hs-identifier hs-var hs-var">_elMaxResults</span></a></span></span><span>              </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Textual</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span class="hs-special">)</span><span>
+</span><span id="line-113"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_elAlwaysIncludeEmail"><span class="annot"><span class="annottext">EventsList -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elAlwaysIncludeEmail"><span class="hs-identifier hs-var hs-var">_elAlwaysIncludeEmail</span></a></span></span><span>      </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-114"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_elTimeMax"><span class="annot"><span class="annottext">EventsList -&gt; Maybe DateTime'
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elTimeMax"><span class="hs-identifier hs-var hs-var">_elTimeMax</span></a></span></span><span>                 </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">DateTime'</span></span><span class="hs-special">)</span><span>
+</span><span id="line-115"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-116"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679330044"><span id="local-6989586621679330046"><span class="annot"><span class="annottext">EventsList -&gt; EventsList -&gt; Bool
+(EventsList -&gt; EventsList -&gt; Bool)
+-&gt; (EventsList -&gt; EventsList -&gt; Bool) -&gt; Eq EventsList
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: EventsList -&gt; EventsList -&gt; Bool
+$c/= :: EventsList -&gt; EventsList -&gt; Bool
+== :: EventsList -&gt; EventsList -&gt; Bool
+$c== :: EventsList -&gt; EventsList -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679330037"><span id="local-6989586621679330039"><span id="local-6989586621679330041"><span class="annot"><span class="annottext">Int -&gt; EventsList -&gt; ShowS
+[EventsList] -&gt; ShowS
+EventsList -&gt; String
+(Int -&gt; EventsList -&gt; ShowS)
+-&gt; (EventsList -&gt; String)
+-&gt; ([EventsList] -&gt; ShowS)
+-&gt; Show EventsList
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [EventsList] -&gt; ShowS
+$cshowList :: [EventsList] -&gt; ShowS
+show :: EventsList -&gt; String
+$cshow :: EventsList -&gt; String
+showsPrec :: Int -&gt; EventsList -&gt; ShowS
+$cshowsPrec :: Int -&gt; EventsList -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="%24cEventsList%27"><span id="%24tEventsList"><span id="local-6989586621679330007"><span id="local-6989586621679330009"><span id="local-6989586621679330011"><span id="local-6989586621679330013"><span id="local-6989586621679330015"><span id="local-6989586621679330017"><span id="local-6989586621679330019"><span id="local-6989586621679330021"><span id="local-6989586621679330023"><span id="local-6989586621679330025"><span id="local-6989586621679330027"><span id="local-6989586621679330029"><span id="local-6989586621679330031"><span id="local-6989586621679330033"><span class="annot"><span class="annottext">Typeable EventsList
+DataType
+Constr
+Typeable EventsList =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; EventsList -&gt; c EventsList)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsList)
+-&gt; (EventsList -&gt; Constr)
+-&gt; (EventsList -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c EventsList))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e))
+    -&gt; Maybe (c EventsList))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; EventsList -&gt; EventsList)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsList -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsList -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; EventsList -&gt; [u])
+-&gt; (forall u.
+    Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; EventsList -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsList -&gt; m EventsList)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsList -&gt; m EventsList)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsList -&gt; m EventsList)
+-&gt; Data EventsList
+EventsList -&gt; DataType
+EventsList -&gt; Constr
+(forall b. Data b =&gt; b -&gt; b) -&gt; EventsList -&gt; EventsList
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; EventsList -&gt; c EventsList
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsList
+forall a.
+Typeable a =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; a -&gt; c a)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c a)
+-&gt; (a -&gt; Constr)
+-&gt; (a -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c a))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c a))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; a -&gt; a)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; Data a
+forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; EventsList -&gt; u
+forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; EventsList -&gt; [u]
+forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsList -&gt; r
+forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsList -&gt; r
+forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsList -&gt; m EventsList
+forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsList -&gt; m EventsList
+forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsList
+forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; EventsList -&gt; c EventsList
+forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c EventsList)
+forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c EventsList)
+$cEventsList' :: Constr
+$tEventsList :: DataType
+gmapMo :: (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsList -&gt; m EventsList
+$cgmapMo :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsList -&gt; m EventsList
+gmapMp :: (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsList -&gt; m EventsList
+$cgmapMp :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsList -&gt; m EventsList
+gmapM :: (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsList -&gt; m EventsList
+$cgmapM :: forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsList -&gt; m EventsList
+gmapQi :: Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; EventsList -&gt; u
+$cgmapQi :: forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; EventsList -&gt; u
+gmapQ :: (forall d. Data d =&gt; d -&gt; u) -&gt; EventsList -&gt; [u]
+$cgmapQ :: forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; EventsList -&gt; [u]
+gmapQr :: (r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsList -&gt; r
+$cgmapQr :: forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsList -&gt; r
+gmapQl :: (r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsList -&gt; r
+$cgmapQl :: forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsList -&gt; r
+gmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; EventsList -&gt; EventsList
+$cgmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; EventsList -&gt; EventsList
+dataCast2 :: (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c EventsList)
+$cdataCast2 :: forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c EventsList)
+dataCast1 :: (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c EventsList)
+$cdataCast1 :: forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c EventsList)
+dataTypeOf :: EventsList -&gt; DataType
+$cdataTypeOf :: EventsList -&gt; DataType
+toConstr :: EventsList -&gt; Constr
+$ctoConstr :: EventsList -&gt; Constr
+gunfold :: (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsList
+$cgunfold :: forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsList
+gfoldl :: (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; EventsList -&gt; c EventsList
+$cgfoldl :: forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; EventsList -&gt; c EventsList
+$cp1Data :: Typeable EventsList
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Data</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Typeable</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(forall x. EventsList -&gt; Rep EventsList x)
+-&gt; (forall x. Rep EventsList x -&gt; EventsList) -&gt; Generic EventsList
+forall x. Rep EventsList x -&gt; EventsList
+forall x. EventsList -&gt; Rep EventsList x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep EventsList x -&gt; EventsList
+$cfrom :: forall x. EventsList -&gt; Rep EventsList x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">)</span><span>
+</span><span id="line-117"></span><span>
+</span><span id="line-118"></span><span>
+</span><span id="line-119"></span><span class="hs-comment">-- | Creates a value of 'EventsList' with the minimum fields required to make a request.</span><span>
+</span><span id="line-120"></span><span class="hs-comment">--</span><span>
+</span><span id="line-121"></span><span class="hs-comment">-- Use one of the following lenses to modify other fields as desired:</span><span>
+</span><span id="line-122"></span><span class="hs-comment">--</span><span>
+</span><span id="line-123"></span><span class="hs-comment">-- * 'elSyncToken'</span><span>
+</span><span id="line-124"></span><span class="hs-comment">--</span><span>
+</span><span id="line-125"></span><span class="hs-comment">-- * 'elCalendarId'</span><span>
+</span><span id="line-126"></span><span class="hs-comment">--</span><span>
+</span><span id="line-127"></span><span class="hs-comment">-- * 'elTimeMin'</span><span>
+</span><span id="line-128"></span><span class="hs-comment">--</span><span>
+</span><span id="line-129"></span><span class="hs-comment">-- * 'elOrderBy'</span><span>
+</span><span id="line-130"></span><span class="hs-comment">--</span><span>
+</span><span id="line-131"></span><span class="hs-comment">-- * 'elSingleEvents'</span><span>
+</span><span id="line-132"></span><span class="hs-comment">--</span><span>
+</span><span id="line-133"></span><span class="hs-comment">-- * 'elPrivateExtendedProperty'</span><span>
+</span><span id="line-134"></span><span class="hs-comment">--</span><span>
+</span><span id="line-135"></span><span class="hs-comment">-- * 'elShowDeleted'</span><span>
+</span><span id="line-136"></span><span class="hs-comment">--</span><span>
+</span><span id="line-137"></span><span class="hs-comment">-- * 'elQ'</span><span>
+</span><span id="line-138"></span><span class="hs-comment">--</span><span>
+</span><span id="line-139"></span><span class="hs-comment">-- * 'elSharedExtendedProperty'</span><span>
+</span><span id="line-140"></span><span class="hs-comment">--</span><span>
+</span><span id="line-141"></span><span class="hs-comment">-- * 'elMaxAttendees'</span><span>
+</span><span id="line-142"></span><span class="hs-comment">--</span><span>
+</span><span id="line-143"></span><span class="hs-comment">-- * 'elICalUId'</span><span>
+</span><span id="line-144"></span><span class="hs-comment">--</span><span>
+</span><span id="line-145"></span><span class="hs-comment">-- * 'elUpdatedMin'</span><span>
+</span><span id="line-146"></span><span class="hs-comment">--</span><span>
+</span><span id="line-147"></span><span class="hs-comment">-- * 'elPageToken'</span><span>
+</span><span id="line-148"></span><span class="hs-comment">--</span><span>
+</span><span id="line-149"></span><span class="hs-comment">-- * 'elTimeZone'</span><span>
+</span><span id="line-150"></span><span class="hs-comment">--</span><span>
+</span><span id="line-151"></span><span class="hs-comment">-- * 'elShowHiddenInvitations'</span><span>
+</span><span id="line-152"></span><span class="hs-comment">--</span><span>
+</span><span id="line-153"></span><span class="hs-comment">-- * 'elMaxResults'</span><span>
+</span><span id="line-154"></span><span class="hs-comment">--</span><span>
+</span><span id="line-155"></span><span class="hs-comment">-- * 'elAlwaysIncludeEmail'</span><span>
+</span><span id="line-156"></span><span class="hs-comment">--</span><span>
+</span><span id="line-157"></span><span class="hs-comment">-- * 'elTimeMax'</span><span>
+</span><span id="line-158"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#eventsList"><span class="hs-identifier hs-type">eventsList</span></a></span><span>
+</span><span id="line-159"></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ 'elCalendarId'</span><span>
+</span><span id="line-160"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span>
+</span><span id="line-161"></span><span id="eventsList"><span class="annot"><span class="annottext">eventsList :: Text -&gt; EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#eventsList"><span class="hs-identifier hs-var hs-var">eventsList</span></a></span></span><span> </span><span id="local-6989586621679330000"><span class="annot"><span class="annottext">pElCalendarId_ :: Text
+</span><a href="#local-6989586621679330000"><span class="hs-identifier hs-var">pElCalendarId_</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-162"></span><span>  </span><span class="annot"><span class="annottext">$WEventsList' :: Maybe Text
+-&gt; Text
+-&gt; Maybe DateTime'
+-&gt; Maybe EventsListOrderBy
+-&gt; Maybe Bool
+-&gt; Maybe [Text]
+-&gt; Maybe Bool
+-&gt; Maybe Text
+-&gt; Maybe [Text]
+-&gt; Maybe (Textual Int32)
+-&gt; Maybe Text
+-&gt; Maybe DateTime'
+-&gt; Maybe Text
+-&gt; Maybe Text
+-&gt; Maybe Bool
+-&gt; Textual Int32
+-&gt; Maybe Bool
+-&gt; Maybe DateTime'
+-&gt; EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#%24WEventsList%27"><span class="hs-identifier hs-type hs-type">EventsList'</span></a></span><span>
+</span><span id="line-163"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_elSyncToken :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elSyncToken"><span class="hs-identifier hs-var">_elSyncToken</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-164"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_elCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elCalendarId"><span class="hs-identifier hs-var">_elCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679330000"><span class="hs-identifier hs-var">pElCalendarId_</span></a></span><span>
+</span><span id="line-165"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_elTimeMin :: Maybe DateTime'
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elTimeMin"><span class="hs-identifier hs-var">_elTimeMin</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe DateTime'
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-166"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_elOrderBy :: Maybe EventsListOrderBy
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elOrderBy"><span class="hs-identifier hs-var">_elOrderBy</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe EventsListOrderBy
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-167"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_elSingleEvents :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elSingleEvents"><span class="hs-identifier hs-var">_elSingleEvents</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-168"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_elPrivateExtendedProperty :: Maybe [Text]
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elPrivateExtendedProperty"><span class="hs-identifier hs-var">_elPrivateExtendedProperty</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [Text]
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-169"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_elShowDeleted :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elShowDeleted"><span class="hs-identifier hs-var">_elShowDeleted</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-170"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_elQ :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elQ"><span class="hs-identifier hs-var">_elQ</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-171"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_elSharedExtendedProperty :: Maybe [Text]
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elSharedExtendedProperty"><span class="hs-identifier hs-var">_elSharedExtendedProperty</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [Text]
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-172"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_elMaxAttendees :: Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elMaxAttendees"><span class="hs-identifier hs-var">_elMaxAttendees</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe (Textual Int32)
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-173"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_elICalUId :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elICalUId"><span class="hs-identifier hs-var">_elICalUId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-174"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_elUpdatedMin :: Maybe DateTime'
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elUpdatedMin"><span class="hs-identifier hs-var">_elUpdatedMin</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe DateTime'
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-175"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_elPageToken :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elPageToken"><span class="hs-identifier hs-var">_elPageToken</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-176"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_elTimeZone :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elTimeZone"><span class="hs-identifier hs-var">_elTimeZone</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-177"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_elShowHiddenInvitations :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elShowHiddenInvitations"><span class="hs-identifier hs-var">_elShowHiddenInvitations</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-178"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_elMaxResults :: Textual Int32
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elMaxResults"><span class="hs-identifier hs-var">_elMaxResults</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-number">250</span></span><span>
+</span><span id="line-179"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_elAlwaysIncludeEmail :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elAlwaysIncludeEmail"><span class="hs-identifier hs-var">_elAlwaysIncludeEmail</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-180"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_elTimeMax :: Maybe DateTime'
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elTimeMax"><span class="hs-identifier hs-var">_elTimeMax</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe DateTime'
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-181"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-182"></span><span>
+</span><span id="line-183"></span><span>
+</span><span id="line-184"></span><span class="hs-comment">-- | Token obtained from the nextSyncToken field returned on the last page of</span><span>
+</span><span id="line-185"></span><span class="hs-comment">-- results from the previous list request. It makes the result of this list</span><span>
+</span><span id="line-186"></span><span class="hs-comment">-- request contain only entries that have changed since then. All events</span><span>
+</span><span id="line-187"></span><span class="hs-comment">-- deleted since the previous list request will always be in the result set</span><span>
+</span><span id="line-188"></span><span class="hs-comment">-- and it is not allowed to set showDeleted to False. There are several</span><span>
+</span><span id="line-189"></span><span class="hs-comment">-- query parameters that cannot be specified together with nextSyncToken to</span><span>
+</span><span id="line-190"></span><span class="hs-comment">-- ensure consistency of the client state. These are: - iCalUID - orderBy -</span><span>
+</span><span id="line-191"></span><span class="hs-comment">-- privateExtendedProperty - q - sharedExtendedProperty - timeMin - timeMax</span><span>
+</span><span id="line-192"></span><span class="hs-comment">-- - updatedMin If the syncToken expires, the server will respond with a</span><span>
+</span><span id="line-193"></span><span class="hs-comment">-- 410 GONE response code and the client should clear its storage and</span><span>
+</span><span id="line-194"></span><span class="hs-comment">-- perform a full synchronization without any syncToken. Learn more about</span><span>
+</span><span id="line-195"></span><span class="hs-comment">-- incremental synchronization. Optional. The default is to return all</span><span>
+</span><span id="line-196"></span><span class="hs-comment">-- entries.</span><span>
+</span><span id="line-197"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elSyncToken"><span class="hs-identifier hs-type">elSyncToken</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-198"></span><span id="elSyncToken"><span class="annot"><span class="annottext">elSyncToken :: (Maybe Text -&gt; f (Maybe Text)) -&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elSyncToken"><span class="hs-identifier hs-var hs-var">elSyncToken</span></a></span></span><span>
+</span><span id="line-199"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Maybe Text)
+-&gt; (EventsList -&gt; Maybe Text -&gt; EventsList)
+-&gt; Lens EventsList EventsList (Maybe Text) (Maybe Text)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elSyncToken"><span class="hs-identifier hs-var hs-var">_elSyncToken</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329996"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329996"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329995"><span class="annot"><span class="annottext">a :: Maybe Text
+</span><a href="#local-6989586621679329995"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329996"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elSyncToken :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elSyncToken"><span class="hs-identifier hs-var">_elSyncToken</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679329995"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-200"></span><span>
+</span><span id="line-201"></span><span class="hs-comment">-- | Calendar identifier. To retrieve calendar IDs call the calendarList.list</span><span>
+</span><span id="line-202"></span><span class="hs-comment">-- method. If you want to access the primary calendar of the currently</span><span>
+</span><span id="line-203"></span><span class="hs-comment">-- logged in user, use the \&quot;primary\&quot; keyword.</span><span>
+</span><span id="line-204"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elCalendarId"><span class="hs-identifier hs-type">elCalendarId</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-205"></span><span id="elCalendarId"><span class="annot"><span class="annottext">elCalendarId :: (Text -&gt; f Text) -&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elCalendarId"><span class="hs-identifier hs-var hs-var">elCalendarId</span></a></span></span><span>
+</span><span id="line-206"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Text)
+-&gt; (EventsList -&gt; Text -&gt; EventsList)
+-&gt; Lens EventsList EventsList Text Text
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elCalendarId"><span class="hs-identifier hs-var hs-var">_elCalendarId</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329994"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329994"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329993"><span class="annot"><span class="annottext">a :: Text
+</span><a href="#local-6989586621679329993"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329994"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elCalendarId"><span class="hs-identifier hs-var">_elCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679329993"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-207"></span><span>
+</span><span id="line-208"></span><span class="hs-comment">-- | Lower bound (inclusive) for an event\'s start time to filter by.</span><span>
+</span><span id="line-209"></span><span class="hs-comment">-- Optional. The default is not to filter by start time. Must be an RFC3339</span><span>
+</span><span id="line-210"></span><span class="hs-comment">-- timestamp with mandatory time zone offset, for example,</span><span>
+</span><span id="line-211"></span><span class="hs-comment">-- 2011-06-03T10:00:00-07:00, 2011-06-03T10:00:00Z. Milliseconds may be</span><span>
+</span><span id="line-212"></span><span class="hs-comment">-- provided but are ignored. If timeMax is set, timeMin must be smaller</span><span>
+</span><span id="line-213"></span><span class="hs-comment">-- than timeMax.</span><span>
+</span><span id="line-214"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elTimeMin"><span class="hs-identifier hs-type">elTimeMin</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">UTCTime</span></span><span class="hs-special">)</span><span>
+</span><span id="line-215"></span><span id="elTimeMin"><span class="annot"><span class="annottext">elTimeMin :: (Maybe UTCTime -&gt; f (Maybe UTCTime)) -&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elTimeMin"><span class="hs-identifier hs-var hs-var">elTimeMin</span></a></span></span><span>
+</span><span id="line-216"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Maybe DateTime')
+-&gt; (EventsList -&gt; Maybe DateTime' -&gt; EventsList)
+-&gt; Lens EventsList EventsList (Maybe DateTime') (Maybe DateTime')
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Maybe DateTime'
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elTimeMin"><span class="hs-identifier hs-var hs-var">_elTimeMin</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329992"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329992"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329991"><span class="annot"><span class="annottext">a :: Maybe DateTime'
+</span><a href="#local-6989586621679329991"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329992"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elTimeMin :: Maybe DateTime'
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elTimeMin"><span class="hs-identifier hs-var">_elTimeMin</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe DateTime'
+</span><a href="#local-6989586621679329991"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">((Maybe DateTime' -&gt; f (Maybe DateTime'))
+ -&gt; EventsList -&gt; f EventsList)
+-&gt; ((Maybe UTCTime -&gt; f (Maybe UTCTime))
+    -&gt; Maybe DateTime' -&gt; f (Maybe DateTime'))
+-&gt; (Maybe UTCTime -&gt; f (Maybe UTCTime))
+-&gt; EventsList
+-&gt; f EventsList
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-217"></span><span>      </span><span class="annot"><span class="annottext">AnIso DateTime' DateTime' UTCTime UTCTime
+-&gt; Iso
+     (Maybe DateTime') (Maybe DateTime') (Maybe UTCTime) (Maybe UTCTime)
+forall (f :: * -&gt; *) (g :: * -&gt; *) s t a b.
+(Functor f, Functor g) =&gt;
+AnIso s t a b -&gt; Iso (f s) (g t) (f a) (g b)
+</span><span class="hs-identifier hs-var">mapping</span></span><span> </span><span class="annot"><span class="annottext">AnIso DateTime' DateTime' UTCTime UTCTime
+Iso' DateTime' UTCTime
+</span><span class="hs-identifier hs-var">_DateTime</span></span><span>
+</span><span id="line-218"></span><span>
+</span><span id="line-219"></span><span class="hs-comment">-- | The order of the events returned in the result. Optional. The default is</span><span>
+</span><span id="line-220"></span><span class="hs-comment">-- an unspecified, stable order.</span><span>
+</span><span id="line-221"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elOrderBy"><span class="hs-identifier hs-type">elOrderBy</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Sum.html#EventsListOrderBy"><span class="hs-identifier hs-type">EventsListOrderBy</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-222"></span><span id="elOrderBy"><span class="annot"><span class="annottext">elOrderBy :: (Maybe EventsListOrderBy -&gt; f (Maybe EventsListOrderBy))
+-&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elOrderBy"><span class="hs-identifier hs-var hs-var">elOrderBy</span></a></span></span><span>
+</span><span id="line-223"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Maybe EventsListOrderBy)
+-&gt; (EventsList -&gt; Maybe EventsListOrderBy -&gt; EventsList)
+-&gt; Lens
+     EventsList
+     EventsList
+     (Maybe EventsListOrderBy)
+     (Maybe EventsListOrderBy)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Maybe EventsListOrderBy
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elOrderBy"><span class="hs-identifier hs-var hs-var">_elOrderBy</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329987"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329987"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329986"><span class="annot"><span class="annottext">a :: Maybe EventsListOrderBy
+</span><a href="#local-6989586621679329986"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329987"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elOrderBy :: Maybe EventsListOrderBy
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elOrderBy"><span class="hs-identifier hs-var">_elOrderBy</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe EventsListOrderBy
+</span><a href="#local-6989586621679329986"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-224"></span><span>
+</span><span id="line-225"></span><span class="hs-comment">-- | Whether to expand recurring events into instances and only return single</span><span>
+</span><span id="line-226"></span><span class="hs-comment">-- one-off events and instances of recurring events, but not the underlying</span><span>
+</span><span id="line-227"></span><span class="hs-comment">-- recurring events themselves. Optional. The default is False.</span><span>
+</span><span id="line-228"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elSingleEvents"><span class="hs-identifier hs-type">elSingleEvents</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-229"></span><span id="elSingleEvents"><span class="annot"><span class="annottext">elSingleEvents :: (Maybe Bool -&gt; f (Maybe Bool)) -&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elSingleEvents"><span class="hs-identifier hs-var hs-var">elSingleEvents</span></a></span></span><span>
+</span><span id="line-230"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Maybe Bool)
+-&gt; (EventsList -&gt; Maybe Bool -&gt; EventsList)
+-&gt; Lens EventsList EventsList (Maybe Bool) (Maybe Bool)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elSingleEvents"><span class="hs-identifier hs-var hs-var">_elSingleEvents</span></a></span><span>
+</span><span id="line-231"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329985"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329985"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329984"><span class="annot"><span class="annottext">a :: Maybe Bool
+</span><a href="#local-6989586621679329984"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329985"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elSingleEvents :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elSingleEvents"><span class="hs-identifier hs-var">_elSingleEvents</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679329984"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-232"></span><span>
+</span><span id="line-233"></span><span class="hs-comment">-- | Extended properties constraint specified as propertyName=value. Matches</span><span>
+</span><span id="line-234"></span><span class="hs-comment">-- only private properties. This parameter might be repeated multiple times</span><span>
+</span><span id="line-235"></span><span class="hs-comment">-- to return events that match all given constraints.</span><span>
+</span><span id="line-236"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elPrivateExtendedProperty"><span class="hs-identifier hs-type">elPrivateExtendedProperty</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">]</span><span>
+</span><span id="line-237"></span><span id="elPrivateExtendedProperty"><span class="annot"><span class="annottext">elPrivateExtendedProperty :: ([Text] -&gt; f [Text]) -&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elPrivateExtendedProperty"><span class="hs-identifier hs-var hs-var">elPrivateExtendedProperty</span></a></span></span><span>
+</span><span id="line-238"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Maybe [Text])
+-&gt; (EventsList -&gt; Maybe [Text] -&gt; EventsList)
+-&gt; Lens EventsList EventsList (Maybe [Text]) (Maybe [Text])
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Maybe [Text]
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elPrivateExtendedProperty"><span class="hs-identifier hs-var hs-var">_elPrivateExtendedProperty</span></a></span><span>
+</span><span id="line-239"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329983"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329983"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329982"><span class="annot"><span class="annottext">a :: Maybe [Text]
+</span><a href="#local-6989586621679329982"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329983"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elPrivateExtendedProperty :: Maybe [Text]
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elPrivateExtendedProperty"><span class="hs-identifier hs-var">_elPrivateExtendedProperty</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [Text]
+</span><a href="#local-6989586621679329982"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-240"></span><span>      </span><span class="annot"><span class="annottext">((Maybe [Text] -&gt; f (Maybe [Text])) -&gt; EventsList -&gt; f EventsList)
+-&gt; (([Text] -&gt; f [Text]) -&gt; Maybe [Text] -&gt; f (Maybe [Text]))
+-&gt; ([Text] -&gt; f [Text])
+-&gt; EventsList
+-&gt; f EventsList
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">([Text] -&gt; f [Text]) -&gt; Maybe [Text] -&gt; f (Maybe [Text])
+forall a. Monoid a =&gt; Iso' (Maybe a) a
+</span><span class="hs-identifier hs-var">_Default</span></span><span>
+</span><span id="line-241"></span><span>      </span><span class="annot"><span class="annottext">(([Text] -&gt; f [Text]) -&gt; Maybe [Text] -&gt; f (Maybe [Text]))
+-&gt; (([Text] -&gt; f [Text]) -&gt; [Text] -&gt; f [Text])
+-&gt; ([Text] -&gt; f [Text])
+-&gt; Maybe [Text]
+-&gt; f (Maybe [Text])
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">([Text] -&gt; f [Text]) -&gt; [Text] -&gt; f [Text]
+forall a b. (Coercible a b, Coercible b a) =&gt; Iso' a b
+</span><span class="hs-identifier hs-var">_Coerce</span></span><span>
+</span><span id="line-242"></span><span>
+</span><span id="line-243"></span><span class="hs-comment">-- | Whether to include deleted events (with status equals \&quot;cancelled\&quot;) in</span><span>
+</span><span id="line-244"></span><span class="hs-comment">-- the result. Cancelled instances of recurring events (but not the</span><span>
+</span><span id="line-245"></span><span class="hs-comment">-- underlying recurring event) will still be included if showDeleted and</span><span>
+</span><span id="line-246"></span><span class="hs-comment">-- singleEvents are both False. If showDeleted and singleEvents are both</span><span>
+</span><span id="line-247"></span><span class="hs-comment">-- True, only single instances of deleted events (but not the underlying</span><span>
+</span><span id="line-248"></span><span class="hs-comment">-- recurring events) are returned. Optional. The default is False.</span><span>
+</span><span id="line-249"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elShowDeleted"><span class="hs-identifier hs-type">elShowDeleted</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-250"></span><span id="elShowDeleted"><span class="annot"><span class="annottext">elShowDeleted :: (Maybe Bool -&gt; f (Maybe Bool)) -&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elShowDeleted"><span class="hs-identifier hs-var hs-var">elShowDeleted</span></a></span></span><span>
+</span><span id="line-251"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Maybe Bool)
+-&gt; (EventsList -&gt; Maybe Bool -&gt; EventsList)
+-&gt; Lens EventsList EventsList (Maybe Bool) (Maybe Bool)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elShowDeleted"><span class="hs-identifier hs-var hs-var">_elShowDeleted</span></a></span><span>
+</span><span id="line-252"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329979"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329979"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329978"><span class="annot"><span class="annottext">a :: Maybe Bool
+</span><a href="#local-6989586621679329978"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329979"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elShowDeleted :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elShowDeleted"><span class="hs-identifier hs-var">_elShowDeleted</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679329978"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-253"></span><span>
+</span><span id="line-254"></span><span class="hs-comment">-- | Free text search terms to find events that match these terms in any</span><span>
+</span><span id="line-255"></span><span class="hs-comment">-- field, except for extended properties. Optional.</span><span>
+</span><span id="line-256"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elQ"><span class="hs-identifier hs-type">elQ</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-257"></span><span id="elQ"><span class="annot"><span class="annottext">elQ :: (Maybe Text -&gt; f (Maybe Text)) -&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elQ"><span class="hs-identifier hs-var hs-var">elQ</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Maybe Text)
+-&gt; (EventsList -&gt; Maybe Text -&gt; EventsList)
+-&gt; Lens EventsList EventsList (Maybe Text) (Maybe Text)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elQ"><span class="hs-identifier hs-var hs-var">_elQ</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329977"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329977"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329976"><span class="annot"><span class="annottext">a :: Maybe Text
+</span><a href="#local-6989586621679329976"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329977"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elQ :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elQ"><span class="hs-identifier hs-var">_elQ</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679329976"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-258"></span><span>
+</span><span id="line-259"></span><span class="hs-comment">-- | Extended properties constraint specified as propertyName=value. Matches</span><span>
+</span><span id="line-260"></span><span class="hs-comment">-- only shared properties. This parameter might be repeated multiple times</span><span>
+</span><span id="line-261"></span><span class="hs-comment">-- to return events that match all given constraints.</span><span>
+</span><span id="line-262"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elSharedExtendedProperty"><span class="hs-identifier hs-type">elSharedExtendedProperty</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">]</span><span>
+</span><span id="line-263"></span><span id="elSharedExtendedProperty"><span class="annot"><span class="annottext">elSharedExtendedProperty :: ([Text] -&gt; f [Text]) -&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elSharedExtendedProperty"><span class="hs-identifier hs-var hs-var">elSharedExtendedProperty</span></a></span></span><span>
+</span><span id="line-264"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Maybe [Text])
+-&gt; (EventsList -&gt; Maybe [Text] -&gt; EventsList)
+-&gt; Lens EventsList EventsList (Maybe [Text]) (Maybe [Text])
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Maybe [Text]
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elSharedExtendedProperty"><span class="hs-identifier hs-var hs-var">_elSharedExtendedProperty</span></a></span><span>
+</span><span id="line-265"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329975"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329975"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329974"><span class="annot"><span class="annottext">a :: Maybe [Text]
+</span><a href="#local-6989586621679329974"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329975"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elSharedExtendedProperty :: Maybe [Text]
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elSharedExtendedProperty"><span class="hs-identifier hs-var">_elSharedExtendedProperty</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [Text]
+</span><a href="#local-6989586621679329974"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-266"></span><span>      </span><span class="annot"><span class="annottext">((Maybe [Text] -&gt; f (Maybe [Text])) -&gt; EventsList -&gt; f EventsList)
+-&gt; (([Text] -&gt; f [Text]) -&gt; Maybe [Text] -&gt; f (Maybe [Text]))
+-&gt; ([Text] -&gt; f [Text])
+-&gt; EventsList
+-&gt; f EventsList
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">([Text] -&gt; f [Text]) -&gt; Maybe [Text] -&gt; f (Maybe [Text])
+forall a. Monoid a =&gt; Iso' (Maybe a) a
+</span><span class="hs-identifier hs-var">_Default</span></span><span>
+</span><span id="line-267"></span><span>      </span><span class="annot"><span class="annottext">(([Text] -&gt; f [Text]) -&gt; Maybe [Text] -&gt; f (Maybe [Text]))
+-&gt; (([Text] -&gt; f [Text]) -&gt; [Text] -&gt; f [Text])
+-&gt; ([Text] -&gt; f [Text])
+-&gt; Maybe [Text]
+-&gt; f (Maybe [Text])
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">([Text] -&gt; f [Text]) -&gt; [Text] -&gt; f [Text]
+forall a b. (Coercible a b, Coercible b a) =&gt; Iso' a b
+</span><span class="hs-identifier hs-var">_Coerce</span></span><span>
+</span><span id="line-268"></span><span>
+</span><span id="line-269"></span><span class="hs-comment">-- | The maximum number of attendees to include in the response. If there are</span><span>
+</span><span id="line-270"></span><span class="hs-comment">-- more than the specified number of attendees, only the participant is</span><span>
+</span><span id="line-271"></span><span class="hs-comment">-- returned. Optional.</span><span>
+</span><span id="line-272"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elMaxAttendees"><span class="hs-identifier hs-type">elMaxAttendees</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span class="hs-special">)</span><span>
+</span><span id="line-273"></span><span id="elMaxAttendees"><span class="annot"><span class="annottext">elMaxAttendees :: (Maybe Int32 -&gt; f (Maybe Int32)) -&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elMaxAttendees"><span class="hs-identifier hs-var hs-var">elMaxAttendees</span></a></span></span><span>
+</span><span id="line-274"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Maybe (Textual Int32))
+-&gt; (EventsList -&gt; Maybe (Textual Int32) -&gt; EventsList)
+-&gt; Lens
+     EventsList
+     EventsList
+     (Maybe (Textual Int32))
+     (Maybe (Textual Int32))
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elMaxAttendees"><span class="hs-identifier hs-var hs-var">_elMaxAttendees</span></a></span><span>
+</span><span id="line-275"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329973"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329973"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329972"><span class="annot"><span class="annottext">a :: Maybe (Textual Int32)
+</span><a href="#local-6989586621679329972"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329973"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elMaxAttendees :: Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elMaxAttendees"><span class="hs-identifier hs-var">_elMaxAttendees</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe (Textual Int32)
+</span><a href="#local-6989586621679329972"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-276"></span><span>      </span><span class="annot"><span class="annottext">((Maybe (Textual Int32) -&gt; f (Maybe (Textual Int32)))
+ -&gt; EventsList -&gt; f EventsList)
+-&gt; ((Maybe Int32 -&gt; f (Maybe Int32))
+    -&gt; Maybe (Textual Int32) -&gt; f (Maybe (Textual Int32)))
+-&gt; (Maybe Int32 -&gt; f (Maybe Int32))
+-&gt; EventsList
+-&gt; f EventsList
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">AnIso (Textual Int32) (Textual Int32) Int32 Int32
+-&gt; Iso
+     (Maybe (Textual Int32))
+     (Maybe (Textual Int32))
+     (Maybe Int32)
+     (Maybe Int32)
+forall (f :: * -&gt; *) (g :: * -&gt; *) s t a b.
+(Functor f, Functor g) =&gt;
+AnIso s t a b -&gt; Iso (f s) (g t) (f a) (g b)
+</span><span class="hs-identifier hs-var">mapping</span></span><span> </span><span class="annot"><span class="annottext">AnIso (Textual Int32) (Textual Int32) Int32 Int32
+forall a b. (Coercible a b, Coercible b a) =&gt; Iso' a b
+</span><span class="hs-identifier hs-var">_Coerce</span></span><span>
+</span><span id="line-277"></span><span>
+</span><span id="line-278"></span><span class="hs-comment">-- | Specifies event ID in the iCalendar format to be included in the</span><span>
+</span><span id="line-279"></span><span class="hs-comment">-- response. Optional.</span><span>
+</span><span id="line-280"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elICalUId"><span class="hs-identifier hs-type">elICalUId</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-281"></span><span id="elICalUId"><span class="annot"><span class="annottext">elICalUId :: (Maybe Text -&gt; f (Maybe Text)) -&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elICalUId"><span class="hs-identifier hs-var hs-var">elICalUId</span></a></span></span><span>
+</span><span id="line-282"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Maybe Text)
+-&gt; (EventsList -&gt; Maybe Text -&gt; EventsList)
+-&gt; Lens EventsList EventsList (Maybe Text) (Maybe Text)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elICalUId"><span class="hs-identifier hs-var hs-var">_elICalUId</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329971"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329971"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329970"><span class="annot"><span class="annottext">a :: Maybe Text
+</span><a href="#local-6989586621679329970"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329971"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elICalUId :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elICalUId"><span class="hs-identifier hs-var">_elICalUId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679329970"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-283"></span><span>
+</span><span id="line-284"></span><span class="hs-comment">-- | Lower bound for an event\'s last modification time (as a RFC3339</span><span>
+</span><span id="line-285"></span><span class="hs-comment">-- timestamp) to filter by. When specified, entries deleted since this time</span><span>
+</span><span id="line-286"></span><span class="hs-comment">-- will always be included regardless of showDeleted. Optional. The default</span><span>
+</span><span id="line-287"></span><span class="hs-comment">-- is not to filter by last modification time.</span><span>
+</span><span id="line-288"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elUpdatedMin"><span class="hs-identifier hs-type">elUpdatedMin</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">UTCTime</span></span><span class="hs-special">)</span><span>
+</span><span id="line-289"></span><span id="elUpdatedMin"><span class="annot"><span class="annottext">elUpdatedMin :: (Maybe UTCTime -&gt; f (Maybe UTCTime)) -&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elUpdatedMin"><span class="hs-identifier hs-var hs-var">elUpdatedMin</span></a></span></span><span>
+</span><span id="line-290"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Maybe DateTime')
+-&gt; (EventsList -&gt; Maybe DateTime' -&gt; EventsList)
+-&gt; Lens EventsList EventsList (Maybe DateTime') (Maybe DateTime')
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Maybe DateTime'
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elUpdatedMin"><span class="hs-identifier hs-var hs-var">_elUpdatedMin</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329969"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329969"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329968"><span class="annot"><span class="annottext">a :: Maybe DateTime'
+</span><a href="#local-6989586621679329968"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329969"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elUpdatedMin :: Maybe DateTime'
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elUpdatedMin"><span class="hs-identifier hs-var">_elUpdatedMin</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe DateTime'
+</span><a href="#local-6989586621679329968"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-291"></span><span>      </span><span class="annot"><span class="annottext">((Maybe DateTime' -&gt; f (Maybe DateTime'))
+ -&gt; EventsList -&gt; f EventsList)
+-&gt; ((Maybe UTCTime -&gt; f (Maybe UTCTime))
+    -&gt; Maybe DateTime' -&gt; f (Maybe DateTime'))
+-&gt; (Maybe UTCTime -&gt; f (Maybe UTCTime))
+-&gt; EventsList
+-&gt; f EventsList
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">AnIso DateTime' DateTime' UTCTime UTCTime
+-&gt; Iso
+     (Maybe DateTime') (Maybe DateTime') (Maybe UTCTime) (Maybe UTCTime)
+forall (f :: * -&gt; *) (g :: * -&gt; *) s t a b.
+(Functor f, Functor g) =&gt;
+AnIso s t a b -&gt; Iso (f s) (g t) (f a) (g b)
+</span><span class="hs-identifier hs-var">mapping</span></span><span> </span><span class="annot"><span class="annottext">AnIso DateTime' DateTime' UTCTime UTCTime
+Iso' DateTime' UTCTime
+</span><span class="hs-identifier hs-var">_DateTime</span></span><span>
+</span><span id="line-292"></span><span>
+</span><span id="line-293"></span><span class="hs-comment">-- | Token specifying which result page to return. Optional.</span><span>
+</span><span id="line-294"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elPageToken"><span class="hs-identifier hs-type">elPageToken</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-295"></span><span id="elPageToken"><span class="annot"><span class="annottext">elPageToken :: (Maybe Text -&gt; f (Maybe Text)) -&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elPageToken"><span class="hs-identifier hs-var hs-var">elPageToken</span></a></span></span><span>
+</span><span id="line-296"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Maybe Text)
+-&gt; (EventsList -&gt; Maybe Text -&gt; EventsList)
+-&gt; Lens EventsList EventsList (Maybe Text) (Maybe Text)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elPageToken"><span class="hs-identifier hs-var hs-var">_elPageToken</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329967"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329967"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329966"><span class="annot"><span class="annottext">a :: Maybe Text
+</span><a href="#local-6989586621679329966"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329967"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elPageToken :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elPageToken"><span class="hs-identifier hs-var">_elPageToken</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679329966"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-297"></span><span>
+</span><span id="line-298"></span><span class="hs-comment">-- | Time zone used in the response. Optional. The default is the time zone</span><span>
+</span><span id="line-299"></span><span class="hs-comment">-- of the calendar.</span><span>
+</span><span id="line-300"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elTimeZone"><span class="hs-identifier hs-type">elTimeZone</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-301"></span><span id="elTimeZone"><span class="annot"><span class="annottext">elTimeZone :: (Maybe Text -&gt; f (Maybe Text)) -&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elTimeZone"><span class="hs-identifier hs-var hs-var">elTimeZone</span></a></span></span><span>
+</span><span id="line-302"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Maybe Text)
+-&gt; (EventsList -&gt; Maybe Text -&gt; EventsList)
+-&gt; Lens EventsList EventsList (Maybe Text) (Maybe Text)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elTimeZone"><span class="hs-identifier hs-var hs-var">_elTimeZone</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329965"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329965"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329964"><span class="annot"><span class="annottext">a :: Maybe Text
+</span><a href="#local-6989586621679329964"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329965"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elTimeZone :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elTimeZone"><span class="hs-identifier hs-var">_elTimeZone</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679329964"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-303"></span><span>
+</span><span id="line-304"></span><span class="hs-comment">-- | Whether to include hidden invitations in the result. Optional. The</span><span>
+</span><span id="line-305"></span><span class="hs-comment">-- default is False.</span><span>
+</span><span id="line-306"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elShowHiddenInvitations"><span class="hs-identifier hs-type">elShowHiddenInvitations</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-307"></span><span id="elShowHiddenInvitations"><span class="annot"><span class="annottext">elShowHiddenInvitations :: (Maybe Bool -&gt; f (Maybe Bool)) -&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elShowHiddenInvitations"><span class="hs-identifier hs-var hs-var">elShowHiddenInvitations</span></a></span></span><span>
+</span><span id="line-308"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Maybe Bool)
+-&gt; (EventsList -&gt; Maybe Bool -&gt; EventsList)
+-&gt; Lens EventsList EventsList (Maybe Bool) (Maybe Bool)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elShowHiddenInvitations"><span class="hs-identifier hs-var hs-var">_elShowHiddenInvitations</span></a></span><span>
+</span><span id="line-309"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329963"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329963"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329962"><span class="annot"><span class="annottext">a :: Maybe Bool
+</span><a href="#local-6989586621679329962"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329963"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elShowHiddenInvitations :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elShowHiddenInvitations"><span class="hs-identifier hs-var">_elShowHiddenInvitations</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679329962"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-310"></span><span>
+</span><span id="line-311"></span><span class="hs-comment">-- | Maximum number of events returned on one result page. The number of</span><span>
+</span><span id="line-312"></span><span class="hs-comment">-- events in the resulting page may be less than this value, or none at</span><span>
+</span><span id="line-313"></span><span class="hs-comment">-- all, even if there are more events matching the query. Incomplete pages</span><span>
+</span><span id="line-314"></span><span class="hs-comment">-- can be detected by a non-empty nextPageToken field in the response. By</span><span>
+</span><span id="line-315"></span><span class="hs-comment">-- default the value is 250 events. The page size can never be larger than</span><span>
+</span><span id="line-316"></span><span class="hs-comment">-- 2500 events. Optional.</span><span>
+</span><span id="line-317"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elMaxResults"><span class="hs-identifier hs-type">elMaxResults</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span>
+</span><span id="line-318"></span><span id="elMaxResults"><span class="annot"><span class="annottext">elMaxResults :: (Int32 -&gt; f Int32) -&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elMaxResults"><span class="hs-identifier hs-var hs-var">elMaxResults</span></a></span></span><span>
+</span><span id="line-319"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Textual Int32)
+-&gt; (EventsList -&gt; Textual Int32 -&gt; EventsList)
+-&gt; Lens EventsList EventsList (Textual Int32) (Textual Int32)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Textual Int32
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elMaxResults"><span class="hs-identifier hs-var hs-var">_elMaxResults</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329961"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329961"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329960"><span class="annot"><span class="annottext">a :: Textual Int32
+</span><a href="#local-6989586621679329960"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329961"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elMaxResults :: Textual Int32
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elMaxResults"><span class="hs-identifier hs-var">_elMaxResults</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Textual Int32
+</span><a href="#local-6989586621679329960"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-320"></span><span>      </span><span class="annot"><span class="annottext">((Textual Int32 -&gt; f (Textual Int32))
+ -&gt; EventsList -&gt; f EventsList)
+-&gt; ((Int32 -&gt; f Int32) -&gt; Textual Int32 -&gt; f (Textual Int32))
+-&gt; (Int32 -&gt; f Int32)
+-&gt; EventsList
+-&gt; f EventsList
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(Int32 -&gt; f Int32) -&gt; Textual Int32 -&gt; f (Textual Int32)
+forall a b. (Coercible a b, Coercible b a) =&gt; Iso' a b
+</span><span class="hs-identifier hs-var">_Coerce</span></span><span>
+</span><span id="line-321"></span><span>
+</span><span id="line-322"></span><span class="hs-comment">-- | Whether to always include a value in the email field for the organizer,</span><span>
+</span><span id="line-323"></span><span class="hs-comment">-- creator and attendees, even if no real email is available (i.e. a</span><span>
+</span><span id="line-324"></span><span class="hs-comment">-- generated, non-working value will be provided). The use of this option</span><span>
+</span><span id="line-325"></span><span class="hs-comment">-- is discouraged and should only be used by clients which cannot handle</span><span>
+</span><span id="line-326"></span><span class="hs-comment">-- the absence of an email address value in the mentioned places. Optional.</span><span>
+</span><span id="line-327"></span><span class="hs-comment">-- The default is False.</span><span>
+</span><span id="line-328"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elAlwaysIncludeEmail"><span class="hs-identifier hs-type">elAlwaysIncludeEmail</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-329"></span><span id="elAlwaysIncludeEmail"><span class="annot"><span class="annottext">elAlwaysIncludeEmail :: (Maybe Bool -&gt; f (Maybe Bool)) -&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elAlwaysIncludeEmail"><span class="hs-identifier hs-var hs-var">elAlwaysIncludeEmail</span></a></span></span><span>
+</span><span id="line-330"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Maybe Bool)
+-&gt; (EventsList -&gt; Maybe Bool -&gt; EventsList)
+-&gt; Lens EventsList EventsList (Maybe Bool) (Maybe Bool)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elAlwaysIncludeEmail"><span class="hs-identifier hs-var hs-var">_elAlwaysIncludeEmail</span></a></span><span>
+</span><span id="line-331"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329959"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329959"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329958"><span class="annot"><span class="annottext">a :: Maybe Bool
+</span><a href="#local-6989586621679329958"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329959"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elAlwaysIncludeEmail :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elAlwaysIncludeEmail"><span class="hs-identifier hs-var">_elAlwaysIncludeEmail</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679329958"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-332"></span><span>
+</span><span id="line-333"></span><span class="hs-comment">-- | Upper bound (exclusive) for an event\'s end time to filter by. Optional.</span><span>
+</span><span id="line-334"></span><span class="hs-comment">-- The default is not to filter by end time. Must be an RFC3339 timestamp</span><span>
+</span><span id="line-335"></span><span class="hs-comment">-- with mandatory time zone offset, for example, 2011-06-03T10:00:00-07:00,</span><span>
+</span><span id="line-336"></span><span class="hs-comment">-- 2011-06-03T10:00:00Z. Milliseconds may be provided but are ignored. If</span><span>
+</span><span id="line-337"></span><span class="hs-comment">-- timeMin is set, timeMax must be greater than timeMin.</span><span>
+</span><span id="line-338"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#elTimeMax"><span class="hs-identifier hs-type">elTimeMax</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">UTCTime</span></span><span class="hs-special">)</span><span>
+</span><span id="line-339"></span><span id="elTimeMax"><span class="annot"><span class="annottext">elTimeMax :: (Maybe UTCTime -&gt; f (Maybe UTCTime)) -&gt; EventsList -&gt; f EventsList
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#elTimeMax"><span class="hs-identifier hs-var hs-var">elTimeMax</span></a></span></span><span>
+</span><span id="line-340"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsList -&gt; Maybe DateTime')
+-&gt; (EventsList -&gt; Maybe DateTime' -&gt; EventsList)
+-&gt; Lens EventsList EventsList (Maybe DateTime') (Maybe DateTime')
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsList -&gt; Maybe DateTime'
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elTimeMax"><span class="hs-identifier hs-var hs-var">_elTimeMax</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679329957"><span class="annot"><span class="annottext">s :: EventsList
+</span><a href="#local-6989586621679329957"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679329956"><span class="annot"><span class="annottext">a :: Maybe DateTime'
+</span><a href="#local-6989586621679329956"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsList
+</span><a href="#local-6989586621679329957"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_elTimeMax :: Maybe DateTime'
+</span><a href="Network.Google.Resource.Calendar.Events.List.html#_elTimeMax"><span class="hs-identifier hs-var">_elTimeMax</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe DateTime'
+</span><a href="#local-6989586621679329956"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">((Maybe DateTime' -&gt; f (Maybe DateTime'))
+ -&gt; EventsList -&gt; f EventsList)
+-&gt; ((Maybe UTCTime -&gt; f (Maybe UTCTime))
+    -&gt; Maybe DateTime' -&gt; f (Maybe DateTime'))
+-&gt; (Maybe UTCTime -&gt; f (Maybe UTCTime))
+-&gt; EventsList
+-&gt; f EventsList
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span>
+</span><span id="line-341"></span><span>      </span><span class="annot"><span class="annottext">AnIso DateTime' DateTime' UTCTime UTCTime
+-&gt; Iso
+     (Maybe DateTime') (Maybe DateTime') (Maybe UTCTime) (Maybe UTCTime)
+forall (f :: * -&gt; *) (g :: * -&gt; *) s t a b.
+(Functor f, Functor g) =&gt;
+AnIso s t a b -&gt; Iso (f s) (g t) (f a) (g b)
+</span><span class="hs-identifier hs-var">mapping</span></span><span> </span><span class="annot"><span class="annottext">AnIso DateTime' DateTime' UTCTime UTCTime
+Iso' DateTime' UTCTime
+</span><span class="hs-identifier hs-var">_DateTime</span></span><span>
+</span><span id="line-342"></span><span>
+</span><span id="line-343"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">GoogleRequest</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-344"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Rs"><span class="annot"><span class="hs-identifier hs-var">Rs</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Events"><span class="hs-identifier hs-type">Events</span></a></span><span>
+</span><span id="line-345"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Scopes"><span class="annot"><span class="hs-identifier hs-var">Scopes</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList"><span class="hs-identifier hs-type">EventsList</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-346"></span><span>             </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-347"></span><span>               </span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar.events&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-348"></span><span>               </span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar.events.readonly&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-349"></span><span>               </span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar.readonly&quot;</span></span><span class="hs-special">]</span><span>
+</span><span id="line-350"></span><span>        </span><span id="local-6989586621679329952"><span class="annot"><span class="annottext">requestClient :: EventsList -&gt; GClient (Rs EventsList)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">requestClient</span></span></span><span> </span><span id="local-6989586621679329933"><span id="local-6989586621679329934"><span id="local-6989586621679329935"><span id="local-6989586621679329936"><span id="local-6989586621679329937"><span id="local-6989586621679329938"><span id="local-6989586621679329939"><span id="local-6989586621679329940"><span id="local-6989586621679329941"><span id="local-6989586621679329942"><span id="local-6989586621679329943"><span id="local-6989586621679329944"><span id="local-6989586621679329945"><span id="local-6989586621679329946"><span id="local-6989586621679329947"><span id="local-6989586621679329948"><span id="local-6989586621679329949"><span id="local-6989586621679329950"><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsList%27"><span class="hs-identifier hs-type">EventsList'</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span>
+</span><span id="line-351"></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+-&gt; Maybe Text
+-&gt; Maybe DateTime'
+-&gt; Maybe EventsListOrderBy
+-&gt; Maybe Bool
+-&gt; [Text]
+-&gt; Maybe Bool
+-&gt; Maybe Text
+-&gt; [Text]
+-&gt; Maybe (Textual Int32)
+-&gt; Maybe Text
+-&gt; Maybe DateTime'
+-&gt; Maybe Text
+-&gt; Maybe Text
+-&gt; Maybe Bool
+-&gt; Maybe (Textual Int32)
+-&gt; Maybe Bool
+-&gt; Maybe DateTime'
+-&gt; Maybe AltJSON
+-&gt; ServiceConfig
+-&gt; GClient Events
+</span><a href="#local-6989586621679329932"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679329949"><span class="hs-identifier hs-var">_elCalendarId</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679329950"><span class="hs-identifier hs-var">_elSyncToken</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe DateTime'
+</span><a href="#local-6989586621679329948"><span class="hs-identifier hs-var">_elTimeMin</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe EventsListOrderBy
+</span><a href="#local-6989586621679329947"><span class="hs-identifier hs-var">_elOrderBy</span></a></span><span>
+</span><span id="line-352"></span><span>              </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679329946"><span class="hs-identifier hs-var">_elSingleEvents</span></a></span><span>
+</span><span id="line-353"></span><span>              </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Maybe [Text]
+</span><a href="#local-6989586621679329945"><span class="hs-identifier hs-var">_elPrivateExtendedProperty</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe [Text] -&gt; Getting [Text] (Maybe [Text]) [Text] -&gt; [Text]
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span> </span><span class="annot"><span class="annottext">Getting [Text] (Maybe [Text]) [Text]
+forall a. Monoid a =&gt; Iso' (Maybe a) a
+</span><span class="hs-identifier hs-var">_Default</span></span><span class="hs-special">)</span><span>
+</span><span id="line-354"></span><span>              </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679329944"><span class="hs-identifier hs-var">_elShowDeleted</span></a></span><span>
+</span><span id="line-355"></span><span>              </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679329943"><span class="hs-identifier hs-var">_elQ</span></a></span><span>
+</span><span id="line-356"></span><span>              </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Maybe [Text]
+</span><a href="#local-6989586621679329942"><span class="hs-identifier hs-var">_elSharedExtendedProperty</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe [Text] -&gt; Getting [Text] (Maybe [Text]) [Text] -&gt; [Text]
+forall s a. s -&gt; Getting a s a -&gt; a
+</span><span class="hs-operator hs-var">^.</span></span><span> </span><span class="annot"><span class="annottext">Getting [Text] (Maybe [Text]) [Text]
+forall a. Monoid a =&gt; Iso' (Maybe a) a
+</span><span class="hs-identifier hs-var">_Default</span></span><span class="hs-special">)</span><span>
+</span><span id="line-357"></span><span>              </span><span class="annot"><span class="annottext">Maybe (Textual Int32)
+</span><a href="#local-6989586621679329941"><span class="hs-identifier hs-var">_elMaxAttendees</span></a></span><span>
+</span><span id="line-358"></span><span>              </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679329940"><span class="hs-identifier hs-var">_elICalUId</span></a></span><span>
+</span><span id="line-359"></span><span>              </span><span class="annot"><span class="annottext">Maybe DateTime'
+</span><a href="#local-6989586621679329939"><span class="hs-identifier hs-var">_elUpdatedMin</span></a></span><span>
+</span><span id="line-360"></span><span>              </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679329938"><span class="hs-identifier hs-var">_elPageToken</span></a></span><span>
+</span><span id="line-361"></span><span>              </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679329937"><span class="hs-identifier hs-var">_elTimeZone</span></a></span><span>
+</span><span id="line-362"></span><span>              </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679329936"><span class="hs-identifier hs-var">_elShowHiddenInvitations</span></a></span><span>
+</span><span id="line-363"></span><span>              </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Textual Int32 -&gt; Maybe (Textual Int32)
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">Textual Int32
+</span><a href="#local-6989586621679329935"><span class="hs-identifier hs-var">_elMaxResults</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-364"></span><span>              </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679329934"><span class="hs-identifier hs-var">_elAlwaysIncludeEmail</span></a></span><span>
+</span><span id="line-365"></span><span>              </span><span class="annot"><span class="annottext">Maybe DateTime'
+</span><a href="#local-6989586621679329933"><span class="hs-identifier hs-var">_elTimeMax</span></a></span><span>
+</span><span id="line-366"></span><span>              </span><span class="hs-special">(</span><span class="annot"><span class="annottext">AltJSON -&gt; Maybe AltJSON
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">AltJSON
+</span><span class="hs-identifier hs-var">AltJSON</span></span><span class="hs-special">)</span><span>
+</span><span id="line-367"></span><span>              </span><span class="annot"><span class="annottext">ServiceConfig
+</span><a href="Network.Google.AppsCalendar.Types.html#appsCalendarService"><span class="hs-identifier hs-var">appsCalendarService</span></a></span><span>
+</span><span id="line-368"></span><span>          </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679329932"><span class="annot"><span class="annottext">go :: Fn EventsListResource
+</span><a href="#local-6989586621679329932"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span>
+</span><span id="line-369"></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Proxy EventsListResource -&gt; Request -&gt; Fn EventsListResource
+forall fn. GoogleClient fn =&gt; Proxy fn -&gt; Request -&gt; Fn fn
+</span><span class="hs-identifier hs-var">buildClient</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Proxy EventsListResource
+forall k (t :: k). Proxy t
+</span><span class="hs-identifier hs-var">Proxy</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Proxy</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.List.html#EventsListResource"><span class="hs-identifier hs-type">EventsListResource</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-370"></span><span>                      </span><span class="annot"><span class="annottext">Request
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-371"></span></pre></body></html>

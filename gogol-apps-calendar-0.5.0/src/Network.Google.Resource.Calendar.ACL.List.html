@@ -1,0 +1,464 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE DataKinds          #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE DeriveDataTypeable #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# LANGUAGE DeriveGeneric      #-}</span><span>
+</span><span id="line-4"></span><span class="hs-pragma">{-# LANGUAGE FlexibleInstances  #-}</span><span>
+</span><span id="line-5"></span><span class="hs-pragma">{-# LANGUAGE NoImplicitPrelude  #-}</span><span>
+</span><span id="line-6"></span><span class="hs-pragma">{-# LANGUAGE OverloadedStrings  #-}</span><span>
+</span><span id="line-7"></span><span class="hs-pragma">{-# LANGUAGE RecordWildCards    #-}</span><span>
+</span><span id="line-8"></span><span class="hs-pragma">{-# LANGUAGE TypeFamilies       #-}</span><span>
+</span><span id="line-9"></span><span class="hs-pragma">{-# LANGUAGE TypeOperators      #-}</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-duplicate-exports #-}</span><span>
+</span><span id="line-12"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-binds      #-}</span><span>
+</span><span id="line-13"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-imports    #-}</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-16"></span><span class="hs-comment">-- Module      : Network.Google.Resource.Calendar.ACL.List</span><span>
+</span><span id="line-17"></span><span class="hs-comment">-- Copyright   : (c) 2015-2016 Brendan Hay</span><span>
+</span><span id="line-18"></span><span class="hs-comment">-- License     : Mozilla Public License, v. 2.0.</span><span>
+</span><span id="line-19"></span><span class="hs-comment">-- Maintainer  : Brendan Hay &lt;brendan.g.hay@gmail.com&gt;</span><span>
+</span><span id="line-20"></span><span class="hs-comment">-- Stability   : auto-generated</span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><span id="line-22"></span><span class="hs-comment">--</span><span>
+</span><span id="line-23"></span><span class="hs-comment">-- Returns the rules in the access control list for the calendar.</span><span>
+</span><span id="line-24"></span><span class="hs-comment">--</span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- /See:/ &lt;https://developers.google.com/google-apps/calendar/firstapp Calendar API Reference&gt; for @calendar.acl.list@.</span><span>
+</span><span id="line-26"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Network.Google.Resource.Calendar.ACL.List</span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">(</span><span>
+</span><span id="line-28"></span><span>    </span><span class="annot"><span class="hs-comment">-- * REST Resource</span></span><span>
+</span><span id="line-29"></span><span>      </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#ACLListResource"><span class="hs-identifier">ACLListResource</span></a></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Creating a Request</span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#aclList"><span class="hs-identifier">aclList</span></a></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#ACLList"><span class="hs-identifier">ACLList</span></a></span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Request Lenses</span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#alSyncToken"><span class="hs-identifier">alSyncToken</span></a></span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#alCalendarId"><span class="hs-identifier">alCalendarId</span></a></span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#alShowDeleted"><span class="hs-identifier">alShowDeleted</span></a></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#alPageToken"><span class="hs-identifier">alPageToken</span></a></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#alMaxResults"><span class="hs-identifier">alMaxResults</span></a></span><span>
+</span><span id="line-41"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-42"></span><span>
+</span><span id="line-43"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.html"><span class="hs-identifier">Network.Google.AppsCalendar.Types</span></a></span><span>
+</span><span id="line-44"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Network.Google.Prelude</span></span><span>
+</span><span id="line-45"></span><span>
+</span><span id="line-46"></span><span class="hs-comment">-- | A resource alias for @calendar.acl.list@ method which the</span><span>
+</span><span id="line-47"></span><span class="hs-comment">-- 'ACLList' request conforms to.</span><span>
+</span><span id="line-48"></span><span class="hs-keyword">type</span><span> </span><span id="ACLListResource"><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#ACLListResource"><span class="hs-identifier hs-var">ACLListResource</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-49"></span><span>     </span><span class="annot"><span class="hs-string">&quot;calendar&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-50"></span><span>       </span><span class="annot"><span class="hs-string">&quot;v3&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-51"></span><span>         </span><span class="annot"><span class="hs-string">&quot;calendars&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-52"></span><span>           </span><span class="annot"><span class="hs-identifier hs-type">Capture</span></span><span> </span><span class="annot"><span class="hs-string">&quot;calendarId&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-53"></span><span>             </span><span class="annot"><span class="hs-string">&quot;acl&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-54"></span><span>               </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;syncToken&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-55"></span><span>                 </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;showDeleted&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-56"></span><span>                   </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;pageToken&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-57"></span><span>                     </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;maxResults&quot;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Textual</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-58"></span><span>                       </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;alt&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">AltJSON</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Get</span></span><span> </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">JSON</span></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#ACL"><span class="hs-identifier hs-type">ACL</span></a></span><span>
+</span><span id="line-59"></span><span>
+</span><span id="line-60"></span><span class="hs-comment">-- | Returns the rules in the access control list for the calendar.</span><span>
+</span><span id="line-61"></span><span class="hs-comment">--</span><span>
+</span><span id="line-62"></span><span class="hs-comment">-- /See:/ 'aclList' smart constructor.</span><span>
+</span><span id="line-63"></span><span id="local-6989586621679325694"><span id="local-6989586621679325695"></span></span><span class="hs-keyword">data</span><span> </span><span id="ACLList"><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#ACLList"><span class="hs-identifier hs-var">ACLList</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-64"></span><span>  </span><span id="ACLList%27"><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#ACLList%27"><span class="hs-identifier hs-var">ACLList'</span></a></span></span><span>
+</span><span id="line-65"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="_alSyncToken"><span class="annot"><span class="annottext">ACLList -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alSyncToken"><span class="hs-identifier hs-var hs-var">_alSyncToken</span></a></span></span><span>   </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-66"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_alCalendarId"><span class="annot"><span class="annottext">ACLList -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alCalendarId"><span class="hs-identifier hs-var hs-var">_alCalendarId</span></a></span></span><span>  </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-67"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_alShowDeleted"><span class="annot"><span class="annottext">ACLList -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alShowDeleted"><span class="hs-identifier hs-var hs-var">_alShowDeleted</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-68"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_alPageToken"><span class="annot"><span class="annottext">ACLList -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alPageToken"><span class="hs-identifier hs-var hs-var">_alPageToken</span></a></span></span><span>   </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-69"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_alMaxResults"><span class="annot"><span class="annottext">ACLList -&gt; Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alMaxResults"><span class="hs-identifier hs-var hs-var">_alMaxResults</span></a></span></span><span>  </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Textual</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-70"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-71"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679325684"><span id="local-6989586621679325686"><span class="annot"><span class="annottext">ACLList -&gt; ACLList -&gt; Bool
+(ACLList -&gt; ACLList -&gt; Bool)
+-&gt; (ACLList -&gt; ACLList -&gt; Bool) -&gt; Eq ACLList
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: ACLList -&gt; ACLList -&gt; Bool
+$c/= :: ACLList -&gt; ACLList -&gt; Bool
+== :: ACLList -&gt; ACLList -&gt; Bool
+$c== :: ACLList -&gt; ACLList -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679325677"><span id="local-6989586621679325679"><span id="local-6989586621679325681"><span class="annot"><span class="annottext">Int -&gt; ACLList -&gt; ShowS
+[ACLList] -&gt; ShowS
+ACLList -&gt; String
+(Int -&gt; ACLList -&gt; ShowS)
+-&gt; (ACLList -&gt; String) -&gt; ([ACLList] -&gt; ShowS) -&gt; Show ACLList
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [ACLList] -&gt; ShowS
+$cshowList :: [ACLList] -&gt; ShowS
+show :: ACLList -&gt; String
+$cshow :: ACLList -&gt; String
+showsPrec :: Int -&gt; ACLList -&gt; ShowS
+$cshowsPrec :: Int -&gt; ACLList -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="%24cACLList%27"><span id="%24tACLList"><span id="local-6989586621679325647"><span id="local-6989586621679325649"><span id="local-6989586621679325651"><span id="local-6989586621679325653"><span id="local-6989586621679325655"><span id="local-6989586621679325657"><span id="local-6989586621679325659"><span id="local-6989586621679325661"><span id="local-6989586621679325663"><span id="local-6989586621679325665"><span id="local-6989586621679325667"><span id="local-6989586621679325669"><span id="local-6989586621679325671"><span id="local-6989586621679325673"><span class="annot"><span class="annottext">Typeable ACLList
+DataType
+Constr
+Typeable ACLList =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; ACLList -&gt; c ACLList)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLList)
+-&gt; (ACLList -&gt; Constr)
+-&gt; (ACLList -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c ACLList))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c ACLList))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; ACLList -&gt; ACLList)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLList -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLList -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; ACLList -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; ACLList -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLList -&gt; m ACLList)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLList -&gt; m ACLList)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLList -&gt; m ACLList)
+-&gt; Data ACLList
+ACLList -&gt; DataType
+ACLList -&gt; Constr
+(forall b. Data b =&gt; b -&gt; b) -&gt; ACLList -&gt; ACLList
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; ACLList -&gt; c ACLList
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLList
+forall a.
+Typeable a =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; a -&gt; c a)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c a)
+-&gt; (a -&gt; Constr)
+-&gt; (a -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c a))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c a))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; a -&gt; a)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; Data a
+forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; ACLList -&gt; u
+forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; ACLList -&gt; [u]
+forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLList -&gt; r
+forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLList -&gt; r
+forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLList -&gt; m ACLList
+forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLList -&gt; m ACLList
+forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLList
+forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; ACLList -&gt; c ACLList
+forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c ACLList)
+forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c ACLList)
+$cACLList' :: Constr
+$tACLList :: DataType
+gmapMo :: (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLList -&gt; m ACLList
+$cgmapMo :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLList -&gt; m ACLList
+gmapMp :: (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLList -&gt; m ACLList
+$cgmapMp :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLList -&gt; m ACLList
+gmapM :: (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLList -&gt; m ACLList
+$cgmapM :: forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLList -&gt; m ACLList
+gmapQi :: Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; ACLList -&gt; u
+$cgmapQi :: forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; ACLList -&gt; u
+gmapQ :: (forall d. Data d =&gt; d -&gt; u) -&gt; ACLList -&gt; [u]
+$cgmapQ :: forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; ACLList -&gt; [u]
+gmapQr :: (r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLList -&gt; r
+$cgmapQr :: forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLList -&gt; r
+gmapQl :: (r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLList -&gt; r
+$cgmapQl :: forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLList -&gt; r
+gmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; ACLList -&gt; ACLList
+$cgmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; ACLList -&gt; ACLList
+dataCast2 :: (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c ACLList)
+$cdataCast2 :: forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c ACLList)
+dataCast1 :: (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c ACLList)
+$cdataCast1 :: forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c ACLList)
+dataTypeOf :: ACLList -&gt; DataType
+$cdataTypeOf :: ACLList -&gt; DataType
+toConstr :: ACLList -&gt; Constr
+$ctoConstr :: ACLList -&gt; Constr
+gunfold :: (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLList
+$cgunfold :: forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLList
+gfoldl :: (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; ACLList -&gt; c ACLList
+$cgfoldl :: forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; ACLList -&gt; c ACLList
+$cp1Data :: Typeable ACLList
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Data</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Typeable</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(forall x. ACLList -&gt; Rep ACLList x)
+-&gt; (forall x. Rep ACLList x -&gt; ACLList) -&gt; Generic ACLList
+forall x. Rep ACLList x -&gt; ACLList
+forall x. ACLList -&gt; Rep ACLList x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep ACLList x -&gt; ACLList
+$cfrom :: forall x. ACLList -&gt; Rep ACLList x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">)</span><span>
+</span><span id="line-72"></span><span>
+</span><span id="line-73"></span><span>
+</span><span id="line-74"></span><span class="hs-comment">-- | Creates a value of 'ACLList' with the minimum fields required to make a request.</span><span>
+</span><span id="line-75"></span><span class="hs-comment">--</span><span>
+</span><span id="line-76"></span><span class="hs-comment">-- Use one of the following lenses to modify other fields as desired:</span><span>
+</span><span id="line-77"></span><span class="hs-comment">--</span><span>
+</span><span id="line-78"></span><span class="hs-comment">-- * 'alSyncToken'</span><span>
+</span><span id="line-79"></span><span class="hs-comment">--</span><span>
+</span><span id="line-80"></span><span class="hs-comment">-- * 'alCalendarId'</span><span>
+</span><span id="line-81"></span><span class="hs-comment">--</span><span>
+</span><span id="line-82"></span><span class="hs-comment">-- * 'alShowDeleted'</span><span>
+</span><span id="line-83"></span><span class="hs-comment">--</span><span>
+</span><span id="line-84"></span><span class="hs-comment">-- * 'alPageToken'</span><span>
+</span><span id="line-85"></span><span class="hs-comment">--</span><span>
+</span><span id="line-86"></span><span class="hs-comment">-- * 'alMaxResults'</span><span>
+</span><span id="line-87"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#aclList"><span class="hs-identifier hs-type">aclList</span></a></span><span>
+</span><span id="line-88"></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ 'alCalendarId'</span><span>
+</span><span id="line-89"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#ACLList"><span class="hs-identifier hs-type">ACLList</span></a></span><span>
+</span><span id="line-90"></span><span id="aclList"><span class="annot"><span class="annottext">aclList :: Text -&gt; ACLList
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#aclList"><span class="hs-identifier hs-var hs-var">aclList</span></a></span></span><span> </span><span id="local-6989586621679325640"><span class="annot"><span class="annottext">pAlCalendarId_ :: Text
+</span><a href="#local-6989586621679325640"><span class="hs-identifier hs-var">pAlCalendarId_</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-91"></span><span>  </span><span class="annot"><span class="annottext">$WACLList' :: Maybe Text
+-&gt; Text
+-&gt; Maybe Bool
+-&gt; Maybe Text
+-&gt; Maybe (Textual Int32)
+-&gt; ACLList
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#%24WACLList%27"><span class="hs-identifier hs-type hs-type">ACLList'</span></a></span><span>
+</span><span id="line-92"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_alSyncToken :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alSyncToken"><span class="hs-identifier hs-var">_alSyncToken</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-93"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_alCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alCalendarId"><span class="hs-identifier hs-var">_alCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679325640"><span class="hs-identifier hs-var">pAlCalendarId_</span></a></span><span>
+</span><span id="line-94"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_alShowDeleted :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alShowDeleted"><span class="hs-identifier hs-var">_alShowDeleted</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-95"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_alPageToken :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alPageToken"><span class="hs-identifier hs-var">_alPageToken</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-96"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_alMaxResults :: Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alMaxResults"><span class="hs-identifier hs-var">_alMaxResults</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe (Textual Int32)
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-97"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-98"></span><span>
+</span><span id="line-99"></span><span>
+</span><span id="line-100"></span><span class="hs-comment">-- | Token obtained from the nextSyncToken field returned on the last page of</span><span>
+</span><span id="line-101"></span><span class="hs-comment">-- results from the previous list request. It makes the result of this list</span><span>
+</span><span id="line-102"></span><span class="hs-comment">-- request contain only entries that have changed since then. All entries</span><span>
+</span><span id="line-103"></span><span class="hs-comment">-- deleted since the previous list request will always be in the result set</span><span>
+</span><span id="line-104"></span><span class="hs-comment">-- and it is not allowed to set showDeleted to False. If the syncToken</span><span>
+</span><span id="line-105"></span><span class="hs-comment">-- expires, the server will respond with a 410 GONE response code and the</span><span>
+</span><span id="line-106"></span><span class="hs-comment">-- client should clear its storage and perform a full synchronization</span><span>
+</span><span id="line-107"></span><span class="hs-comment">-- without any syncToken. Learn more about incremental synchronization.</span><span>
+</span><span id="line-108"></span><span class="hs-comment">-- Optional. The default is to return all entries.</span><span>
+</span><span id="line-109"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#alSyncToken"><span class="hs-identifier hs-type">alSyncToken</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#ACLList"><span class="hs-identifier hs-type">ACLList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-110"></span><span id="alSyncToken"><span class="annot"><span class="annottext">alSyncToken :: (Maybe Text -&gt; f (Maybe Text)) -&gt; ACLList -&gt; f ACLList
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#alSyncToken"><span class="hs-identifier hs-var hs-var">alSyncToken</span></a></span></span><span>
+</span><span id="line-111"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLList -&gt; Maybe Text)
+-&gt; (ACLList -&gt; Maybe Text -&gt; ACLList)
+-&gt; Lens ACLList ACLList (Maybe Text) (Maybe Text)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLList -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alSyncToken"><span class="hs-identifier hs-var hs-var">_alSyncToken</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679325636"><span class="annot"><span class="annottext">s :: ACLList
+</span><a href="#local-6989586621679325636"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679325635"><span class="annot"><span class="annottext">a :: Maybe Text
+</span><a href="#local-6989586621679325635"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLList
+</span><a href="#local-6989586621679325636"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_alSyncToken :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alSyncToken"><span class="hs-identifier hs-var">_alSyncToken</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679325635"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-112"></span><span>
+</span><span id="line-113"></span><span class="hs-comment">-- | Calendar identifier. To retrieve calendar IDs call the calendarList.list</span><span>
+</span><span id="line-114"></span><span class="hs-comment">-- method. If you want to access the primary calendar of the currently</span><span>
+</span><span id="line-115"></span><span class="hs-comment">-- logged in user, use the \&quot;primary\&quot; keyword.</span><span>
+</span><span id="line-116"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#alCalendarId"><span class="hs-identifier hs-type">alCalendarId</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#ACLList"><span class="hs-identifier hs-type">ACLList</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-117"></span><span id="alCalendarId"><span class="annot"><span class="annottext">alCalendarId :: (Text -&gt; f Text) -&gt; ACLList -&gt; f ACLList
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#alCalendarId"><span class="hs-identifier hs-var hs-var">alCalendarId</span></a></span></span><span>
+</span><span id="line-118"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLList -&gt; Text)
+-&gt; (ACLList -&gt; Text -&gt; ACLList) -&gt; Lens ACLList ACLList Text Text
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLList -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alCalendarId"><span class="hs-identifier hs-var hs-var">_alCalendarId</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679325634"><span class="annot"><span class="annottext">s :: ACLList
+</span><a href="#local-6989586621679325634"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679325633"><span class="annot"><span class="annottext">a :: Text
+</span><a href="#local-6989586621679325633"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLList
+</span><a href="#local-6989586621679325634"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_alCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alCalendarId"><span class="hs-identifier hs-var">_alCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679325633"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-119"></span><span>
+</span><span id="line-120"></span><span class="hs-comment">-- | Whether to include deleted ACLs in the result. Deleted ACLs are</span><span>
+</span><span id="line-121"></span><span class="hs-comment">-- represented by role equal to \&quot;none\&quot;. Deleted ACLs will always be</span><span>
+</span><span id="line-122"></span><span class="hs-comment">-- included if syncToken is provided. Optional. The default is False.</span><span>
+</span><span id="line-123"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#alShowDeleted"><span class="hs-identifier hs-type">alShowDeleted</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#ACLList"><span class="hs-identifier hs-type">ACLList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-124"></span><span id="alShowDeleted"><span class="annot"><span class="annottext">alShowDeleted :: (Maybe Bool -&gt; f (Maybe Bool)) -&gt; ACLList -&gt; f ACLList
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#alShowDeleted"><span class="hs-identifier hs-var hs-var">alShowDeleted</span></a></span></span><span>
+</span><span id="line-125"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLList -&gt; Maybe Bool)
+-&gt; (ACLList -&gt; Maybe Bool -&gt; ACLList)
+-&gt; Lens ACLList ACLList (Maybe Bool) (Maybe Bool)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLList -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alShowDeleted"><span class="hs-identifier hs-var hs-var">_alShowDeleted</span></a></span><span>
+</span><span id="line-126"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679325632"><span class="annot"><span class="annottext">s :: ACLList
+</span><a href="#local-6989586621679325632"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679325631"><span class="annot"><span class="annottext">a :: Maybe Bool
+</span><a href="#local-6989586621679325631"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLList
+</span><a href="#local-6989586621679325632"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_alShowDeleted :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alShowDeleted"><span class="hs-identifier hs-var">_alShowDeleted</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679325631"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-127"></span><span>
+</span><span id="line-128"></span><span class="hs-comment">-- | Token specifying which result page to return. Optional.</span><span>
+</span><span id="line-129"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#alPageToken"><span class="hs-identifier hs-type">alPageToken</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#ACLList"><span class="hs-identifier hs-type">ACLList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-130"></span><span id="alPageToken"><span class="annot"><span class="annottext">alPageToken :: (Maybe Text -&gt; f (Maybe Text)) -&gt; ACLList -&gt; f ACLList
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#alPageToken"><span class="hs-identifier hs-var hs-var">alPageToken</span></a></span></span><span>
+</span><span id="line-131"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLList -&gt; Maybe Text)
+-&gt; (ACLList -&gt; Maybe Text -&gt; ACLList)
+-&gt; Lens ACLList ACLList (Maybe Text) (Maybe Text)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLList -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alPageToken"><span class="hs-identifier hs-var hs-var">_alPageToken</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679325630"><span class="annot"><span class="annottext">s :: ACLList
+</span><a href="#local-6989586621679325630"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679325629"><span class="annot"><span class="annottext">a :: Maybe Text
+</span><a href="#local-6989586621679325629"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLList
+</span><a href="#local-6989586621679325630"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_alPageToken :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alPageToken"><span class="hs-identifier hs-var">_alPageToken</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679325629"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-132"></span><span>
+</span><span id="line-133"></span><span class="hs-comment">-- | Maximum number of entries returned on one result page. By default the</span><span>
+</span><span id="line-134"></span><span class="hs-comment">-- value is 100 entries. The page size can never be larger than 250</span><span>
+</span><span id="line-135"></span><span class="hs-comment">-- entries. Optional.</span><span>
+</span><span id="line-136"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#alMaxResults"><span class="hs-identifier hs-type">alMaxResults</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#ACLList"><span class="hs-identifier hs-type">ACLList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span class="hs-special">)</span><span>
+</span><span id="line-137"></span><span id="alMaxResults"><span class="annot"><span class="annottext">alMaxResults :: (Maybe Int32 -&gt; f (Maybe Int32)) -&gt; ACLList -&gt; f ACLList
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#alMaxResults"><span class="hs-identifier hs-var hs-var">alMaxResults</span></a></span></span><span>
+</span><span id="line-138"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLList -&gt; Maybe (Textual Int32))
+-&gt; (ACLList -&gt; Maybe (Textual Int32) -&gt; ACLList)
+-&gt; Lens
+     ACLList ACLList (Maybe (Textual Int32)) (Maybe (Textual Int32))
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLList -&gt; Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alMaxResults"><span class="hs-identifier hs-var hs-var">_alMaxResults</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679325628"><span class="annot"><span class="annottext">s :: ACLList
+</span><a href="#local-6989586621679325628"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679325627"><span class="annot"><span class="annottext">a :: Maybe (Textual Int32)
+</span><a href="#local-6989586621679325627"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLList
+</span><a href="#local-6989586621679325628"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_alMaxResults :: Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.ACL.List.html#_alMaxResults"><span class="hs-identifier hs-var">_alMaxResults</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe (Textual Int32)
+</span><a href="#local-6989586621679325627"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-139"></span><span>      </span><span class="annot"><span class="annottext">((Maybe (Textual Int32) -&gt; f (Maybe (Textual Int32)))
+ -&gt; ACLList -&gt; f ACLList)
+-&gt; ((Maybe Int32 -&gt; f (Maybe Int32))
+    -&gt; Maybe (Textual Int32) -&gt; f (Maybe (Textual Int32)))
+-&gt; (Maybe Int32 -&gt; f (Maybe Int32))
+-&gt; ACLList
+-&gt; f ACLList
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">AnIso (Textual Int32) (Textual Int32) Int32 Int32
+-&gt; Iso
+     (Maybe (Textual Int32))
+     (Maybe (Textual Int32))
+     (Maybe Int32)
+     (Maybe Int32)
+forall (f :: * -&gt; *) (g :: * -&gt; *) s t a b.
+(Functor f, Functor g) =&gt;
+AnIso s t a b -&gt; Iso (f s) (g t) (f a) (g b)
+</span><span class="hs-identifier hs-var">mapping</span></span><span> </span><span class="annot"><span class="annottext">AnIso (Textual Int32) (Textual Int32) Int32 Int32
+forall a b. (Coercible a b, Coercible b a) =&gt; Iso' a b
+</span><span class="hs-identifier hs-var">_Coerce</span></span><span>
+</span><span id="line-140"></span><span>
+</span><span id="line-141"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">GoogleRequest</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#ACLList"><span class="hs-identifier hs-type">ACLList</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-142"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Rs"><span class="annot"><span class="hs-identifier hs-var">Rs</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#ACLList"><span class="hs-identifier hs-type">ACLList</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#ACL"><span class="hs-identifier hs-type">ACL</span></a></span><span>
+</span><span id="line-143"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Scopes"><span class="annot"><span class="hs-identifier hs-var">Scopes</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#ACLList"><span class="hs-identifier hs-type">ACLList</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-144"></span><span>             </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar&quot;</span></span><span class="hs-special">]</span><span>
+</span><span id="line-145"></span><span>        </span><span id="local-6989586621679325620"><span class="annot"><span class="annottext">requestClient :: ACLList -&gt; GClient (Rs ACLList)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">requestClient</span></span></span><span> </span><span id="local-6989586621679325614"><span id="local-6989586621679325615"><span id="local-6989586621679325616"><span id="local-6989586621679325617"><span id="local-6989586621679325618"><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#ACLList%27"><span class="hs-identifier hs-type">ACLList'</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span></span></span><span>
+</span><span id="line-146"></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+-&gt; Maybe Text
+-&gt; Maybe Bool
+-&gt; Maybe Text
+-&gt; Maybe (Textual Int32)
+-&gt; Maybe AltJSON
+-&gt; ServiceConfig
+-&gt; GClient ACL
+</span><a href="#local-6989586621679325613"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679325617"><span class="hs-identifier hs-var">_alCalendarId</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679325618"><span class="hs-identifier hs-var">_alSyncToken</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679325616"><span class="hs-identifier hs-var">_alShowDeleted</span></a></span><span>
+</span><span id="line-147"></span><span>              </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679325615"><span class="hs-identifier hs-var">_alPageToken</span></a></span><span>
+</span><span id="line-148"></span><span>              </span><span class="annot"><span class="annottext">Maybe (Textual Int32)
+</span><a href="#local-6989586621679325614"><span class="hs-identifier hs-var">_alMaxResults</span></a></span><span>
+</span><span id="line-149"></span><span>              </span><span class="hs-special">(</span><span class="annot"><span class="annottext">AltJSON -&gt; Maybe AltJSON
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">AltJSON
+</span><span class="hs-identifier hs-var">AltJSON</span></span><span class="hs-special">)</span><span>
+</span><span id="line-150"></span><span>              </span><span class="annot"><span class="annottext">ServiceConfig
+</span><a href="Network.Google.AppsCalendar.Types.html#appsCalendarService"><span class="hs-identifier hs-var">appsCalendarService</span></a></span><span>
+</span><span id="line-151"></span><span>          </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679325613"><span class="annot"><span class="annottext">go :: Fn ACLListResource
+</span><a href="#local-6989586621679325613"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span>
+</span><span id="line-152"></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Proxy ACLListResource -&gt; Request -&gt; Fn ACLListResource
+forall fn. GoogleClient fn =&gt; Proxy fn -&gt; Request -&gt; Fn fn
+</span><span class="hs-identifier hs-var">buildClient</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Proxy ACLListResource
+forall k (t :: k). Proxy t
+</span><span class="hs-identifier hs-var">Proxy</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Proxy</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.List.html#ACLListResource"><span class="hs-identifier hs-type">ACLListResource</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Request
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-153"></span></pre></body></html>

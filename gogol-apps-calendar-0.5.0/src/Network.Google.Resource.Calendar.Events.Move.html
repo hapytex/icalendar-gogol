@@ -1,0 +1,454 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE DataKinds          #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE DeriveDataTypeable #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# LANGUAGE DeriveGeneric      #-}</span><span>
+</span><span id="line-4"></span><span class="hs-pragma">{-# LANGUAGE FlexibleInstances  #-}</span><span>
+</span><span id="line-5"></span><span class="hs-pragma">{-# LANGUAGE NoImplicitPrelude  #-}</span><span>
+</span><span id="line-6"></span><span class="hs-pragma">{-# LANGUAGE OverloadedStrings  #-}</span><span>
+</span><span id="line-7"></span><span class="hs-pragma">{-# LANGUAGE RecordWildCards    #-}</span><span>
+</span><span id="line-8"></span><span class="hs-pragma">{-# LANGUAGE TypeFamilies       #-}</span><span>
+</span><span id="line-9"></span><span class="hs-pragma">{-# LANGUAGE TypeOperators      #-}</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-duplicate-exports #-}</span><span>
+</span><span id="line-12"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-binds      #-}</span><span>
+</span><span id="line-13"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-imports    #-}</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-16"></span><span class="hs-comment">-- Module      : Network.Google.Resource.Calendar.Events.Move</span><span>
+</span><span id="line-17"></span><span class="hs-comment">-- Copyright   : (c) 2015-2016 Brendan Hay</span><span>
+</span><span id="line-18"></span><span class="hs-comment">-- License     : Mozilla Public License, v. 2.0.</span><span>
+</span><span id="line-19"></span><span class="hs-comment">-- Maintainer  : Brendan Hay &lt;brendan.g.hay@gmail.com&gt;</span><span>
+</span><span id="line-20"></span><span class="hs-comment">-- Stability   : auto-generated</span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><span id="line-22"></span><span class="hs-comment">--</span><span>
+</span><span id="line-23"></span><span class="hs-comment">-- Moves an event to another calendar, i.e. changes an event\'s organizer.</span><span>
+</span><span id="line-24"></span><span class="hs-comment">--</span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- /See:/ &lt;https://developers.google.com/google-apps/calendar/firstapp Calendar API Reference&gt; for @calendar.events.move@.</span><span>
+</span><span id="line-26"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Network.Google.Resource.Calendar.Events.Move</span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">(</span><span>
+</span><span id="line-28"></span><span>    </span><span class="annot"><span class="hs-comment">-- * REST Resource</span></span><span>
+</span><span id="line-29"></span><span>      </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#EventsMoveResource"><span class="hs-identifier">EventsMoveResource</span></a></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Creating a Request</span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#eventsMove"><span class="hs-identifier">eventsMove</span></a></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#EventsMove"><span class="hs-identifier">EventsMove</span></a></span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Request Lenses</span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#emDestination"><span class="hs-identifier">emDestination</span></a></span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#emCalendarId"><span class="hs-identifier">emCalendarId</span></a></span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#emSendNotifications"><span class="hs-identifier">emSendNotifications</span></a></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#emSendUpdates"><span class="hs-identifier">emSendUpdates</span></a></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#emEventId"><span class="hs-identifier">emEventId</span></a></span><span>
+</span><span id="line-41"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-42"></span><span>
+</span><span id="line-43"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.html"><span class="hs-identifier">Network.Google.AppsCalendar.Types</span></a></span><span>
+</span><span id="line-44"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Network.Google.Prelude</span></span><span>
+</span><span id="line-45"></span><span>
+</span><span id="line-46"></span><span class="hs-comment">-- | A resource alias for @calendar.events.move@ method which the</span><span>
+</span><span id="line-47"></span><span class="hs-comment">-- 'EventsMove' request conforms to.</span><span>
+</span><span id="line-48"></span><span class="hs-keyword">type</span><span> </span><span id="EventsMoveResource"><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#EventsMoveResource"><span class="hs-identifier hs-var">EventsMoveResource</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-49"></span><span>     </span><span class="annot"><span class="hs-string">&quot;calendar&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-50"></span><span>       </span><span class="annot"><span class="hs-string">&quot;v3&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-51"></span><span>         </span><span class="annot"><span class="hs-string">&quot;calendars&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-52"></span><span>           </span><span class="annot"><span class="hs-identifier hs-type">Capture</span></span><span> </span><span class="annot"><span class="hs-string">&quot;calendarId&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-53"></span><span>             </span><span class="annot"><span class="hs-string">&quot;events&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-54"></span><span>               </span><span class="annot"><span class="hs-identifier hs-type">Capture</span></span><span> </span><span class="annot"><span class="hs-string">&quot;eventId&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-55"></span><span>                 </span><span class="annot"><span class="hs-string">&quot;move&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-56"></span><span>                   </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;destination&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-57"></span><span>                     </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;sendNotifications&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-58"></span><span>                       </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;sendUpdates&quot;</span></span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Sum.html#EventsMoveSendUpdates"><span class="hs-identifier hs-type">EventsMoveSendUpdates</span></a></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-59"></span><span>                         </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;alt&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">AltJSON</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Post</span></span><span> </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">JSON</span></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Event"><span class="hs-identifier hs-type">Event</span></a></span><span>
+</span><span id="line-60"></span><span>
+</span><span id="line-61"></span><span class="hs-comment">-- | Moves an event to another calendar, i.e. changes an event\'s organizer.</span><span>
+</span><span id="line-62"></span><span class="hs-comment">--</span><span>
+</span><span id="line-63"></span><span class="hs-comment">-- /See:/ 'eventsMove' smart constructor.</span><span>
+</span><span id="line-64"></span><span id="local-6989586621679330301"><span id="local-6989586621679330302"></span></span><span class="hs-keyword">data</span><span> </span><span id="EventsMove"><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#EventsMove"><span class="hs-identifier hs-var">EventsMove</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-65"></span><span>  </span><span id="EventsMove%27"><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#EventsMove%27"><span class="hs-identifier hs-var">EventsMove'</span></a></span></span><span>
+</span><span id="line-66"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="_emDestination"><span class="annot"><span class="annottext">EventsMove -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emDestination"><span class="hs-identifier hs-var hs-var">_emDestination</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-67"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_emCalendarId"><span class="annot"><span class="annottext">EventsMove -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emCalendarId"><span class="hs-identifier hs-var hs-var">_emCalendarId</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-68"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_emSendNotifications"><span class="annot"><span class="annottext">EventsMove -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emSendNotifications"><span class="hs-identifier hs-var hs-var">_emSendNotifications</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-69"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_emSendUpdates"><span class="annot"><span class="annottext">EventsMove -&gt; Maybe EventsMoveSendUpdates
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emSendUpdates"><span class="hs-identifier hs-var hs-var">_emSendUpdates</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Sum.html#EventsMoveSendUpdates"><span class="hs-identifier hs-type">EventsMoveSendUpdates</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-70"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_emEventId"><span class="annot"><span class="annottext">EventsMove -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emEventId"><span class="hs-identifier hs-var hs-var">_emEventId</span></a></span></span><span>           </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-71"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-72"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679330291"><span id="local-6989586621679330293"><span class="annot"><span class="annottext">EventsMove -&gt; EventsMove -&gt; Bool
+(EventsMove -&gt; EventsMove -&gt; Bool)
+-&gt; (EventsMove -&gt; EventsMove -&gt; Bool) -&gt; Eq EventsMove
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: EventsMove -&gt; EventsMove -&gt; Bool
+$c/= :: EventsMove -&gt; EventsMove -&gt; Bool
+== :: EventsMove -&gt; EventsMove -&gt; Bool
+$c== :: EventsMove -&gt; EventsMove -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679330284"><span id="local-6989586621679330286"><span id="local-6989586621679330288"><span class="annot"><span class="annottext">Int -&gt; EventsMove -&gt; ShowS
+[EventsMove] -&gt; ShowS
+EventsMove -&gt; String
+(Int -&gt; EventsMove -&gt; ShowS)
+-&gt; (EventsMove -&gt; String)
+-&gt; ([EventsMove] -&gt; ShowS)
+-&gt; Show EventsMove
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [EventsMove] -&gt; ShowS
+$cshowList :: [EventsMove] -&gt; ShowS
+show :: EventsMove -&gt; String
+$cshow :: EventsMove -&gt; String
+showsPrec :: Int -&gt; EventsMove -&gt; ShowS
+$cshowsPrec :: Int -&gt; EventsMove -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="%24cEventsMove%27"><span id="%24tEventsMove"><span id="local-6989586621679330254"><span id="local-6989586621679330256"><span id="local-6989586621679330258"><span id="local-6989586621679330260"><span id="local-6989586621679330262"><span id="local-6989586621679330264"><span id="local-6989586621679330266"><span id="local-6989586621679330268"><span id="local-6989586621679330270"><span id="local-6989586621679330272"><span id="local-6989586621679330274"><span id="local-6989586621679330276"><span id="local-6989586621679330278"><span id="local-6989586621679330280"><span class="annot"><span class="annottext">Typeable EventsMove
+DataType
+Constr
+Typeable EventsMove =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; EventsMove -&gt; c EventsMove)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsMove)
+-&gt; (EventsMove -&gt; Constr)
+-&gt; (EventsMove -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c EventsMove))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e))
+    -&gt; Maybe (c EventsMove))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; EventsMove -&gt; EventsMove)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsMove -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsMove -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; EventsMove -&gt; [u])
+-&gt; (forall u.
+    Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; EventsMove -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsMove -&gt; m EventsMove)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsMove -&gt; m EventsMove)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsMove -&gt; m EventsMove)
+-&gt; Data EventsMove
+EventsMove -&gt; DataType
+EventsMove -&gt; Constr
+(forall b. Data b =&gt; b -&gt; b) -&gt; EventsMove -&gt; EventsMove
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; EventsMove -&gt; c EventsMove
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsMove
+forall a.
+Typeable a =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; a -&gt; c a)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c a)
+-&gt; (a -&gt; Constr)
+-&gt; (a -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c a))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c a))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; a -&gt; a)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; Data a
+forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; EventsMove -&gt; u
+forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; EventsMove -&gt; [u]
+forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsMove -&gt; r
+forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsMove -&gt; r
+forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsMove -&gt; m EventsMove
+forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsMove -&gt; m EventsMove
+forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsMove
+forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; EventsMove -&gt; c EventsMove
+forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c EventsMove)
+forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c EventsMove)
+$cEventsMove' :: Constr
+$tEventsMove :: DataType
+gmapMo :: (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsMove -&gt; m EventsMove
+$cgmapMo :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsMove -&gt; m EventsMove
+gmapMp :: (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsMove -&gt; m EventsMove
+$cgmapMp :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsMove -&gt; m EventsMove
+gmapM :: (forall d. Data d =&gt; d -&gt; m d) -&gt; EventsMove -&gt; m EventsMove
+$cgmapM :: forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; EventsMove -&gt; m EventsMove
+gmapQi :: Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; EventsMove -&gt; u
+$cgmapQi :: forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; EventsMove -&gt; u
+gmapQ :: (forall d. Data d =&gt; d -&gt; u) -&gt; EventsMove -&gt; [u]
+$cgmapQ :: forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; EventsMove -&gt; [u]
+gmapQr :: (r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsMove -&gt; r
+$cgmapQr :: forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsMove -&gt; r
+gmapQl :: (r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsMove -&gt; r
+$cgmapQl :: forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; EventsMove -&gt; r
+gmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; EventsMove -&gt; EventsMove
+$cgmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; EventsMove -&gt; EventsMove
+dataCast2 :: (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c EventsMove)
+$cdataCast2 :: forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c EventsMove)
+dataCast1 :: (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c EventsMove)
+$cdataCast1 :: forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c EventsMove)
+dataTypeOf :: EventsMove -&gt; DataType
+$cdataTypeOf :: EventsMove -&gt; DataType
+toConstr :: EventsMove -&gt; Constr
+$ctoConstr :: EventsMove -&gt; Constr
+gunfold :: (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsMove
+$cgunfold :: forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c EventsMove
+gfoldl :: (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; EventsMove -&gt; c EventsMove
+$cgfoldl :: forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; EventsMove -&gt; c EventsMove
+$cp1Data :: Typeable EventsMove
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Data</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Typeable</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(forall x. EventsMove -&gt; Rep EventsMove x)
+-&gt; (forall x. Rep EventsMove x -&gt; EventsMove) -&gt; Generic EventsMove
+forall x. Rep EventsMove x -&gt; EventsMove
+forall x. EventsMove -&gt; Rep EventsMove x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep EventsMove x -&gt; EventsMove
+$cfrom :: forall x. EventsMove -&gt; Rep EventsMove x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">)</span><span>
+</span><span id="line-73"></span><span>
+</span><span id="line-74"></span><span>
+</span><span id="line-75"></span><span class="hs-comment">-- | Creates a value of 'EventsMove' with the minimum fields required to make a request.</span><span>
+</span><span id="line-76"></span><span class="hs-comment">--</span><span>
+</span><span id="line-77"></span><span class="hs-comment">-- Use one of the following lenses to modify other fields as desired:</span><span>
+</span><span id="line-78"></span><span class="hs-comment">--</span><span>
+</span><span id="line-79"></span><span class="hs-comment">-- * 'emDestination'</span><span>
+</span><span id="line-80"></span><span class="hs-comment">--</span><span>
+</span><span id="line-81"></span><span class="hs-comment">-- * 'emCalendarId'</span><span>
+</span><span id="line-82"></span><span class="hs-comment">--</span><span>
+</span><span id="line-83"></span><span class="hs-comment">-- * 'emSendNotifications'</span><span>
+</span><span id="line-84"></span><span class="hs-comment">--</span><span>
+</span><span id="line-85"></span><span class="hs-comment">-- * 'emSendUpdates'</span><span>
+</span><span id="line-86"></span><span class="hs-comment">--</span><span>
+</span><span id="line-87"></span><span class="hs-comment">-- * 'emEventId'</span><span>
+</span><span id="line-88"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#eventsMove"><span class="hs-identifier hs-type">eventsMove</span></a></span><span>
+</span><span id="line-89"></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ 'emDestination'</span><span>
+</span><span id="line-90"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ 'emCalendarId'</span><span>
+</span><span id="line-91"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ 'emEventId'</span><span>
+</span><span id="line-92"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#EventsMove"><span class="hs-identifier hs-type">EventsMove</span></a></span><span>
+</span><span id="line-93"></span><span id="eventsMove"><span class="annot"><span class="annottext">eventsMove :: Text -&gt; Text -&gt; Text -&gt; EventsMove
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#eventsMove"><span class="hs-identifier hs-var hs-var">eventsMove</span></a></span></span><span> </span><span id="local-6989586621679330247"><span class="annot"><span class="annottext">pEmDestination_ :: Text
+</span><a href="#local-6989586621679330247"><span class="hs-identifier hs-var">pEmDestination_</span></a></span></span><span> </span><span id="local-6989586621679330246"><span class="annot"><span class="annottext">pEmCalendarId_ :: Text
+</span><a href="#local-6989586621679330246"><span class="hs-identifier hs-var">pEmCalendarId_</span></a></span></span><span> </span><span id="local-6989586621679330245"><span class="annot"><span class="annottext">pEmEventId_ :: Text
+</span><a href="#local-6989586621679330245"><span class="hs-identifier hs-var">pEmEventId_</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-94"></span><span>  </span><span class="annot"><span class="annottext">$WEventsMove' :: Text
+-&gt; Text
+-&gt; Maybe Bool
+-&gt; Maybe EventsMoveSendUpdates
+-&gt; Text
+-&gt; EventsMove
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#%24WEventsMove%27"><span class="hs-identifier hs-type hs-type">EventsMove'</span></a></span><span>
+</span><span id="line-95"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_emDestination :: Text
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emDestination"><span class="hs-identifier hs-var">_emDestination</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679330247"><span class="hs-identifier hs-var">pEmDestination_</span></a></span><span>
+</span><span id="line-96"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_emCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emCalendarId"><span class="hs-identifier hs-var">_emCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679330246"><span class="hs-identifier hs-var">pEmCalendarId_</span></a></span><span>
+</span><span id="line-97"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_emSendNotifications :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emSendNotifications"><span class="hs-identifier hs-var">_emSendNotifications</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-98"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_emSendUpdates :: Maybe EventsMoveSendUpdates
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emSendUpdates"><span class="hs-identifier hs-var">_emSendUpdates</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe EventsMoveSendUpdates
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-99"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_emEventId :: Text
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emEventId"><span class="hs-identifier hs-var">_emEventId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679330245"><span class="hs-identifier hs-var">pEmEventId_</span></a></span><span>
+</span><span id="line-100"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-101"></span><span>
+</span><span id="line-102"></span><span>
+</span><span id="line-103"></span><span class="hs-comment">-- | Calendar identifier of the target calendar where the event is to be</span><span>
+</span><span id="line-104"></span><span class="hs-comment">-- moved to.</span><span>
+</span><span id="line-105"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#emDestination"><span class="hs-identifier hs-type">emDestination</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#EventsMove"><span class="hs-identifier hs-type">EventsMove</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-106"></span><span id="emDestination"><span class="annot"><span class="annottext">emDestination :: (Text -&gt; f Text) -&gt; EventsMove -&gt; f EventsMove
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#emDestination"><span class="hs-identifier hs-var hs-var">emDestination</span></a></span></span><span>
+</span><span id="line-107"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsMove -&gt; Text)
+-&gt; (EventsMove -&gt; Text -&gt; EventsMove)
+-&gt; Lens EventsMove EventsMove Text Text
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsMove -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emDestination"><span class="hs-identifier hs-var hs-var">_emDestination</span></a></span><span>
+</span><span id="line-108"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679330241"><span class="annot"><span class="annottext">s :: EventsMove
+</span><a href="#local-6989586621679330241"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679330240"><span class="annot"><span class="annottext">a :: Text
+</span><a href="#local-6989586621679330240"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsMove
+</span><a href="#local-6989586621679330241"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_emDestination :: Text
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emDestination"><span class="hs-identifier hs-var">_emDestination</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679330240"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-109"></span><span>
+</span><span id="line-110"></span><span class="hs-comment">-- | Calendar identifier of the source calendar where the event currently is</span><span>
+</span><span id="line-111"></span><span class="hs-comment">-- on.</span><span>
+</span><span id="line-112"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#emCalendarId"><span class="hs-identifier hs-type">emCalendarId</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#EventsMove"><span class="hs-identifier hs-type">EventsMove</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-113"></span><span id="emCalendarId"><span class="annot"><span class="annottext">emCalendarId :: (Text -&gt; f Text) -&gt; EventsMove -&gt; f EventsMove
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#emCalendarId"><span class="hs-identifier hs-var hs-var">emCalendarId</span></a></span></span><span>
+</span><span id="line-114"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsMove -&gt; Text)
+-&gt; (EventsMove -&gt; Text -&gt; EventsMove)
+-&gt; Lens EventsMove EventsMove Text Text
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsMove -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emCalendarId"><span class="hs-identifier hs-var hs-var">_emCalendarId</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679330239"><span class="annot"><span class="annottext">s :: EventsMove
+</span><a href="#local-6989586621679330239"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679330238"><span class="annot"><span class="annottext">a :: Text
+</span><a href="#local-6989586621679330238"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsMove
+</span><a href="#local-6989586621679330239"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_emCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emCalendarId"><span class="hs-identifier hs-var">_emCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679330238"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-115"></span><span>
+</span><span id="line-116"></span><span class="hs-comment">-- | Deprecated. Please use sendUpdates instead. Whether to send</span><span>
+</span><span id="line-117"></span><span class="hs-comment">-- notifications about the change of the event\'s organizer. Note that some</span><span>
+</span><span id="line-118"></span><span class="hs-comment">-- emails might still be sent even if you set the value to false. The</span><span>
+</span><span id="line-119"></span><span class="hs-comment">-- default is false.</span><span>
+</span><span id="line-120"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#emSendNotifications"><span class="hs-identifier hs-type">emSendNotifications</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#EventsMove"><span class="hs-identifier hs-type">EventsMove</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-121"></span><span id="emSendNotifications"><span class="annot"><span class="annottext">emSendNotifications :: (Maybe Bool -&gt; f (Maybe Bool)) -&gt; EventsMove -&gt; f EventsMove
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#emSendNotifications"><span class="hs-identifier hs-var hs-var">emSendNotifications</span></a></span></span><span>
+</span><span id="line-122"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsMove -&gt; Maybe Bool)
+-&gt; (EventsMove -&gt; Maybe Bool -&gt; EventsMove)
+-&gt; Lens EventsMove EventsMove (Maybe Bool) (Maybe Bool)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsMove -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emSendNotifications"><span class="hs-identifier hs-var hs-var">_emSendNotifications</span></a></span><span>
+</span><span id="line-123"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679330237"><span class="annot"><span class="annottext">s :: EventsMove
+</span><a href="#local-6989586621679330237"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679330236"><span class="annot"><span class="annottext">a :: Maybe Bool
+</span><a href="#local-6989586621679330236"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsMove
+</span><a href="#local-6989586621679330237"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_emSendNotifications :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emSendNotifications"><span class="hs-identifier hs-var">_emSendNotifications</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679330236"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-124"></span><span>
+</span><span id="line-125"></span><span class="hs-comment">-- | Guests who should receive notifications about the change of the event\'s</span><span>
+</span><span id="line-126"></span><span class="hs-comment">-- organizer.</span><span>
+</span><span id="line-127"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#emSendUpdates"><span class="hs-identifier hs-type">emSendUpdates</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#EventsMove"><span class="hs-identifier hs-type">EventsMove</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Sum.html#EventsMoveSendUpdates"><span class="hs-identifier hs-type">EventsMoveSendUpdates</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-128"></span><span id="emSendUpdates"><span class="annot"><span class="annottext">emSendUpdates :: (Maybe EventsMoveSendUpdates -&gt; f (Maybe EventsMoveSendUpdates))
+-&gt; EventsMove -&gt; f EventsMove
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#emSendUpdates"><span class="hs-identifier hs-var hs-var">emSendUpdates</span></a></span></span><span>
+</span><span id="line-129"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsMove -&gt; Maybe EventsMoveSendUpdates)
+-&gt; (EventsMove -&gt; Maybe EventsMoveSendUpdates -&gt; EventsMove)
+-&gt; Lens
+     EventsMove
+     EventsMove
+     (Maybe EventsMoveSendUpdates)
+     (Maybe EventsMoveSendUpdates)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsMove -&gt; Maybe EventsMoveSendUpdates
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emSendUpdates"><span class="hs-identifier hs-var hs-var">_emSendUpdates</span></a></span><span>
+</span><span id="line-130"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679330235"><span class="annot"><span class="annottext">s :: EventsMove
+</span><a href="#local-6989586621679330235"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679330234"><span class="annot"><span class="annottext">a :: Maybe EventsMoveSendUpdates
+</span><a href="#local-6989586621679330234"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsMove
+</span><a href="#local-6989586621679330235"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_emSendUpdates :: Maybe EventsMoveSendUpdates
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emSendUpdates"><span class="hs-identifier hs-var">_emSendUpdates</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe EventsMoveSendUpdates
+</span><a href="#local-6989586621679330234"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-131"></span><span>
+</span><span id="line-132"></span><span class="hs-comment">-- | Event identifier.</span><span>
+</span><span id="line-133"></span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#emEventId"><span class="hs-identifier hs-type">emEventId</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#EventsMove"><span class="hs-identifier hs-type">EventsMove</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-134"></span><span id="emEventId"><span class="annot"><span class="annottext">emEventId :: (Text -&gt; f Text) -&gt; EventsMove -&gt; f EventsMove
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#emEventId"><span class="hs-identifier hs-var hs-var">emEventId</span></a></span></span><span>
+</span><span id="line-135"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(EventsMove -&gt; Text)
+-&gt; (EventsMove -&gt; Text -&gt; EventsMove)
+-&gt; Lens EventsMove EventsMove Text Text
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">EventsMove -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emEventId"><span class="hs-identifier hs-var hs-var">_emEventId</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679330233"><span class="annot"><span class="annottext">s :: EventsMove
+</span><a href="#local-6989586621679330233"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679330232"><span class="annot"><span class="annottext">a :: Text
+</span><a href="#local-6989586621679330232"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">EventsMove
+</span><a href="#local-6989586621679330233"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_emEventId :: Text
+</span><a href="Network.Google.Resource.Calendar.Events.Move.html#_emEventId"><span class="hs-identifier hs-var">_emEventId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679330232"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-136"></span><span>
+</span><span id="line-137"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">GoogleRequest</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#EventsMove"><span class="hs-identifier hs-type">EventsMove</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-138"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Rs"><span class="annot"><span class="hs-identifier hs-var">Rs</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#EventsMove"><span class="hs-identifier hs-type">EventsMove</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Event"><span class="hs-identifier hs-type">Event</span></a></span><span>
+</span><span id="line-139"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Scopes"><span class="annot"><span class="hs-identifier hs-var">Scopes</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#EventsMove"><span class="hs-identifier hs-type">EventsMove</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-140"></span><span>             </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-141"></span><span>               </span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar.events&quot;</span></span><span class="hs-special">]</span><span>
+</span><span id="line-142"></span><span>        </span><span id="local-6989586621679330228"><span class="annot"><span class="annottext">requestClient :: EventsMove -&gt; GClient (Rs EventsMove)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">requestClient</span></span></span><span> </span><span id="local-6989586621679330222"><span id="local-6989586621679330223"><span id="local-6989586621679330224"><span id="local-6989586621679330225"><span id="local-6989586621679330226"><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#EventsMove%27"><span class="hs-identifier hs-type">EventsMove'</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span></span></span><span>
+</span><span id="line-143"></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+-&gt; Text
+-&gt; Maybe Text
+-&gt; Maybe Bool
+-&gt; Maybe EventsMoveSendUpdates
+-&gt; Maybe AltJSON
+-&gt; ServiceConfig
+-&gt; GClient Event
+</span><a href="#local-6989586621679330221"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679330225"><span class="hs-identifier hs-var">_emCalendarId</span></a></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679330222"><span class="hs-identifier hs-var">_emEventId</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Text -&gt; Maybe Text
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679330226"><span class="hs-identifier hs-var">_emDestination</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-144"></span><span>              </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679330224"><span class="hs-identifier hs-var">_emSendNotifications</span></a></span><span>
+</span><span id="line-145"></span><span>              </span><span class="annot"><span class="annottext">Maybe EventsMoveSendUpdates
+</span><a href="#local-6989586621679330223"><span class="hs-identifier hs-var">_emSendUpdates</span></a></span><span>
+</span><span id="line-146"></span><span>              </span><span class="hs-special">(</span><span class="annot"><span class="annottext">AltJSON -&gt; Maybe AltJSON
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">AltJSON
+</span><span class="hs-identifier hs-var">AltJSON</span></span><span class="hs-special">)</span><span>
+</span><span id="line-147"></span><span>              </span><span class="annot"><span class="annottext">ServiceConfig
+</span><a href="Network.Google.AppsCalendar.Types.html#appsCalendarService"><span class="hs-identifier hs-var">appsCalendarService</span></a></span><span>
+</span><span id="line-148"></span><span>          </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679330221"><span class="annot"><span class="annottext">go :: Fn EventsMoveResource
+</span><a href="#local-6989586621679330221"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span>
+</span><span id="line-149"></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Proxy EventsMoveResource -&gt; Request -&gt; Fn EventsMoveResource
+forall fn. GoogleClient fn =&gt; Proxy fn -&gt; Request -&gt; Fn fn
+</span><span class="hs-identifier hs-var">buildClient</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Proxy EventsMoveResource
+forall k (t :: k). Proxy t
+</span><span class="hs-identifier hs-var">Proxy</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Proxy</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.Events.Move.html#EventsMoveResource"><span class="hs-identifier hs-type">EventsMoveResource</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-150"></span><span>                      </span><span class="annot"><span class="annottext">Request
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-151"></span></pre></body></html>

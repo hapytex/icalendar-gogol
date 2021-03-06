@@ -1,0 +1,498 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE DataKinds          #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE DeriveDataTypeable #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# LANGUAGE DeriveGeneric      #-}</span><span>
+</span><span id="line-4"></span><span class="hs-pragma">{-# LANGUAGE FlexibleInstances  #-}</span><span>
+</span><span id="line-5"></span><span class="hs-pragma">{-# LANGUAGE NoImplicitPrelude  #-}</span><span>
+</span><span id="line-6"></span><span class="hs-pragma">{-# LANGUAGE OverloadedStrings  #-}</span><span>
+</span><span id="line-7"></span><span class="hs-pragma">{-# LANGUAGE RecordWildCards    #-}</span><span>
+</span><span id="line-8"></span><span class="hs-pragma">{-# LANGUAGE TypeFamilies       #-}</span><span>
+</span><span id="line-9"></span><span class="hs-pragma">{-# LANGUAGE TypeOperators      #-}</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-duplicate-exports #-}</span><span>
+</span><span id="line-12"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-binds      #-}</span><span>
+</span><span id="line-13"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-unused-imports    #-}</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-16"></span><span class="hs-comment">-- Module      : Network.Google.Resource.Calendar.ACL.Watch</span><span>
+</span><span id="line-17"></span><span class="hs-comment">-- Copyright   : (c) 2015-2016 Brendan Hay</span><span>
+</span><span id="line-18"></span><span class="hs-comment">-- License     : Mozilla Public License, v. 2.0.</span><span>
+</span><span id="line-19"></span><span class="hs-comment">-- Maintainer  : Brendan Hay &lt;brendan.g.hay@gmail.com&gt;</span><span>
+</span><span id="line-20"></span><span class="hs-comment">-- Stability   : auto-generated</span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><span id="line-22"></span><span class="hs-comment">--</span><span>
+</span><span id="line-23"></span><span class="hs-comment">-- Watch for changes to ACL resources.</span><span>
+</span><span id="line-24"></span><span class="hs-comment">--</span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- /See:/ &lt;https://developers.google.com/google-apps/calendar/firstapp Calendar API Reference&gt; for @calendar.acl.watch@.</span><span>
+</span><span id="line-26"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Network.Google.Resource.Calendar.ACL.Watch</span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">(</span><span>
+</span><span id="line-28"></span><span>    </span><span class="annot"><span class="hs-comment">-- * REST Resource</span></span><span>
+</span><span id="line-29"></span><span>      </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#ACLWatchResource"><span class="hs-identifier">ACLWatchResource</span></a></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Creating a Request</span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#aclWatch"><span class="hs-identifier">aclWatch</span></a></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#ACLWatch"><span class="hs-identifier">ACLWatch</span></a></span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Request Lenses</span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awSyncToken"><span class="hs-identifier">awSyncToken</span></a></span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awCalendarId"><span class="hs-identifier">awCalendarId</span></a></span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awShowDeleted"><span class="hs-identifier">awShowDeleted</span></a></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awPayload"><span class="hs-identifier">awPayload</span></a></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awPageToken"><span class="hs-identifier">awPageToken</span></a></span><span>
+</span><span id="line-41"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awMaxResults"><span class="hs-identifier">awMaxResults</span></a></span><span>
+</span><span id="line-42"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-43"></span><span>
+</span><span id="line-44"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.html"><span class="hs-identifier">Network.Google.AppsCalendar.Types</span></a></span><span>
+</span><span id="line-45"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Network.Google.Prelude</span></span><span>
+</span><span id="line-46"></span><span>
+</span><span id="line-47"></span><span class="hs-comment">-- | A resource alias for @calendar.acl.watch@ method which the</span><span>
+</span><span id="line-48"></span><span class="hs-comment">-- 'ACLWatch' request conforms to.</span><span>
+</span><span id="line-49"></span><span class="hs-keyword">type</span><span> </span><span id="ACLWatchResource"><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#ACLWatchResource"><span class="hs-identifier hs-var">ACLWatchResource</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-50"></span><span>     </span><span class="annot"><span class="hs-string">&quot;calendar&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-51"></span><span>       </span><span class="annot"><span class="hs-string">&quot;v3&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-52"></span><span>         </span><span class="annot"><span class="hs-string">&quot;calendars&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-53"></span><span>           </span><span class="annot"><span class="hs-identifier hs-type">Capture</span></span><span> </span><span class="annot"><span class="hs-string">&quot;calendarId&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-54"></span><span>             </span><span class="annot"><span class="hs-string">&quot;acl&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-55"></span><span>               </span><span class="annot"><span class="hs-string">&quot;watch&quot;</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-56"></span><span>                 </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;syncToken&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-57"></span><span>                   </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;showDeleted&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-58"></span><span>                     </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;pageToken&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-59"></span><span>                       </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;maxResults&quot;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Textual</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-60"></span><span>                         </span><span class="annot"><span class="hs-identifier hs-type">QueryParam</span></span><span> </span><span class="annot"><span class="hs-string">&quot;alt&quot;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">AltJSON</span></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span>
+</span><span id="line-61"></span><span>                           </span><span class="annot"><span class="hs-identifier hs-type">ReqBody</span></span><span> </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">JSON</span></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Channel"><span class="hs-identifier hs-type">Channel</span></a></span><span> </span><span class="annot"><span class="hs-operator hs-type">:&gt;</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Post</span></span><span> </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">JSON</span></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Channel"><span class="hs-identifier hs-type">Channel</span></a></span><span>
+</span><span id="line-62"></span><span>
+</span><span id="line-63"></span><span class="hs-comment">-- | Watch for changes to ACL resources.</span><span>
+</span><span id="line-64"></span><span class="hs-comment">--</span><span>
+</span><span id="line-65"></span><span class="hs-comment">-- /See:/ 'aclWatch' smart constructor.</span><span>
+</span><span id="line-66"></span><span id="local-6989586621679326260"><span id="local-6989586621679326261"></span></span><span class="hs-keyword">data</span><span> </span><span id="ACLWatch"><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#ACLWatch"><span class="hs-identifier hs-var">ACLWatch</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-67"></span><span>  </span><span id="ACLWatch%27"><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#ACLWatch%27"><span class="hs-identifier hs-var">ACLWatch'</span></a></span></span><span>
+</span><span id="line-68"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="_awSyncToken"><span class="annot"><span class="annottext">ACLWatch -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awSyncToken"><span class="hs-identifier hs-var hs-var">_awSyncToken</span></a></span></span><span>   </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-69"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_awCalendarId"><span class="annot"><span class="annottext">ACLWatch -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awCalendarId"><span class="hs-identifier hs-var hs-var">_awCalendarId</span></a></span></span><span>  </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-70"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_awShowDeleted"><span class="annot"><span class="annottext">ACLWatch -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awShowDeleted"><span class="hs-identifier hs-var hs-var">_awShowDeleted</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-71"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_awPayload"><span class="annot"><span class="annottext">ACLWatch -&gt; Channel
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awPayload"><span class="hs-identifier hs-var hs-var">_awPayload</span></a></span></span><span>     </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Channel"><span class="hs-identifier hs-type">Channel</span></a></span><span>
+</span><span id="line-72"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_awPageToken"><span class="annot"><span class="annottext">ACLWatch -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awPageToken"><span class="hs-identifier hs-var hs-var">_awPageToken</span></a></span></span><span>   </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-73"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_awMaxResults"><span class="annot"><span class="annottext">ACLWatch -&gt; Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awMaxResults"><span class="hs-identifier hs-var hs-var">_awMaxResults</span></a></span></span><span>  </span><span class="hs-glyph">::</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Textual</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-74"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-75"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679326249"><span id="local-6989586621679326251"><span class="annot"><span class="annottext">ACLWatch -&gt; ACLWatch -&gt; Bool
+(ACLWatch -&gt; ACLWatch -&gt; Bool)
+-&gt; (ACLWatch -&gt; ACLWatch -&gt; Bool) -&gt; Eq ACLWatch
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: ACLWatch -&gt; ACLWatch -&gt; Bool
+$c/= :: ACLWatch -&gt; ACLWatch -&gt; Bool
+== :: ACLWatch -&gt; ACLWatch -&gt; Bool
+$c== :: ACLWatch -&gt; ACLWatch -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679326242"><span id="local-6989586621679326244"><span id="local-6989586621679326246"><span class="annot"><span class="annottext">Int -&gt; ACLWatch -&gt; ShowS
+[ACLWatch] -&gt; ShowS
+ACLWatch -&gt; String
+(Int -&gt; ACLWatch -&gt; ShowS)
+-&gt; (ACLWatch -&gt; String) -&gt; ([ACLWatch] -&gt; ShowS) -&gt; Show ACLWatch
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [ACLWatch] -&gt; ShowS
+$cshowList :: [ACLWatch] -&gt; ShowS
+show :: ACLWatch -&gt; String
+$cshow :: ACLWatch -&gt; String
+showsPrec :: Int -&gt; ACLWatch -&gt; ShowS
+$cshowsPrec :: Int -&gt; ACLWatch -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="%24cACLWatch%27"><span id="%24tACLWatch"><span id="local-6989586621679326212"><span id="local-6989586621679326214"><span id="local-6989586621679326216"><span id="local-6989586621679326218"><span id="local-6989586621679326220"><span id="local-6989586621679326222"><span id="local-6989586621679326224"><span id="local-6989586621679326226"><span id="local-6989586621679326228"><span id="local-6989586621679326230"><span id="local-6989586621679326232"><span id="local-6989586621679326234"><span id="local-6989586621679326236"><span id="local-6989586621679326238"><span class="annot"><span class="annottext">Typeable ACLWatch
+DataType
+Constr
+Typeable ACLWatch =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; ACLWatch -&gt; c ACLWatch)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLWatch)
+-&gt; (ACLWatch -&gt; Constr)
+-&gt; (ACLWatch -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c ACLWatch))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c ACLWatch))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; ACLWatch -&gt; ACLWatch)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLWatch -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLWatch -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; ACLWatch -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; ACLWatch -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLWatch -&gt; m ACLWatch)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLWatch -&gt; m ACLWatch)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLWatch -&gt; m ACLWatch)
+-&gt; Data ACLWatch
+ACLWatch -&gt; DataType
+ACLWatch -&gt; Constr
+(forall b. Data b =&gt; b -&gt; b) -&gt; ACLWatch -&gt; ACLWatch
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; ACLWatch -&gt; c ACLWatch
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLWatch
+forall a.
+Typeable a =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; a -&gt; c a)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c a)
+-&gt; (a -&gt; Constr)
+-&gt; (a -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c a))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c a))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; a -&gt; a)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; Data a
+forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; ACLWatch -&gt; u
+forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; ACLWatch -&gt; [u]
+forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLWatch -&gt; r
+forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLWatch -&gt; r
+forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLWatch -&gt; m ACLWatch
+forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLWatch -&gt; m ACLWatch
+forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLWatch
+forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; ACLWatch -&gt; c ACLWatch
+forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c ACLWatch)
+forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c ACLWatch)
+$cACLWatch' :: Constr
+$tACLWatch :: DataType
+gmapMo :: (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLWatch -&gt; m ACLWatch
+$cgmapMo :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLWatch -&gt; m ACLWatch
+gmapMp :: (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLWatch -&gt; m ACLWatch
+$cgmapMp :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLWatch -&gt; m ACLWatch
+gmapM :: (forall d. Data d =&gt; d -&gt; m d) -&gt; ACLWatch -&gt; m ACLWatch
+$cgmapM :: forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; ACLWatch -&gt; m ACLWatch
+gmapQi :: Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; ACLWatch -&gt; u
+$cgmapQi :: forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; ACLWatch -&gt; u
+gmapQ :: (forall d. Data d =&gt; d -&gt; u) -&gt; ACLWatch -&gt; [u]
+$cgmapQ :: forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; ACLWatch -&gt; [u]
+gmapQr :: (r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLWatch -&gt; r
+$cgmapQr :: forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLWatch -&gt; r
+gmapQl :: (r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLWatch -&gt; r
+$cgmapQl :: forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; ACLWatch -&gt; r
+gmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; ACLWatch -&gt; ACLWatch
+$cgmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; ACLWatch -&gt; ACLWatch
+dataCast2 :: (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c ACLWatch)
+$cdataCast2 :: forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c ACLWatch)
+dataCast1 :: (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c ACLWatch)
+$cdataCast1 :: forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c ACLWatch)
+dataTypeOf :: ACLWatch -&gt; DataType
+$cdataTypeOf :: ACLWatch -&gt; DataType
+toConstr :: ACLWatch -&gt; Constr
+$ctoConstr :: ACLWatch -&gt; Constr
+gunfold :: (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLWatch
+$cgunfold :: forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c ACLWatch
+gfoldl :: (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; ACLWatch -&gt; c ACLWatch
+$cgfoldl :: forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; ACLWatch -&gt; c ACLWatch
+$cp1Data :: Typeable ACLWatch
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Data</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Typeable</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(forall x. ACLWatch -&gt; Rep ACLWatch x)
+-&gt; (forall x. Rep ACLWatch x -&gt; ACLWatch) -&gt; Generic ACLWatch
+forall x. Rep ACLWatch x -&gt; ACLWatch
+forall x. ACLWatch -&gt; Rep ACLWatch x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep ACLWatch x -&gt; ACLWatch
+$cfrom :: forall x. ACLWatch -&gt; Rep ACLWatch x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">)</span><span>
+</span><span id="line-76"></span><span>
+</span><span id="line-77"></span><span>
+</span><span id="line-78"></span><span class="hs-comment">-- | Creates a value of 'ACLWatch' with the minimum fields required to make a request.</span><span>
+</span><span id="line-79"></span><span class="hs-comment">--</span><span>
+</span><span id="line-80"></span><span class="hs-comment">-- Use one of the following lenses to modify other fields as desired:</span><span>
+</span><span id="line-81"></span><span class="hs-comment">--</span><span>
+</span><span id="line-82"></span><span class="hs-comment">-- * 'awSyncToken'</span><span>
+</span><span id="line-83"></span><span class="hs-comment">--</span><span>
+</span><span id="line-84"></span><span class="hs-comment">-- * 'awCalendarId'</span><span>
+</span><span id="line-85"></span><span class="hs-comment">--</span><span>
+</span><span id="line-86"></span><span class="hs-comment">-- * 'awShowDeleted'</span><span>
+</span><span id="line-87"></span><span class="hs-comment">--</span><span>
+</span><span id="line-88"></span><span class="hs-comment">-- * 'awPayload'</span><span>
+</span><span id="line-89"></span><span class="hs-comment">--</span><span>
+</span><span id="line-90"></span><span class="hs-comment">-- * 'awPageToken'</span><span>
+</span><span id="line-91"></span><span class="hs-comment">--</span><span>
+</span><span id="line-92"></span><span class="hs-comment">-- * 'awMaxResults'</span><span>
+</span><span id="line-93"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#aclWatch"><span class="hs-identifier hs-type">aclWatch</span></a></span><span>
+</span><span id="line-94"></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ 'awCalendarId'</span><span>
+</span><span id="line-95"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Channel"><span class="hs-identifier hs-type">Channel</span></a></span><span> </span><span class="hs-comment">-- ^ 'awPayload'</span><span>
+</span><span id="line-96"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#ACLWatch"><span class="hs-identifier hs-type">ACLWatch</span></a></span><span>
+</span><span id="line-97"></span><span id="aclWatch"><span class="annot"><span class="annottext">aclWatch :: Text -&gt; Channel -&gt; ACLWatch
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#aclWatch"><span class="hs-identifier hs-var hs-var">aclWatch</span></a></span></span><span> </span><span id="local-6989586621679326205"><span class="annot"><span class="annottext">pAwCalendarId_ :: Text
+</span><a href="#local-6989586621679326205"><span class="hs-identifier hs-var">pAwCalendarId_</span></a></span></span><span> </span><span id="local-6989586621679326204"><span class="annot"><span class="annottext">pAwPayload_ :: Channel
+</span><a href="#local-6989586621679326204"><span class="hs-identifier hs-var">pAwPayload_</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-98"></span><span>  </span><span class="annot"><span class="annottext">$WACLWatch' :: Maybe Text
+-&gt; Text
+-&gt; Maybe Bool
+-&gt; Channel
+-&gt; Maybe Text
+-&gt; Maybe (Textual Int32)
+-&gt; ACLWatch
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#%24WACLWatch%27"><span class="hs-identifier hs-type hs-type">ACLWatch'</span></a></span><span>
+</span><span id="line-99"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_awSyncToken :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awSyncToken"><span class="hs-identifier hs-var">_awSyncToken</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-100"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_awCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awCalendarId"><span class="hs-identifier hs-var">_awCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679326205"><span class="hs-identifier hs-var">pAwCalendarId_</span></a></span><span>
+</span><span id="line-101"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_awShowDeleted :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awShowDeleted"><span class="hs-identifier hs-var">_awShowDeleted</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-102"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_awPayload :: Channel
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awPayload"><span class="hs-identifier hs-var">_awPayload</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Channel
+</span><a href="#local-6989586621679326204"><span class="hs-identifier hs-var">pAwPayload_</span></a></span><span>
+</span><span id="line-103"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_awPageToken :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awPageToken"><span class="hs-identifier hs-var">_awPageToken</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-104"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_awMaxResults :: Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awMaxResults"><span class="hs-identifier hs-var">_awMaxResults</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe (Textual Int32)
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-105"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-106"></span><span>
+</span><span id="line-107"></span><span>
+</span><span id="line-108"></span><span class="hs-comment">-- | Token obtained from the nextSyncToken field returned on the last page of</span><span>
+</span><span id="line-109"></span><span class="hs-comment">-- results from the previous list request. It makes the result of this list</span><span>
+</span><span id="line-110"></span><span class="hs-comment">-- request contain only entries that have changed since then. All entries</span><span>
+</span><span id="line-111"></span><span class="hs-comment">-- deleted since the previous list request will always be in the result set</span><span>
+</span><span id="line-112"></span><span class="hs-comment">-- and it is not allowed to set showDeleted to False. If the syncToken</span><span>
+</span><span id="line-113"></span><span class="hs-comment">-- expires, the server will respond with a 410 GONE response code and the</span><span>
+</span><span id="line-114"></span><span class="hs-comment">-- client should clear its storage and perform a full synchronization</span><span>
+</span><span id="line-115"></span><span class="hs-comment">-- without any syncToken. Learn more about incremental synchronization.</span><span>
+</span><span id="line-116"></span><span class="hs-comment">-- Optional. The default is to return all entries.</span><span>
+</span><span id="line-117"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awSyncToken"><span class="hs-identifier hs-type">awSyncToken</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#ACLWatch"><span class="hs-identifier hs-type">ACLWatch</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-118"></span><span id="awSyncToken"><span class="annot"><span class="annottext">awSyncToken :: (Maybe Text -&gt; f (Maybe Text)) -&gt; ACLWatch -&gt; f ACLWatch
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awSyncToken"><span class="hs-identifier hs-var hs-var">awSyncToken</span></a></span></span><span>
+</span><span id="line-119"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLWatch -&gt; Maybe Text)
+-&gt; (ACLWatch -&gt; Maybe Text -&gt; ACLWatch)
+-&gt; Lens ACLWatch ACLWatch (Maybe Text) (Maybe Text)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLWatch -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awSyncToken"><span class="hs-identifier hs-var hs-var">_awSyncToken</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679326200"><span class="annot"><span class="annottext">s :: ACLWatch
+</span><a href="#local-6989586621679326200"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679326199"><span class="annot"><span class="annottext">a :: Maybe Text
+</span><a href="#local-6989586621679326199"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLWatch
+</span><a href="#local-6989586621679326200"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_awSyncToken :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awSyncToken"><span class="hs-identifier hs-var">_awSyncToken</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679326199"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-120"></span><span>
+</span><span id="line-121"></span><span class="hs-comment">-- | Calendar identifier. To retrieve calendar IDs call the calendarList.list</span><span>
+</span><span id="line-122"></span><span class="hs-comment">-- method. If you want to access the primary calendar of the currently</span><span>
+</span><span id="line-123"></span><span class="hs-comment">-- logged in user, use the \&quot;primary\&quot; keyword.</span><span>
+</span><span id="line-124"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awCalendarId"><span class="hs-identifier hs-type">awCalendarId</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#ACLWatch"><span class="hs-identifier hs-type">ACLWatch</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-125"></span><span id="awCalendarId"><span class="annot"><span class="annottext">awCalendarId :: (Text -&gt; f Text) -&gt; ACLWatch -&gt; f ACLWatch
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awCalendarId"><span class="hs-identifier hs-var hs-var">awCalendarId</span></a></span></span><span>
+</span><span id="line-126"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLWatch -&gt; Text)
+-&gt; (ACLWatch -&gt; Text -&gt; ACLWatch)
+-&gt; Lens ACLWatch ACLWatch Text Text
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLWatch -&gt; Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awCalendarId"><span class="hs-identifier hs-var hs-var">_awCalendarId</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679326198"><span class="annot"><span class="annottext">s :: ACLWatch
+</span><a href="#local-6989586621679326198"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679326197"><span class="annot"><span class="annottext">a :: Text
+</span><a href="#local-6989586621679326197"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLWatch
+</span><a href="#local-6989586621679326198"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_awCalendarId :: Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awCalendarId"><span class="hs-identifier hs-var">_awCalendarId</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679326197"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-127"></span><span>
+</span><span id="line-128"></span><span class="hs-comment">-- | Whether to include deleted ACLs in the result. Deleted ACLs are</span><span>
+</span><span id="line-129"></span><span class="hs-comment">-- represented by role equal to \&quot;none\&quot;. Deleted ACLs will always be</span><span>
+</span><span id="line-130"></span><span class="hs-comment">-- included if syncToken is provided. Optional. The default is False.</span><span>
+</span><span id="line-131"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awShowDeleted"><span class="hs-identifier hs-type">awShowDeleted</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#ACLWatch"><span class="hs-identifier hs-type">ACLWatch</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-132"></span><span id="awShowDeleted"><span class="annot"><span class="annottext">awShowDeleted :: (Maybe Bool -&gt; f (Maybe Bool)) -&gt; ACLWatch -&gt; f ACLWatch
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awShowDeleted"><span class="hs-identifier hs-var hs-var">awShowDeleted</span></a></span></span><span>
+</span><span id="line-133"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLWatch -&gt; Maybe Bool)
+-&gt; (ACLWatch -&gt; Maybe Bool -&gt; ACLWatch)
+-&gt; Lens ACLWatch ACLWatch (Maybe Bool) (Maybe Bool)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLWatch -&gt; Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awShowDeleted"><span class="hs-identifier hs-var hs-var">_awShowDeleted</span></a></span><span>
+</span><span id="line-134"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679326196"><span class="annot"><span class="annottext">s :: ACLWatch
+</span><a href="#local-6989586621679326196"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679326195"><span class="annot"><span class="annottext">a :: Maybe Bool
+</span><a href="#local-6989586621679326195"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLWatch
+</span><a href="#local-6989586621679326196"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_awShowDeleted :: Maybe Bool
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awShowDeleted"><span class="hs-identifier hs-var">_awShowDeleted</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679326195"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-135"></span><span>
+</span><span id="line-136"></span><span class="hs-comment">-- | Multipart request metadata.</span><span>
+</span><span id="line-137"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awPayload"><span class="hs-identifier hs-type">awPayload</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#ACLWatch"><span class="hs-identifier hs-type">ACLWatch</span></a></span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Channel"><span class="hs-identifier hs-type">Channel</span></a></span><span>
+</span><span id="line-138"></span><span id="awPayload"><span class="annot"><span class="annottext">awPayload :: (Channel -&gt; f Channel) -&gt; ACLWatch -&gt; f ACLWatch
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awPayload"><span class="hs-identifier hs-var hs-var">awPayload</span></a></span></span><span>
+</span><span id="line-139"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLWatch -&gt; Channel)
+-&gt; (ACLWatch -&gt; Channel -&gt; ACLWatch)
+-&gt; Lens ACLWatch ACLWatch Channel Channel
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLWatch -&gt; Channel
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awPayload"><span class="hs-identifier hs-var hs-var">_awPayload</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679326194"><span class="annot"><span class="annottext">s :: ACLWatch
+</span><a href="#local-6989586621679326194"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679326193"><span class="annot"><span class="annottext">a :: Channel
+</span><a href="#local-6989586621679326193"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLWatch
+</span><a href="#local-6989586621679326194"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_awPayload :: Channel
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awPayload"><span class="hs-identifier hs-var">_awPayload</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Channel
+</span><a href="#local-6989586621679326193"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-140"></span><span>
+</span><span id="line-141"></span><span class="hs-comment">-- | Token specifying which result page to return. Optional.</span><span>
+</span><span id="line-142"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awPageToken"><span class="hs-identifier hs-type">awPageToken</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#ACLWatch"><span class="hs-identifier hs-type">ACLWatch</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-143"></span><span id="awPageToken"><span class="annot"><span class="annottext">awPageToken :: (Maybe Text -&gt; f (Maybe Text)) -&gt; ACLWatch -&gt; f ACLWatch
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awPageToken"><span class="hs-identifier hs-var hs-var">awPageToken</span></a></span></span><span>
+</span><span id="line-144"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLWatch -&gt; Maybe Text)
+-&gt; (ACLWatch -&gt; Maybe Text -&gt; ACLWatch)
+-&gt; Lens ACLWatch ACLWatch (Maybe Text) (Maybe Text)
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLWatch -&gt; Maybe Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awPageToken"><span class="hs-identifier hs-var hs-var">_awPageToken</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679326192"><span class="annot"><span class="annottext">s :: ACLWatch
+</span><a href="#local-6989586621679326192"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679326191"><span class="annot"><span class="annottext">a :: Maybe Text
+</span><a href="#local-6989586621679326191"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLWatch
+</span><a href="#local-6989586621679326192"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_awPageToken :: Maybe Text
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awPageToken"><span class="hs-identifier hs-var">_awPageToken</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679326191"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-145"></span><span>
+</span><span id="line-146"></span><span class="hs-comment">-- | Maximum number of entries returned on one result page. By default the</span><span>
+</span><span id="line-147"></span><span class="hs-comment">-- value is 100 entries. The page size can never be larger than 250</span><span>
+</span><span id="line-148"></span><span class="hs-comment">-- entries. Optional.</span><span>
+</span><span id="line-149"></span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awMaxResults"><span class="hs-identifier hs-type">awMaxResults</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lens'</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#ACLWatch"><span class="hs-identifier hs-type">ACLWatch</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int32</span></span><span class="hs-special">)</span><span>
+</span><span id="line-150"></span><span id="awMaxResults"><span class="annot"><span class="annottext">awMaxResults :: (Maybe Int32 -&gt; f (Maybe Int32)) -&gt; ACLWatch -&gt; f ACLWatch
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#awMaxResults"><span class="hs-identifier hs-var hs-var">awMaxResults</span></a></span></span><span>
+</span><span id="line-151"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ACLWatch -&gt; Maybe (Textual Int32))
+-&gt; (ACLWatch -&gt; Maybe (Textual Int32) -&gt; ACLWatch)
+-&gt; Lens
+     ACLWatch ACLWatch (Maybe (Textual Int32)) (Maybe (Textual Int32))
+forall s a b t. (s -&gt; a) -&gt; (s -&gt; b -&gt; t) -&gt; Lens s t a b
+</span><span class="hs-identifier hs-var">lens</span></span><span> </span><span class="annot"><span class="annottext">ACLWatch -&gt; Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awMaxResults"><span class="hs-identifier hs-var hs-var">_awMaxResults</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679326190"><span class="annot"><span class="annottext">s :: ACLWatch
+</span><a href="#local-6989586621679326190"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span id="local-6989586621679326189"><span class="annot"><span class="annottext">a :: Maybe (Textual Int32)
+</span><a href="#local-6989586621679326189"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ACLWatch
+</span><a href="#local-6989586621679326190"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">{</span><span class="annot"><span class="annottext">_awMaxResults :: Maybe (Textual Int32)
+</span><a href="Network.Google.Resource.Calendar.ACL.Watch.html#_awMaxResults"><span class="hs-identifier hs-var">_awMaxResults</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe (Textual Int32)
+</span><a href="#local-6989586621679326189"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">}</span><span class="hs-special">)</span><span>
+</span><span id="line-152"></span><span>      </span><span class="annot"><span class="annottext">((Maybe (Textual Int32) -&gt; f (Maybe (Textual Int32)))
+ -&gt; ACLWatch -&gt; f ACLWatch)
+-&gt; ((Maybe Int32 -&gt; f (Maybe Int32))
+    -&gt; Maybe (Textual Int32) -&gt; f (Maybe (Textual Int32)))
+-&gt; (Maybe Int32 -&gt; f (Maybe Int32))
+-&gt; ACLWatch
+-&gt; f ACLWatch
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">AnIso (Textual Int32) (Textual Int32) Int32 Int32
+-&gt; Iso
+     (Maybe (Textual Int32))
+     (Maybe (Textual Int32))
+     (Maybe Int32)
+     (Maybe Int32)
+forall (f :: * -&gt; *) (g :: * -&gt; *) s t a b.
+(Functor f, Functor g) =&gt;
+AnIso s t a b -&gt; Iso (f s) (g t) (f a) (g b)
+</span><span class="hs-identifier hs-var">mapping</span></span><span> </span><span class="annot"><span class="annottext">AnIso (Textual Int32) (Textual Int32) Int32 Int32
+forall a b. (Coercible a b, Coercible b a) =&gt; Iso' a b
+</span><span class="hs-identifier hs-var">_Coerce</span></span><span>
+</span><span id="line-153"></span><span>
+</span><span id="line-154"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">GoogleRequest</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#ACLWatch"><span class="hs-identifier hs-type">ACLWatch</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-155"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Rs"><span class="annot"><span class="hs-identifier hs-var">Rs</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#ACLWatch"><span class="hs-identifier hs-type">ACLWatch</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><a href="Network.Google.AppsCalendar.Types.Product.html#Channel"><span class="hs-identifier hs-type">Channel</span></a></span><span>
+</span><span id="line-156"></span><span>        </span><span class="hs-keyword">type</span><span> </span><span id="Scopes"><span class="annot"><span class="hs-identifier hs-var">Scopes</span></span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#ACLWatch"><span class="hs-identifier hs-type">ACLWatch</span></a></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-157"></span><span>             </span><span class="hs-special">'</span><span class="hs-special">[</span><span class="annot"><span class="hs-string">&quot;https://www.googleapis.com/auth/calendar&quot;</span></span><span class="hs-special">]</span><span>
+</span><span id="line-158"></span><span>        </span><span id="local-6989586621679326182"><span class="annot"><span class="annottext">requestClient :: ACLWatch -&gt; GClient (Rs ACLWatch)
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">requestClient</span></span></span><span> </span><span id="local-6989586621679326175"><span id="local-6989586621679326176"><span id="local-6989586621679326177"><span id="local-6989586621679326178"><span id="local-6989586621679326179"><span id="local-6989586621679326180"><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#ACLWatch%27"><span class="hs-identifier hs-type">ACLWatch'</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span></span></span></span><span>
+</span><span id="line-159"></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text
+-&gt; Maybe Text
+-&gt; Maybe Bool
+-&gt; Maybe Text
+-&gt; Maybe (Textual Int32)
+-&gt; Maybe AltJSON
+-&gt; Channel
+-&gt; ServiceConfig
+-&gt; GClient Channel
+</span><a href="#local-6989586621679326174"><span class="hs-identifier hs-var">go</span></a></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679326179"><span class="hs-identifier hs-var">_awCalendarId</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679326180"><span class="hs-identifier hs-var">_awSyncToken</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679326178"><span class="hs-identifier hs-var">_awShowDeleted</span></a></span><span>
+</span><span id="line-160"></span><span>              </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679326176"><span class="hs-identifier hs-var">_awPageToken</span></a></span><span>
+</span><span id="line-161"></span><span>              </span><span class="annot"><span class="annottext">Maybe (Textual Int32)
+</span><a href="#local-6989586621679326175"><span class="hs-identifier hs-var">_awMaxResults</span></a></span><span>
+</span><span id="line-162"></span><span>              </span><span class="hs-special">(</span><span class="annot"><span class="annottext">AltJSON -&gt; Maybe AltJSON
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">AltJSON
+</span><span class="hs-identifier hs-var">AltJSON</span></span><span class="hs-special">)</span><span>
+</span><span id="line-163"></span><span>              </span><span class="annot"><span class="annottext">Channel
+</span><a href="#local-6989586621679326177"><span class="hs-identifier hs-var">_awPayload</span></a></span><span>
+</span><span id="line-164"></span><span>              </span><span class="annot"><span class="annottext">ServiceConfig
+</span><a href="Network.Google.AppsCalendar.Types.html#appsCalendarService"><span class="hs-identifier hs-var">appsCalendarService</span></a></span><span>
+</span><span id="line-165"></span><span>          </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679326174"><span class="annot"><span class="annottext">go :: Fn ACLWatchResource
+</span><a href="#local-6989586621679326174"><span class="hs-identifier hs-var hs-var">go</span></a></span></span><span>
+</span><span id="line-166"></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Proxy ACLWatchResource -&gt; Request -&gt; Fn ACLWatchResource
+forall fn. GoogleClient fn =&gt; Proxy fn -&gt; Request -&gt; Fn fn
+</span><span class="hs-identifier hs-var">buildClient</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Proxy ACLWatchResource
+forall k (t :: k). Proxy t
+</span><span class="hs-identifier hs-var">Proxy</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Proxy</span></span><span> </span><span class="annot"><a href="Network.Google.Resource.Calendar.ACL.Watch.html#ACLWatchResource"><span class="hs-identifier hs-type">ACLWatchResource</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-167"></span><span>                      </span><span class="annot"><span class="annottext">Request
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-168"></span></pre></body></html>

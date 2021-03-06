@@ -1,0 +1,1472 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE OverloadedStrings          #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE DeriveDataTypeable         #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# LANGUAGE DeriveGeneric              #-}</span><span>
+</span><span id="line-4"></span><span class="hs-pragma">{-# LANGUAGE GeneralizedNewtypeDeriving #-}</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-7"></span><span class="hs-comment">-- Module      : Network.Google.Data.Time</span><span>
+</span><span id="line-8"></span><span class="hs-comment">-- Copyright   : (c) 2015-2016 Brendan Hay &lt;brendan.g.hay@gmail.com&gt;</span><span>
+</span><span id="line-9"></span><span class="hs-comment">-- License     : Mozilla Public License, v. 2.0.</span><span>
+</span><span id="line-10"></span><span class="hs-comment">-- Maintainer  : Brendan Hay &lt;brendan.g.hay@gmail.com&gt;</span><span>
+</span><span id="line-11"></span><span class="hs-comment">-- Stability   : provisional</span><span>
+</span><span id="line-12"></span><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><span id="line-13"></span><span class="hs-comment">--</span><span>
+</span><span id="line-14"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Network.Google.Data.Time</span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#Time%27"><span class="hs-identifier">Time'</span></a></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#Date%27"><span class="hs-identifier">Date'</span></a></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#DateTime%27"><span class="hs-identifier">DateTime'</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#GDuration"><span class="hs-identifier">GDuration</span></a></span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#_Time"><span class="hs-identifier">_Time</span></a></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#_Date"><span class="hs-identifier">_Date</span></a></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#_DateTime"><span class="hs-identifier">_DateTime</span></a></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#_GDuration"><span class="hs-identifier">_GDuration</span></a></span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-25"></span><span>
+</span><span id="line-26"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Monoid</span></span><span>                      </span><span class="hs-special">(</span><span class="annot"><span class="hs-operator">(&lt;&gt;)</span></span><span class="hs-special">)</span><span>
+</span><span id="line-27"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Control.Lens</span></span><span>
+</span><span id="line-28"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span>
+</span><span id="line-29"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span>                  </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Aeson</span></span><span>
+</span><span id="line-30"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Attoparsec.Text</span></span><span>
+</span><span id="line-31"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Bifunctor</span></span><span>                    </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">first</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">second</span></span><span class="hs-special">)</span><span>
+</span><span id="line-32"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Bits</span></span><span>                         </span><span class="hs-special">(</span><span class="annot"><span class="hs-operator">(.&amp;.)</span></span><span class="hs-special">)</span><span>
+</span><span id="line-33"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Char</span></span><span>                         </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">ord</span></span><span class="hs-special">)</span><span>
+</span><span id="line-34"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Data</span></span><span>                         </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Data</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">Typeable</span></span><span class="hs-special">)</span><span>
+</span><span id="line-35"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Scientific</span></span><span>                   </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Scientific</span></span><span class="hs-special">)</span><span>
+</span><span id="line-36"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Scientific</span></span><span>                   </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Sci</span></span><span>
+</span><span id="line-37"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span>                         </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-38"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span>                         </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Text</span></span><span>
+</span><span id="line-39"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text.Lazy</span></span><span>                    </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">LText</span></span><span>
+</span><span id="line-40"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text.Lazy.Builder</span></span><span>            </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Build</span></span><span>
+</span><span id="line-41"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text.Lazy.Builder.Scientific</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Sci</span></span><span>
+</span><span id="line-42"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Data.Time</span></span><span>
+</span><span id="line-43"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">GHC.Generics</span></span><span>
+</span><span id="line-44"></span><span class="hs-keyword">import</span><span>           </span><span class="annot"><span class="hs-identifier">Web.HttpApiData</span></span><span>                   </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">FromHttpApiData</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-45"></span><span>                                                    </span><span class="annot"><span class="hs-identifier">ToHttpApiData</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-46"></span><span>
+</span><span id="line-47"></span><span class="hs-comment">-- | This SHOULD be a time in the format of hh:mm:ss.  It is</span><span>
+</span><span id="line-48"></span><span class="hs-comment">-- recommended that you use the &quot;date-time&quot; format instead of &quot;time&quot;</span><span>
+</span><span id="line-49"></span><span class="hs-comment">-- unless you need to transfer only the time part.</span><span>
+</span><span id="line-50"></span><span id="local-6989586621679234502"><span id="local-6989586621679234503"></span></span><span class="hs-keyword">newtype</span><span> </span><span id="Time%27"><span class="annot"><a href="Network.Google.Data.Time.html#Time%27"><span class="hs-identifier hs-var">Time'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Time%27"><span class="annot"><a href="Network.Google.Data.Time.html#Time%27"><span class="hs-identifier hs-var">Time'</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="unTime"><span class="annot"><span class="annottext">Time' -&gt; TimeOfDay
+</span><a href="Network.Google.Data.Time.html#unTime"><span class="hs-identifier hs-var hs-var">unTime</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">TimeOfDay</span></span><span> </span><span class="hs-special">}</span><span>
+</span><span id="line-51"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679234496"><span id="local-6989586621679234498"><span class="annot"><span class="annottext">Time' -&gt; Time' -&gt; Bool
+(Time' -&gt; Time' -&gt; Bool) -&gt; (Time' -&gt; Time' -&gt; Bool) -&gt; Eq Time'
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Time' -&gt; Time' -&gt; Bool
+$c/= :: Time' -&gt; Time' -&gt; Bool
+== :: Time' -&gt; Time' -&gt; Bool
+$c== :: Time' -&gt; Time' -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679234480"><span id="local-6989586621679234482"><span id="local-6989586621679234484"><span id="local-6989586621679234486"><span id="local-6989586621679234488"><span id="local-6989586621679234490"><span id="local-6989586621679234492"><span class="annot"><span class="annottext">Eq Time'
+Eq Time' =&gt;
+(Time' -&gt; Time' -&gt; Ordering)
+-&gt; (Time' -&gt; Time' -&gt; Bool)
+-&gt; (Time' -&gt; Time' -&gt; Bool)
+-&gt; (Time' -&gt; Time' -&gt; Bool)
+-&gt; (Time' -&gt; Time' -&gt; Bool)
+-&gt; (Time' -&gt; Time' -&gt; Time')
+-&gt; (Time' -&gt; Time' -&gt; Time')
+-&gt; Ord Time'
+Time' -&gt; Time' -&gt; Bool
+Time' -&gt; Time' -&gt; Ordering
+Time' -&gt; Time' -&gt; Time'
+forall a.
+Eq a =&gt;
+(a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: Time' -&gt; Time' -&gt; Time'
+$cmin :: Time' -&gt; Time' -&gt; Time'
+max :: Time' -&gt; Time' -&gt; Time'
+$cmax :: Time' -&gt; Time' -&gt; Time'
+&gt;= :: Time' -&gt; Time' -&gt; Bool
+$c&gt;= :: Time' -&gt; Time' -&gt; Bool
+&gt; :: Time' -&gt; Time' -&gt; Bool
+$c&gt; :: Time' -&gt; Time' -&gt; Bool
+&lt;= :: Time' -&gt; Time' -&gt; Bool
+$c&lt;= :: Time' -&gt; Time' -&gt; Bool
+&lt; :: Time' -&gt; Time' -&gt; Bool
+$c&lt; :: Time' -&gt; Time' -&gt; Bool
+compare :: Time' -&gt; Time' -&gt; Ordering
+$ccompare :: Time' -&gt; Time' -&gt; Ordering
+$cp1Ord :: Eq Time'
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679234473"><span id="local-6989586621679234475"><span id="local-6989586621679234477"><span class="annot"><span class="annottext">Int -&gt; Time' -&gt; ShowS
+[Time'] -&gt; ShowS
+Time' -&gt; String
+(Int -&gt; Time' -&gt; ShowS)
+-&gt; (Time' -&gt; String) -&gt; ([Time'] -&gt; ShowS) -&gt; Show Time'
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [Time'] -&gt; ShowS
+$cshowList :: [Time'] -&gt; ShowS
+show :: Time' -&gt; String
+$cshow :: Time' -&gt; String
+showsPrec :: Int -&gt; Time' -&gt; ShowS
+$cshowsPrec :: Int -&gt; Time' -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679234464"><span id="local-6989586621679234466"><span id="local-6989586621679234468"><span id="local-6989586621679234470"><span class="annot"><span class="annottext">ReadPrec [Time']
+ReadPrec Time'
+Int -&gt; ReadS Time'
+ReadS [Time']
+(Int -&gt; ReadS Time')
+-&gt; ReadS [Time']
+-&gt; ReadPrec Time'
+-&gt; ReadPrec [Time']
+-&gt; Read Time'
+forall a.
+(Int -&gt; ReadS a)
+-&gt; ReadS [a] -&gt; ReadPrec a -&gt; ReadPrec [a] -&gt; Read a
+readListPrec :: ReadPrec [Time']
+$creadListPrec :: ReadPrec [Time']
+readPrec :: ReadPrec Time'
+$creadPrec :: ReadPrec Time'
+readList :: ReadS [Time']
+$creadList :: ReadS [Time']
+readsPrec :: Int -&gt; ReadS Time'
+$creadsPrec :: Int -&gt; ReadS Time'
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Read</span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(forall x. Time' -&gt; Rep Time' x)
+-&gt; (forall x. Rep Time' x -&gt; Time') -&gt; Generic Time'
+forall x. Rep Time' x -&gt; Time'
+forall x. Time' -&gt; Rep Time' x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep Time' x -&gt; Time'
+$cfrom :: forall x. Time' -&gt; Rep Time' x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">,</span><span> </span><span id="%24cTime%27"><span id="%24tTime%27"><span id="local-6989586621679234431"><span id="local-6989586621679234433"><span id="local-6989586621679234435"><span id="local-6989586621679234437"><span id="local-6989586621679234439"><span id="local-6989586621679234441"><span id="local-6989586621679234443"><span id="local-6989586621679234445"><span id="local-6989586621679234447"><span id="local-6989586621679234449"><span id="local-6989586621679234451"><span id="local-6989586621679234453"><span id="local-6989586621679234455"><span id="local-6989586621679234457"><span class="annot"><span class="annottext">Typeable Time'
+DataType
+Constr
+Typeable Time' =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; Time' -&gt; c Time')
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Time')
+-&gt; (Time' -&gt; Constr)
+-&gt; (Time' -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c Time'))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c Time'))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; Time' -&gt; Time')
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Time' -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Time' -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; Time' -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; Time' -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; Time' -&gt; m Time')
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; Time' -&gt; m Time')
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; Time' -&gt; m Time')
+-&gt; Data Time'
+Time' -&gt; DataType
+Time' -&gt; Constr
+(forall b. Data b =&gt; b -&gt; b) -&gt; Time' -&gt; Time'
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; Time' -&gt; c Time'
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Time'
+forall a.
+Typeable a =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; a -&gt; c a)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c a)
+-&gt; (a -&gt; Constr)
+-&gt; (a -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c a))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c a))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; a -&gt; a)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; Data a
+forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; Time' -&gt; u
+forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; Time' -&gt; [u]
+forall r r'.
+(r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Time' -&gt; r
+forall r r'.
+(r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Time' -&gt; r
+forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Time' -&gt; m Time'
+forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Time' -&gt; m Time'
+forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Time'
+forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; Time' -&gt; c Time'
+forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c Time')
+forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c Time')
+$cTime' :: Constr
+$tTime' :: DataType
+gmapMo :: (forall d. Data d =&gt; d -&gt; m d) -&gt; Time' -&gt; m Time'
+$cgmapMo :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Time' -&gt; m Time'
+gmapMp :: (forall d. Data d =&gt; d -&gt; m d) -&gt; Time' -&gt; m Time'
+$cgmapMp :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Time' -&gt; m Time'
+gmapM :: (forall d. Data d =&gt; d -&gt; m d) -&gt; Time' -&gt; m Time'
+$cgmapM :: forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Time' -&gt; m Time'
+gmapQi :: Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; Time' -&gt; u
+$cgmapQi :: forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; Time' -&gt; u
+gmapQ :: (forall d. Data d =&gt; d -&gt; u) -&gt; Time' -&gt; [u]
+$cgmapQ :: forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; Time' -&gt; [u]
+gmapQr :: (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Time' -&gt; r
+$cgmapQr :: forall r r'.
+(r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Time' -&gt; r
+gmapQl :: (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Time' -&gt; r
+$cgmapQl :: forall r r'.
+(r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Time' -&gt; r
+gmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; Time' -&gt; Time'
+$cgmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; Time' -&gt; Time'
+dataCast2 :: (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c Time')
+$cdataCast2 :: forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c Time')
+dataCast1 :: (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c Time')
+$cdataCast1 :: forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c Time')
+dataTypeOf :: Time' -&gt; DataType
+$cdataTypeOf :: Time' -&gt; DataType
+toConstr :: Time' -&gt; Constr
+$ctoConstr :: Time' -&gt; Constr
+gunfold :: (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Time'
+$cgunfold :: forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Time'
+gfoldl :: (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; Time' -&gt; c Time'
+$cgfoldl :: forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; Time' -&gt; c Time'
+$cp1Data :: Typeable Time'
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Data</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Typeable</span></span><span class="hs-special">)</span><span>
+</span><span id="line-52"></span><span>
+</span><span id="line-53"></span><span class="annot"><a href="Network.Google.Data.Time.html#_Time"><span class="hs-identifier hs-type">_Time</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Iso'</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#Time%27"><span class="hs-identifier hs-type">Time'</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">TimeOfDay</span></span><span>
+</span><span id="line-54"></span><span id="_Time"><span class="annot"><span class="annottext">_Time :: p TimeOfDay (f TimeOfDay) -&gt; p Time' (f Time')
+</span><a href="Network.Google.Data.Time.html#_Time"><span class="hs-identifier hs-var hs-var">_Time</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Time' -&gt; TimeOfDay)
+-&gt; (TimeOfDay -&gt; Time') -&gt; Iso Time' Time' TimeOfDay TimeOfDay
+forall s a b t. (s -&gt; a) -&gt; (b -&gt; t) -&gt; Iso s t a b
+</span><span class="hs-identifier hs-var">iso</span></span><span> </span><span class="annot"><span class="annottext">Time' -&gt; TimeOfDay
+</span><a href="Network.Google.Data.Time.html#unTime"><span class="hs-identifier hs-var hs-var">unTime</span></a></span><span> </span><span class="annot"><span class="annottext">TimeOfDay -&gt; Time'
+</span><a href="Network.Google.Data.Time.html#Time%27"><span class="hs-identifier hs-var">Time'</span></a></span><span>
+</span><span id="line-55"></span><span>
+</span><span id="line-56"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679234420"><span id="local-6989586621679234422"><span id="local-6989586621679234424"><span class="annot"><span class="hs-identifier hs-type">ToHttpApiData</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#Time%27"><span class="hs-identifier hs-type">Time'</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-57"></span><span>    </span><span id="local-6989586621679234417"><span class="annot"><span class="annottext">toQueryParam :: Time' -&gt; Text
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">toQueryParam</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Text
+</span><span class="hs-identifier hs-var">Text.pack</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Text) -&gt; (Time' -&gt; String) -&gt; Time' -&gt; Text
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">TimeOfDay -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">(TimeOfDay -&gt; String) -&gt; (Time' -&gt; TimeOfDay) -&gt; Time' -&gt; String
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Time' -&gt; TimeOfDay
+</span><a href="Network.Google.Data.Time.html#unTime"><span class="hs-identifier hs-var hs-var">unTime</span></a></span><span>
+</span><span id="line-58"></span><span>
+</span><span id="line-59"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679234409"><span id="local-6989586621679234411"><span class="annot"><span class="hs-identifier hs-type">FromHttpApiData</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#Time%27"><span class="hs-identifier hs-type">Time'</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-60"></span><span>    </span><span id="local-6989586621679234406"><span class="annot"><span class="annottext">parseQueryParam :: Text -&gt; Either Text Time'
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">parseQueryParam</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(TimeOfDay -&gt; Time') -&gt; Either Text TimeOfDay -&gt; Either Text Time'
+forall (p :: * -&gt; * -&gt; *) b c a.
+Bifunctor p =&gt;
+(b -&gt; c) -&gt; p a b -&gt; p a c
+</span><span class="hs-identifier hs-var">second</span></span><span> </span><span class="annot"><span class="annottext">TimeOfDay -&gt; Time'
+</span><a href="Network.Google.Data.Time.html#Time%27"><span class="hs-identifier hs-var">Time'</span></a></span><span> </span><span class="annot"><span class="annottext">(Either Text TimeOfDay -&gt; Either Text Time')
+-&gt; (Text -&gt; Either Text TimeOfDay) -&gt; Text -&gt; Either Text Time'
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Parser TimeOfDay -&gt; Text -&gt; Either Text TimeOfDay
+forall a. Parser a -&gt; Text -&gt; Either Text a
+</span><a href="Network.Google.Data.Time.html#parseText"><span class="hs-identifier hs-var">parseText</span></a></span><span> </span><span class="annot"><span class="annottext">Parser TimeOfDay
+</span><a href="Network.Google.Data.Time.html#timeParser"><span class="hs-identifier hs-var">timeParser</span></a></span><span>
+</span><span id="line-61"></span><span>
+</span><span id="line-62"></span><span class="hs-comment">-- | This SHOULD be a date in the format of YYYY-MM-DD.  It is</span><span>
+</span><span id="line-63"></span><span class="hs-comment">-- recommended that you use the &quot;date-time&quot; format instead of &quot;date&quot;</span><span>
+</span><span id="line-64"></span><span class="hs-comment">-- unless you need to transfer only the date part.</span><span>
+</span><span id="line-65"></span><span id="local-6989586621679234401"><span id="local-6989586621679234402"></span></span><span class="hs-keyword">newtype</span><span> </span><span id="Date%27"><span class="annot"><a href="Network.Google.Data.Time.html#Date%27"><span class="hs-identifier hs-var">Date'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Date%27"><span class="annot"><a href="Network.Google.Data.Time.html#Date%27"><span class="hs-identifier hs-var">Date'</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="unDate"><span class="annot"><span class="annottext">Date' -&gt; Day
+</span><a href="Network.Google.Data.Time.html#unDate"><span class="hs-identifier hs-var hs-var">unDate</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Day</span></span><span> </span><span class="hs-special">}</span><span>
+</span><span id="line-66"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679234395"><span id="local-6989586621679234397"><span class="annot"><span class="annottext">Date' -&gt; Date' -&gt; Bool
+(Date' -&gt; Date' -&gt; Bool) -&gt; (Date' -&gt; Date' -&gt; Bool) -&gt; Eq Date'
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Date' -&gt; Date' -&gt; Bool
+$c/= :: Date' -&gt; Date' -&gt; Bool
+== :: Date' -&gt; Date' -&gt; Bool
+$c== :: Date' -&gt; Date' -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679234380"><span id="local-6989586621679234382"><span id="local-6989586621679234384"><span id="local-6989586621679234386"><span id="local-6989586621679234388"><span id="local-6989586621679234390"><span id="local-6989586621679234392"><span class="annot"><span class="annottext">Eq Date'
+Eq Date' =&gt;
+(Date' -&gt; Date' -&gt; Ordering)
+-&gt; (Date' -&gt; Date' -&gt; Bool)
+-&gt; (Date' -&gt; Date' -&gt; Bool)
+-&gt; (Date' -&gt; Date' -&gt; Bool)
+-&gt; (Date' -&gt; Date' -&gt; Bool)
+-&gt; (Date' -&gt; Date' -&gt; Date')
+-&gt; (Date' -&gt; Date' -&gt; Date')
+-&gt; Ord Date'
+Date' -&gt; Date' -&gt; Bool
+Date' -&gt; Date' -&gt; Ordering
+Date' -&gt; Date' -&gt; Date'
+forall a.
+Eq a =&gt;
+(a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: Date' -&gt; Date' -&gt; Date'
+$cmin :: Date' -&gt; Date' -&gt; Date'
+max :: Date' -&gt; Date' -&gt; Date'
+$cmax :: Date' -&gt; Date' -&gt; Date'
+&gt;= :: Date' -&gt; Date' -&gt; Bool
+$c&gt;= :: Date' -&gt; Date' -&gt; Bool
+&gt; :: Date' -&gt; Date' -&gt; Bool
+$c&gt; :: Date' -&gt; Date' -&gt; Bool
+&lt;= :: Date' -&gt; Date' -&gt; Bool
+$c&lt;= :: Date' -&gt; Date' -&gt; Bool
+&lt; :: Date' -&gt; Date' -&gt; Bool
+$c&lt; :: Date' -&gt; Date' -&gt; Bool
+compare :: Date' -&gt; Date' -&gt; Ordering
+$ccompare :: Date' -&gt; Date' -&gt; Ordering
+$cp1Ord :: Eq Date'
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679234374"><span id="local-6989586621679234376"><span id="local-6989586621679234378"><span class="annot"><span class="annottext">Int -&gt; Date' -&gt; ShowS
+[Date'] -&gt; ShowS
+Date' -&gt; String
+(Int -&gt; Date' -&gt; ShowS)
+-&gt; (Date' -&gt; String) -&gt; ([Date'] -&gt; ShowS) -&gt; Show Date'
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [Date'] -&gt; ShowS
+$cshowList :: [Date'] -&gt; ShowS
+show :: Date' -&gt; String
+$cshow :: Date' -&gt; String
+showsPrec :: Int -&gt; Date' -&gt; ShowS
+$cshowsPrec :: Int -&gt; Date' -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679234366"><span id="local-6989586621679234368"><span id="local-6989586621679234370"><span id="local-6989586621679234372"><span class="annot"><span class="annottext">ReadPrec [Date']
+ReadPrec Date'
+Int -&gt; ReadS Date'
+ReadS [Date']
+(Int -&gt; ReadS Date')
+-&gt; ReadS [Date']
+-&gt; ReadPrec Date'
+-&gt; ReadPrec [Date']
+-&gt; Read Date'
+forall a.
+(Int -&gt; ReadS a)
+-&gt; ReadS [a] -&gt; ReadPrec a -&gt; ReadPrec [a] -&gt; Read a
+readListPrec :: ReadPrec [Date']
+$creadListPrec :: ReadPrec [Date']
+readPrec :: ReadPrec Date'
+$creadPrec :: ReadPrec Date'
+readList :: ReadS [Date']
+$creadList :: ReadS [Date']
+readsPrec :: Int -&gt; ReadS Date'
+$creadsPrec :: Int -&gt; ReadS Date'
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Read</span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(forall x. Date' -&gt; Rep Date' x)
+-&gt; (forall x. Rep Date' x -&gt; Date') -&gt; Generic Date'
+forall x. Rep Date' x -&gt; Date'
+forall x. Date' -&gt; Rep Date' x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep Date' x -&gt; Date'
+$cfrom :: forall x. Date' -&gt; Rep Date' x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">,</span><span> </span><span id="%24cDate%27"><span id="%24tDate%27"><span id="local-6989586621679234335"><span id="local-6989586621679234337"><span id="local-6989586621679234339"><span id="local-6989586621679234341"><span id="local-6989586621679234343"><span id="local-6989586621679234345"><span id="local-6989586621679234347"><span id="local-6989586621679234349"><span id="local-6989586621679234351"><span id="local-6989586621679234353"><span id="local-6989586621679234355"><span id="local-6989586621679234357"><span id="local-6989586621679234359"><span id="local-6989586621679234361"><span class="annot"><span class="annottext">Typeable Date'
+DataType
+Constr
+Typeable Date' =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; Date' -&gt; c Date')
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Date')
+-&gt; (Date' -&gt; Constr)
+-&gt; (Date' -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c Date'))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c Date'))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; Date' -&gt; Date')
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Date' -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Date' -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; Date' -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; Date' -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; Date' -&gt; m Date')
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; Date' -&gt; m Date')
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; Date' -&gt; m Date')
+-&gt; Data Date'
+Date' -&gt; DataType
+Date' -&gt; Constr
+(forall b. Data b =&gt; b -&gt; b) -&gt; Date' -&gt; Date'
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; Date' -&gt; c Date'
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Date'
+forall a.
+Typeable a =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; a -&gt; c a)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c a)
+-&gt; (a -&gt; Constr)
+-&gt; (a -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c a))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c a))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; a -&gt; a)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; Data a
+forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; Date' -&gt; u
+forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; Date' -&gt; [u]
+forall r r'.
+(r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Date' -&gt; r
+forall r r'.
+(r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Date' -&gt; r
+forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Date' -&gt; m Date'
+forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Date' -&gt; m Date'
+forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Date'
+forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; Date' -&gt; c Date'
+forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c Date')
+forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c Date')
+$cDate' :: Constr
+$tDate' :: DataType
+gmapMo :: (forall d. Data d =&gt; d -&gt; m d) -&gt; Date' -&gt; m Date'
+$cgmapMo :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Date' -&gt; m Date'
+gmapMp :: (forall d. Data d =&gt; d -&gt; m d) -&gt; Date' -&gt; m Date'
+$cgmapMp :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Date' -&gt; m Date'
+gmapM :: (forall d. Data d =&gt; d -&gt; m d) -&gt; Date' -&gt; m Date'
+$cgmapM :: forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; Date' -&gt; m Date'
+gmapQi :: Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; Date' -&gt; u
+$cgmapQi :: forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; Date' -&gt; u
+gmapQ :: (forall d. Data d =&gt; d -&gt; u) -&gt; Date' -&gt; [u]
+$cgmapQ :: forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; Date' -&gt; [u]
+gmapQr :: (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Date' -&gt; r
+$cgmapQr :: forall r r'.
+(r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Date' -&gt; r
+gmapQl :: (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Date' -&gt; r
+$cgmapQl :: forall r r'.
+(r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; Date' -&gt; r
+gmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; Date' -&gt; Date'
+$cgmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; Date' -&gt; Date'
+dataCast2 :: (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c Date')
+$cdataCast2 :: forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c Date')
+dataCast1 :: (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c Date')
+$cdataCast1 :: forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c Date')
+dataTypeOf :: Date' -&gt; DataType
+$cdataTypeOf :: Date' -&gt; DataType
+toConstr :: Date' -&gt; Constr
+$ctoConstr :: Date' -&gt; Constr
+gunfold :: (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Date'
+$cgunfold :: forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c Date'
+gfoldl :: (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; Date' -&gt; c Date'
+$cgfoldl :: forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; Date' -&gt; c Date'
+$cp1Data :: Typeable Date'
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Data</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Typeable</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679234325"><span id="local-6989586621679234327"><span id="local-6989586621679234329"><span id="local-6989586621679234331"><span class="annot"><span class="annottext">Date' -&gt; ByteString
+Date' -&gt; Builder
+Date' -&gt; Text
+(Date' -&gt; Text)
+-&gt; (Date' -&gt; Builder)
+-&gt; (Date' -&gt; ByteString)
+-&gt; (Date' -&gt; Text)
+-&gt; ToHttpApiData Date'
+forall a.
+(a -&gt; Text)
+-&gt; (a -&gt; Builder)
+-&gt; (a -&gt; ByteString)
+-&gt; (a -&gt; Text)
+-&gt; ToHttpApiData a
+toQueryParam :: Date' -&gt; Text
+$ctoQueryParam :: Date' -&gt; Text
+toHeader :: Date' -&gt; ByteString
+$ctoHeader :: Date' -&gt; ByteString
+toEncodedUrlPiece :: Date' -&gt; Builder
+$ctoEncodedUrlPiece :: Date' -&gt; Builder
+toUrlPiece :: Date' -&gt; Text
+$ctoUrlPiece :: Date' -&gt; Text
+</span><a href="#local-6989586621679234325"><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">ToHttpApiData</span></a></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679234319"><span id="local-6989586621679234321"><span id="local-6989586621679234323"><span class="annot"><span class="annottext">ByteString -&gt; Either Text Date'
+Text -&gt; Either Text Date'
+(Text -&gt; Either Text Date')
+-&gt; (ByteString -&gt; Either Text Date')
+-&gt; (Text -&gt; Either Text Date')
+-&gt; FromHttpApiData Date'
+forall a.
+(Text -&gt; Either Text a)
+-&gt; (ByteString -&gt; Either Text a)
+-&gt; (Text -&gt; Either Text a)
+-&gt; FromHttpApiData a
+parseQueryParam :: Text -&gt; Either Text Date'
+$cparseQueryParam :: Text -&gt; Either Text Date'
+parseHeader :: ByteString -&gt; Either Text Date'
+$cparseHeader :: ByteString -&gt; Either Text Date'
+parseUrlPiece :: Text -&gt; Either Text Date'
+$cparseUrlPiece :: Text -&gt; Either Text Date'
+</span><a href="#local-6989586621679234319"><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">FromHttpApiData</span></a></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-67"></span><span>
+</span><span id="line-68"></span><span class="annot"><a href="Network.Google.Data.Time.html#_Date"><span class="hs-identifier hs-type">_Date</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Iso'</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#Date%27"><span class="hs-identifier hs-type">Date'</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Day</span></span><span>
+</span><span id="line-69"></span><span id="_Date"><span class="annot"><span class="annottext">_Date :: p Day (f Day) -&gt; p Date' (f Date')
+</span><a href="Network.Google.Data.Time.html#_Date"><span class="hs-identifier hs-var hs-var">_Date</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Date' -&gt; Day) -&gt; (Day -&gt; Date') -&gt; Iso Date' Date' Day Day
+forall s a b t. (s -&gt; a) -&gt; (b -&gt; t) -&gt; Iso s t a b
+</span><span class="hs-identifier hs-var">iso</span></span><span> </span><span class="annot"><span class="annottext">Date' -&gt; Day
+</span><a href="Network.Google.Data.Time.html#unDate"><span class="hs-identifier hs-var hs-var">unDate</span></a></span><span> </span><span class="annot"><span class="annottext">Day -&gt; Date'
+</span><a href="Network.Google.Data.Time.html#Date%27"><span class="hs-identifier hs-var">Date'</span></a></span><span>
+</span><span id="line-70"></span><span>
+</span><span id="line-71"></span><span class="hs-comment">-- | This SHOULD be a date in ISO 8601 format of YYYY-MM-</span><span>
+</span><span id="line-72"></span><span class="hs-comment">-- DDThh:mm:ssZ in UTC time. This is the recommended form of date/timestamp.</span><span>
+</span><span id="line-73"></span><span id="local-6989586621679234317"><span id="local-6989586621679234318"></span></span><span class="hs-keyword">newtype</span><span> </span><span id="DateTime%27"><span class="annot"><a href="Network.Google.Data.Time.html#DateTime%27"><span class="hs-identifier hs-var">DateTime'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="DateTime%27"><span class="annot"><a href="Network.Google.Data.Time.html#DateTime%27"><span class="hs-identifier hs-var">DateTime'</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="unDateTime"><span class="annot"><span class="annottext">DateTime' -&gt; UTCTime
+</span><a href="Network.Google.Data.Time.html#unDateTime"><span class="hs-identifier hs-var hs-var">unDateTime</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">UTCTime</span></span><span> </span><span class="hs-special">}</span><span>
+</span><span id="line-74"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679234311"><span id="local-6989586621679234313"><span class="annot"><span class="annottext">DateTime' -&gt; DateTime' -&gt; Bool
+(DateTime' -&gt; DateTime' -&gt; Bool)
+-&gt; (DateTime' -&gt; DateTime' -&gt; Bool) -&gt; Eq DateTime'
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: DateTime' -&gt; DateTime' -&gt; Bool
+$c/= :: DateTime' -&gt; DateTime' -&gt; Bool
+== :: DateTime' -&gt; DateTime' -&gt; Bool
+$c== :: DateTime' -&gt; DateTime' -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679234296"><span id="local-6989586621679234298"><span id="local-6989586621679234300"><span id="local-6989586621679234302"><span id="local-6989586621679234304"><span id="local-6989586621679234306"><span id="local-6989586621679234308"><span class="annot"><span class="annottext">Eq DateTime'
+Eq DateTime' =&gt;
+(DateTime' -&gt; DateTime' -&gt; Ordering)
+-&gt; (DateTime' -&gt; DateTime' -&gt; Bool)
+-&gt; (DateTime' -&gt; DateTime' -&gt; Bool)
+-&gt; (DateTime' -&gt; DateTime' -&gt; Bool)
+-&gt; (DateTime' -&gt; DateTime' -&gt; Bool)
+-&gt; (DateTime' -&gt; DateTime' -&gt; DateTime')
+-&gt; (DateTime' -&gt; DateTime' -&gt; DateTime')
+-&gt; Ord DateTime'
+DateTime' -&gt; DateTime' -&gt; Bool
+DateTime' -&gt; DateTime' -&gt; Ordering
+DateTime' -&gt; DateTime' -&gt; DateTime'
+forall a.
+Eq a =&gt;
+(a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: DateTime' -&gt; DateTime' -&gt; DateTime'
+$cmin :: DateTime' -&gt; DateTime' -&gt; DateTime'
+max :: DateTime' -&gt; DateTime' -&gt; DateTime'
+$cmax :: DateTime' -&gt; DateTime' -&gt; DateTime'
+&gt;= :: DateTime' -&gt; DateTime' -&gt; Bool
+$c&gt;= :: DateTime' -&gt; DateTime' -&gt; Bool
+&gt; :: DateTime' -&gt; DateTime' -&gt; Bool
+$c&gt; :: DateTime' -&gt; DateTime' -&gt; Bool
+&lt;= :: DateTime' -&gt; DateTime' -&gt; Bool
+$c&lt;= :: DateTime' -&gt; DateTime' -&gt; Bool
+&lt; :: DateTime' -&gt; DateTime' -&gt; Bool
+$c&lt; :: DateTime' -&gt; DateTime' -&gt; Bool
+compare :: DateTime' -&gt; DateTime' -&gt; Ordering
+$ccompare :: DateTime' -&gt; DateTime' -&gt; Ordering
+$cp1Ord :: Eq DateTime'
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679234290"><span id="local-6989586621679234292"><span id="local-6989586621679234294"><span class="annot"><span class="annottext">Int -&gt; DateTime' -&gt; ShowS
+[DateTime'] -&gt; ShowS
+DateTime' -&gt; String
+(Int -&gt; DateTime' -&gt; ShowS)
+-&gt; (DateTime' -&gt; String)
+-&gt; ([DateTime'] -&gt; ShowS)
+-&gt; Show DateTime'
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [DateTime'] -&gt; ShowS
+$cshowList :: [DateTime'] -&gt; ShowS
+show :: DateTime' -&gt; String
+$cshow :: DateTime' -&gt; String
+showsPrec :: Int -&gt; DateTime' -&gt; ShowS
+$cshowsPrec :: Int -&gt; DateTime' -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679234282"><span id="local-6989586621679234284"><span id="local-6989586621679234286"><span id="local-6989586621679234288"><span class="annot"><span class="annottext">ReadPrec [DateTime']
+ReadPrec DateTime'
+Int -&gt; ReadS DateTime'
+ReadS [DateTime']
+(Int -&gt; ReadS DateTime')
+-&gt; ReadS [DateTime']
+-&gt; ReadPrec DateTime'
+-&gt; ReadPrec [DateTime']
+-&gt; Read DateTime'
+forall a.
+(Int -&gt; ReadS a)
+-&gt; ReadS [a] -&gt; ReadPrec a -&gt; ReadPrec [a] -&gt; Read a
+readListPrec :: ReadPrec [DateTime']
+$creadListPrec :: ReadPrec [DateTime']
+readPrec :: ReadPrec DateTime'
+$creadPrec :: ReadPrec DateTime'
+readList :: ReadS [DateTime']
+$creadList :: ReadS [DateTime']
+readsPrec :: Int -&gt; ReadS DateTime'
+$creadsPrec :: Int -&gt; ReadS DateTime'
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Read</span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(forall x. DateTime' -&gt; Rep DateTime' x)
+-&gt; (forall x. Rep DateTime' x -&gt; DateTime') -&gt; Generic DateTime'
+forall x. Rep DateTime' x -&gt; DateTime'
+forall x. DateTime' -&gt; Rep DateTime' x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep DateTime' x -&gt; DateTime'
+$cfrom :: forall x. DateTime' -&gt; Rep DateTime' x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">,</span><span> </span><span id="%24cDateTime%27"><span id="%24tDateTime%27"><span id="local-6989586621679234251"><span id="local-6989586621679234253"><span id="local-6989586621679234255"><span id="local-6989586621679234257"><span id="local-6989586621679234259"><span id="local-6989586621679234261"><span id="local-6989586621679234263"><span id="local-6989586621679234265"><span id="local-6989586621679234267"><span id="local-6989586621679234269"><span id="local-6989586621679234271"><span id="local-6989586621679234273"><span id="local-6989586621679234275"><span id="local-6989586621679234277"><span class="annot"><span class="annottext">Typeable DateTime'
+DataType
+Constr
+Typeable DateTime' =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; DateTime' -&gt; c DateTime')
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c DateTime')
+-&gt; (DateTime' -&gt; Constr)
+-&gt; (DateTime' -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c DateTime'))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c DateTime'))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; DateTime' -&gt; DateTime')
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; DateTime' -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; DateTime' -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; DateTime' -&gt; [u])
+-&gt; (forall u.
+    Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; DateTime' -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; DateTime' -&gt; m DateTime')
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; DateTime' -&gt; m DateTime')
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; DateTime' -&gt; m DateTime')
+-&gt; Data DateTime'
+DateTime' -&gt; DataType
+DateTime' -&gt; Constr
+(forall b. Data b =&gt; b -&gt; b) -&gt; DateTime' -&gt; DateTime'
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; DateTime' -&gt; c DateTime'
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c DateTime'
+forall a.
+Typeable a =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; a -&gt; c a)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c a)
+-&gt; (a -&gt; Constr)
+-&gt; (a -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c a))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c a))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; a -&gt; a)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; Data a
+forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; DateTime' -&gt; u
+forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; DateTime' -&gt; [u]
+forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; DateTime' -&gt; r
+forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; DateTime' -&gt; r
+forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; DateTime' -&gt; m DateTime'
+forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; DateTime' -&gt; m DateTime'
+forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c DateTime'
+forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; DateTime' -&gt; c DateTime'
+forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c DateTime')
+forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c DateTime')
+$cDateTime' :: Constr
+$tDateTime' :: DataType
+gmapMo :: (forall d. Data d =&gt; d -&gt; m d) -&gt; DateTime' -&gt; m DateTime'
+$cgmapMo :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; DateTime' -&gt; m DateTime'
+gmapMp :: (forall d. Data d =&gt; d -&gt; m d) -&gt; DateTime' -&gt; m DateTime'
+$cgmapMp :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; DateTime' -&gt; m DateTime'
+gmapM :: (forall d. Data d =&gt; d -&gt; m d) -&gt; DateTime' -&gt; m DateTime'
+$cgmapM :: forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; DateTime' -&gt; m DateTime'
+gmapQi :: Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; DateTime' -&gt; u
+$cgmapQi :: forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; DateTime' -&gt; u
+gmapQ :: (forall d. Data d =&gt; d -&gt; u) -&gt; DateTime' -&gt; [u]
+$cgmapQ :: forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; DateTime' -&gt; [u]
+gmapQr :: (r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; DateTime' -&gt; r
+$cgmapQr :: forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; DateTime' -&gt; r
+gmapQl :: (r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; DateTime' -&gt; r
+$cgmapQl :: forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; DateTime' -&gt; r
+gmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; DateTime' -&gt; DateTime'
+$cgmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; DateTime' -&gt; DateTime'
+dataCast2 :: (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c DateTime')
+$cdataCast2 :: forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c DateTime')
+dataCast1 :: (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c DateTime')
+$cdataCast1 :: forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c DateTime')
+dataTypeOf :: DateTime' -&gt; DataType
+$cdataTypeOf :: DateTime' -&gt; DataType
+toConstr :: DateTime' -&gt; Constr
+$ctoConstr :: DateTime' -&gt; Constr
+gunfold :: (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c DateTime'
+$cgunfold :: forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c DateTime'
+gfoldl :: (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; DateTime' -&gt; c DateTime'
+$cgfoldl :: forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; DateTime' -&gt; c DateTime'
+$cp1Data :: Typeable DateTime'
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Data</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Typeable</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679234241"><span id="local-6989586621679234243"><span id="local-6989586621679234245"><span id="local-6989586621679234247"><span class="annot"><span class="annottext">DateTime' -&gt; ByteString
+DateTime' -&gt; Builder
+DateTime' -&gt; Text
+(DateTime' -&gt; Text)
+-&gt; (DateTime' -&gt; Builder)
+-&gt; (DateTime' -&gt; ByteString)
+-&gt; (DateTime' -&gt; Text)
+-&gt; ToHttpApiData DateTime'
+forall a.
+(a -&gt; Text)
+-&gt; (a -&gt; Builder)
+-&gt; (a -&gt; ByteString)
+-&gt; (a -&gt; Text)
+-&gt; ToHttpApiData a
+toQueryParam :: DateTime' -&gt; Text
+$ctoQueryParam :: DateTime' -&gt; Text
+toHeader :: DateTime' -&gt; ByteString
+$ctoHeader :: DateTime' -&gt; ByteString
+toEncodedUrlPiece :: DateTime' -&gt; Builder
+$ctoEncodedUrlPiece :: DateTime' -&gt; Builder
+toUrlPiece :: DateTime' -&gt; Text
+$ctoUrlPiece :: DateTime' -&gt; Text
+</span><a href="#local-6989586621679234241"><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">ToHttpApiData</span></a></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679234235"><span id="local-6989586621679234237"><span id="local-6989586621679234239"><span class="annot"><span class="annottext">ByteString -&gt; Either Text DateTime'
+Text -&gt; Either Text DateTime'
+(Text -&gt; Either Text DateTime')
+-&gt; (ByteString -&gt; Either Text DateTime')
+-&gt; (Text -&gt; Either Text DateTime')
+-&gt; FromHttpApiData DateTime'
+forall a.
+(Text -&gt; Either Text a)
+-&gt; (ByteString -&gt; Either Text a)
+-&gt; (Text -&gt; Either Text a)
+-&gt; FromHttpApiData a
+parseQueryParam :: Text -&gt; Either Text DateTime'
+$cparseQueryParam :: Text -&gt; Either Text DateTime'
+parseHeader :: ByteString -&gt; Either Text DateTime'
+$cparseHeader :: ByteString -&gt; Either Text DateTime'
+parseUrlPiece :: Text -&gt; Either Text DateTime'
+$cparseUrlPiece :: Text -&gt; Either Text DateTime'
+</span><a href="#local-6989586621679234235"><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">FromHttpApiData</span></a></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-75"></span><span>
+</span><span id="line-76"></span><span class="annot"><a href="Network.Google.Data.Time.html#_DateTime"><span class="hs-identifier hs-type">_DateTime</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Iso'</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#DateTime%27"><span class="hs-identifier hs-type">DateTime'</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">UTCTime</span></span><span>
+</span><span id="line-77"></span><span id="_DateTime"><span class="annot"><span class="annottext">_DateTime :: p UTCTime (f UTCTime) -&gt; p DateTime' (f DateTime')
+</span><a href="Network.Google.Data.Time.html#_DateTime"><span class="hs-identifier hs-var hs-var">_DateTime</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(DateTime' -&gt; UTCTime)
+-&gt; (UTCTime -&gt; DateTime')
+-&gt; Iso DateTime' DateTime' UTCTime UTCTime
+forall s a b t. (s -&gt; a) -&gt; (b -&gt; t) -&gt; Iso s t a b
+</span><span class="hs-identifier hs-var">iso</span></span><span> </span><span class="annot"><span class="annottext">DateTime' -&gt; UTCTime
+</span><a href="Network.Google.Data.Time.html#unDateTime"><span class="hs-identifier hs-var hs-var">unDateTime</span></a></span><span> </span><span class="annot"><span class="annottext">UTCTime -&gt; DateTime'
+</span><a href="Network.Google.Data.Time.html#DateTime%27"><span class="hs-identifier hs-var">DateTime'</span></a></span><span>
+</span><span id="line-78"></span><span>
+</span><span id="line-79"></span><span class="hs-comment">-- | A duration in seconds with up to nine fractional digits, terminated by 's'.</span><span>
+</span><span id="line-80"></span><span class="hs-comment">--</span><span>
+</span><span id="line-81"></span><span class="hs-comment">-- /Example/: @&quot;3.5s&quot;@.</span><span>
+</span><span id="line-82"></span><span id="local-6989586621679234233"><span id="local-6989586621679234234"></span></span><span class="hs-keyword">newtype</span><span> </span><span id="GDuration"><span class="annot"><a href="Network.Google.Data.Time.html#GDuration"><span class="hs-identifier hs-var">GDuration</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="GDuration"><span class="annot"><a href="Network.Google.Data.Time.html#GDuration"><span class="hs-identifier hs-var">GDuration</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="unGDuration"><span class="annot"><span class="annottext">GDuration -&gt; Scientific
+</span><a href="Network.Google.Data.Time.html#unGDuration"><span class="hs-identifier hs-var hs-var">unGDuration</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Scientific</span></span><span> </span><span class="hs-special">}</span><span>
+</span><span id="line-83"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679234227"><span id="local-6989586621679234229"><span class="annot"><span class="annottext">GDuration -&gt; GDuration -&gt; Bool
+(GDuration -&gt; GDuration -&gt; Bool)
+-&gt; (GDuration -&gt; GDuration -&gt; Bool) -&gt; Eq GDuration
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: GDuration -&gt; GDuration -&gt; Bool
+$c/= :: GDuration -&gt; GDuration -&gt; Bool
+== :: GDuration -&gt; GDuration -&gt; Bool
+$c== :: GDuration -&gt; GDuration -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679234212"><span id="local-6989586621679234214"><span id="local-6989586621679234216"><span id="local-6989586621679234218"><span id="local-6989586621679234220"><span id="local-6989586621679234222"><span id="local-6989586621679234224"><span class="annot"><span class="annottext">Eq GDuration
+Eq GDuration =&gt;
+(GDuration -&gt; GDuration -&gt; Ordering)
+-&gt; (GDuration -&gt; GDuration -&gt; Bool)
+-&gt; (GDuration -&gt; GDuration -&gt; Bool)
+-&gt; (GDuration -&gt; GDuration -&gt; Bool)
+-&gt; (GDuration -&gt; GDuration -&gt; Bool)
+-&gt; (GDuration -&gt; GDuration -&gt; GDuration)
+-&gt; (GDuration -&gt; GDuration -&gt; GDuration)
+-&gt; Ord GDuration
+GDuration -&gt; GDuration -&gt; Bool
+GDuration -&gt; GDuration -&gt; Ordering
+GDuration -&gt; GDuration -&gt; GDuration
+forall a.
+Eq a =&gt;
+(a -&gt; a -&gt; Ordering)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; Bool)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; (a -&gt; a -&gt; a)
+-&gt; Ord a
+min :: GDuration -&gt; GDuration -&gt; GDuration
+$cmin :: GDuration -&gt; GDuration -&gt; GDuration
+max :: GDuration -&gt; GDuration -&gt; GDuration
+$cmax :: GDuration -&gt; GDuration -&gt; GDuration
+&gt;= :: GDuration -&gt; GDuration -&gt; Bool
+$c&gt;= :: GDuration -&gt; GDuration -&gt; Bool
+&gt; :: GDuration -&gt; GDuration -&gt; Bool
+$c&gt; :: GDuration -&gt; GDuration -&gt; Bool
+&lt;= :: GDuration -&gt; GDuration -&gt; Bool
+$c&lt;= :: GDuration -&gt; GDuration -&gt; Bool
+&lt; :: GDuration -&gt; GDuration -&gt; Bool
+$c&lt; :: GDuration -&gt; GDuration -&gt; Bool
+compare :: GDuration -&gt; GDuration -&gt; Ordering
+$ccompare :: GDuration -&gt; GDuration -&gt; Ordering
+$cp1Ord :: Eq GDuration
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Ord</span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679234206"><span id="local-6989586621679234208"><span id="local-6989586621679234210"><span class="annot"><span class="annottext">Int -&gt; GDuration -&gt; ShowS
+[GDuration] -&gt; ShowS
+GDuration -&gt; String
+(Int -&gt; GDuration -&gt; ShowS)
+-&gt; (GDuration -&gt; String)
+-&gt; ([GDuration] -&gt; ShowS)
+-&gt; Show GDuration
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [GDuration] -&gt; ShowS
+$cshowList :: [GDuration] -&gt; ShowS
+show :: GDuration -&gt; String
+$cshow :: GDuration -&gt; String
+showsPrec :: Int -&gt; GDuration -&gt; ShowS
+$cshowsPrec :: Int -&gt; GDuration -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679234198"><span id="local-6989586621679234200"><span id="local-6989586621679234202"><span id="local-6989586621679234204"><span class="annot"><span class="annottext">ReadPrec [GDuration]
+ReadPrec GDuration
+Int -&gt; ReadS GDuration
+ReadS [GDuration]
+(Int -&gt; ReadS GDuration)
+-&gt; ReadS [GDuration]
+-&gt; ReadPrec GDuration
+-&gt; ReadPrec [GDuration]
+-&gt; Read GDuration
+forall a.
+(Int -&gt; ReadS a)
+-&gt; ReadS [a] -&gt; ReadPrec a -&gt; ReadPrec [a] -&gt; Read a
+readListPrec :: ReadPrec [GDuration]
+$creadListPrec :: ReadPrec [GDuration]
+readPrec :: ReadPrec GDuration
+$creadPrec :: ReadPrec GDuration
+readList :: ReadS [GDuration]
+$creadList :: ReadS [GDuration]
+readsPrec :: Int -&gt; ReadS GDuration
+$creadsPrec :: Int -&gt; ReadS GDuration
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Read</span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">(forall x. GDuration -&gt; Rep GDuration x)
+-&gt; (forall x. Rep GDuration x -&gt; GDuration) -&gt; Generic GDuration
+forall x. Rep GDuration x -&gt; GDuration
+forall x. GDuration -&gt; Rep GDuration x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep GDuration x -&gt; GDuration
+$cfrom :: forall x. GDuration -&gt; Rep GDuration x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">,</span><span> </span><span id="%24cGDuration"><span id="%24tGDuration"><span id="local-6989586621679234167"><span id="local-6989586621679234169"><span id="local-6989586621679234171"><span id="local-6989586621679234173"><span id="local-6989586621679234175"><span id="local-6989586621679234177"><span id="local-6989586621679234179"><span id="local-6989586621679234181"><span id="local-6989586621679234183"><span id="local-6989586621679234185"><span id="local-6989586621679234187"><span id="local-6989586621679234189"><span id="local-6989586621679234191"><span id="local-6989586621679234193"><span class="annot"><span class="annottext">Typeable GDuration
+DataType
+Constr
+Typeable GDuration =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; GDuration -&gt; c GDuration)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c GDuration)
+-&gt; (GDuration -&gt; Constr)
+-&gt; (GDuration -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c GDuration))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c GDuration))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; GDuration -&gt; GDuration)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; GDuration -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r)
+    -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; GDuration -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; GDuration -&gt; [u])
+-&gt; (forall u.
+    Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; GDuration -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; GDuration -&gt; m GDuration)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; GDuration -&gt; m GDuration)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; GDuration -&gt; m GDuration)
+-&gt; Data GDuration
+GDuration -&gt; DataType
+GDuration -&gt; Constr
+(forall b. Data b =&gt; b -&gt; b) -&gt; GDuration -&gt; GDuration
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; GDuration -&gt; c GDuration
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c GDuration
+forall a.
+Typeable a =&gt;
+(forall (c :: * -&gt; *).
+ (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+ -&gt; (forall g. g -&gt; c g) -&gt; a -&gt; c a)
+-&gt; (forall (c :: * -&gt; *).
+    (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+    -&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c a)
+-&gt; (a -&gt; Constr)
+-&gt; (a -&gt; DataType)
+-&gt; (forall (t :: * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c a))
+-&gt; (forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+    Typeable t =&gt;
+    (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c a))
+-&gt; ((forall b. Data b =&gt; b -&gt; b) -&gt; a -&gt; a)
+-&gt; (forall r r'.
+    (r -&gt; r' -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall r r'.
+    (r' -&gt; r -&gt; r) -&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; a -&gt; r)
+-&gt; (forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; [u])
+-&gt; (forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; a -&gt; u)
+-&gt; (forall (m :: * -&gt; *).
+    Monad m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; (forall (m :: * -&gt; *).
+    MonadPlus m =&gt;
+    (forall d. Data d =&gt; d -&gt; m d) -&gt; a -&gt; m a)
+-&gt; Data a
+forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; GDuration -&gt; u
+forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; GDuration -&gt; [u]
+forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; GDuration -&gt; r
+forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; GDuration -&gt; r
+forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; GDuration -&gt; m GDuration
+forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; GDuration -&gt; m GDuration
+forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c GDuration
+forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; GDuration -&gt; c GDuration
+forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c GDuration)
+forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c GDuration)
+$cGDuration :: Constr
+$tGDuration :: DataType
+gmapMo :: (forall d. Data d =&gt; d -&gt; m d) -&gt; GDuration -&gt; m GDuration
+$cgmapMo :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; GDuration -&gt; m GDuration
+gmapMp :: (forall d. Data d =&gt; d -&gt; m d) -&gt; GDuration -&gt; m GDuration
+$cgmapMp :: forall (m :: * -&gt; *).
+MonadPlus m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; GDuration -&gt; m GDuration
+gmapM :: (forall d. Data d =&gt; d -&gt; m d) -&gt; GDuration -&gt; m GDuration
+$cgmapM :: forall (m :: * -&gt; *).
+Monad m =&gt;
+(forall d. Data d =&gt; d -&gt; m d) -&gt; GDuration -&gt; m GDuration
+gmapQi :: Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; GDuration -&gt; u
+$cgmapQi :: forall u. Int -&gt; (forall d. Data d =&gt; d -&gt; u) -&gt; GDuration -&gt; u
+gmapQ :: (forall d. Data d =&gt; d -&gt; u) -&gt; GDuration -&gt; [u]
+$cgmapQ :: forall u. (forall d. Data d =&gt; d -&gt; u) -&gt; GDuration -&gt; [u]
+gmapQr :: (r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; GDuration -&gt; r
+$cgmapQr :: forall r r'.
+(r' -&gt; r -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; GDuration -&gt; r
+gmapQl :: (r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; GDuration -&gt; r
+$cgmapQl :: forall r r'.
+(r -&gt; r' -&gt; r)
+-&gt; r -&gt; (forall d. Data d =&gt; d -&gt; r') -&gt; GDuration -&gt; r
+gmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; GDuration -&gt; GDuration
+$cgmapT :: (forall b. Data b =&gt; b -&gt; b) -&gt; GDuration -&gt; GDuration
+dataCast2 :: (forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c GDuration)
+$cdataCast2 :: forall (t :: * -&gt; * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d e. (Data d, Data e) =&gt; c (t d e)) -&gt; Maybe (c GDuration)
+dataCast1 :: (forall d. Data d =&gt; c (t d)) -&gt; Maybe (c GDuration)
+$cdataCast1 :: forall (t :: * -&gt; *) (c :: * -&gt; *).
+Typeable t =&gt;
+(forall d. Data d =&gt; c (t d)) -&gt; Maybe (c GDuration)
+dataTypeOf :: GDuration -&gt; DataType
+$cdataTypeOf :: GDuration -&gt; DataType
+toConstr :: GDuration -&gt; Constr
+$ctoConstr :: GDuration -&gt; Constr
+gunfold :: (forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c GDuration
+$cgunfold :: forall (c :: * -&gt; *).
+(forall b r. Data b =&gt; c (b -&gt; r) -&gt; c r)
+-&gt; (forall r. r -&gt; c r) -&gt; Constr -&gt; c GDuration
+gfoldl :: (forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; GDuration -&gt; c GDuration
+$cgfoldl :: forall (c :: * -&gt; *).
+(forall d b. Data d =&gt; c (d -&gt; b) -&gt; d -&gt; c b)
+-&gt; (forall g. g -&gt; c g) -&gt; GDuration -&gt; c GDuration
+$cp1Data :: Typeable GDuration
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Data</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Typeable</span></span><span class="hs-special">)</span><span>
+</span><span id="line-84"></span><span>
+</span><span id="line-85"></span><span class="annot"><a href="Network.Google.Data.Time.html#_GDuration"><span class="hs-identifier hs-type">_GDuration</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Iso'</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#GDuration"><span class="hs-identifier hs-type">GDuration</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Scientific</span></span><span>
+</span><span id="line-86"></span><span id="_GDuration"><span class="annot"><span class="annottext">_GDuration :: p Scientific (f Scientific) -&gt; p GDuration (f GDuration)
+</span><a href="Network.Google.Data.Time.html#_GDuration"><span class="hs-identifier hs-var hs-var">_GDuration</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(GDuration -&gt; Scientific)
+-&gt; (Scientific -&gt; GDuration)
+-&gt; Iso GDuration GDuration Scientific Scientific
+forall s a b t. (s -&gt; a) -&gt; (b -&gt; t) -&gt; Iso s t a b
+</span><span class="hs-identifier hs-var">iso</span></span><span> </span><span class="annot"><span class="annottext">GDuration -&gt; Scientific
+</span><a href="Network.Google.Data.Time.html#unGDuration"><span class="hs-identifier hs-var hs-var">unGDuration</span></a></span><span> </span><span class="annot"><span class="annottext">Scientific -&gt; GDuration
+</span><a href="Network.Google.Data.Time.html#GDuration"><span class="hs-identifier hs-var">GDuration</span></a></span><span>
+</span><span id="line-87"></span><span>
+</span><span id="line-88"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679234159"><span id="local-6989586621679234161"><span id="local-6989586621679234163"><span class="annot"><span class="hs-identifier hs-type">ToHttpApiData</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#GDuration"><span class="hs-identifier hs-type">GDuration</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-89"></span><span>    </span><span id="local-6989586621679234157"><span class="annot"><span class="annottext">toQueryParam :: GDuration -&gt; Text
+</span><a href="#local-6989586621679234157"><span class="hs-identifier hs-var hs-var hs-var hs-var">toQueryParam</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-90"></span><span>          </span><span class="annot"><span class="annottext">Text -&gt; Text
+</span><span class="hs-identifier hs-var">LText.toStrict</span></span><span>
+</span><span id="line-91"></span><span>        </span><span class="annot"><span class="annottext">(Text -&gt; Text) -&gt; (GDuration -&gt; Text) -&gt; GDuration -&gt; Text
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679234155"><span class="annot"><span class="annottext">seconds :: Builder
+</span><a href="#local-6989586621679234155"><span class="hs-identifier hs-var">seconds</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Builder -&gt; Text
+</span><span class="hs-identifier hs-var">Build.toLazyText</span></span><span> </span><span class="annot"><span class="annottext">Builder
+</span><a href="#local-6989586621679234155"><span class="hs-identifier hs-var">seconds</span></a></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
+forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="hs-string">&quot;s&quot;</span></span><span class="hs-special">)</span><span>
+</span><span id="line-92"></span><span>        </span><span class="annot"><span class="annottext">(Builder -&gt; Text) -&gt; (GDuration -&gt; Builder) -&gt; GDuration -&gt; Text
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">FPFormat -&gt; Maybe Int -&gt; Scientific -&gt; Builder
+</span><span class="hs-identifier hs-var">Sci.formatScientificBuilder</span></span><span> </span><span class="annot"><span class="annottext">FPFormat
+</span><span class="hs-identifier hs-var">Sci.Fixed</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; Maybe Int
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="hs-number">9</span></span><span class="hs-special">)</span><span>
+</span><span id="line-93"></span><span>        </span><span class="annot"><span class="annottext">(Scientific -&gt; Builder)
+-&gt; (GDuration -&gt; Scientific) -&gt; GDuration -&gt; Builder
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">GDuration -&gt; Scientific
+</span><a href="Network.Google.Data.Time.html#unGDuration"><span class="hs-identifier hs-var hs-var">unGDuration</span></a></span><span>
+</span><span id="line-94"></span><span>
+</span><span id="line-95"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679234148"><span id="local-6989586621679234150"><span class="annot"><span class="hs-identifier hs-type">FromHttpApiData</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#GDuration"><span class="hs-identifier hs-type">GDuration</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-96"></span><span>    </span><span id="local-6989586621679234146"><span class="annot"><span class="annottext">parseQueryParam :: Text -&gt; Either Text GDuration
+</span><a href="#local-6989586621679234146"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseQueryParam</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Scientific -&gt; GDuration)
+-&gt; Either Text Scientific -&gt; Either Text GDuration
+forall (p :: * -&gt; * -&gt; *) b c a.
+Bifunctor p =&gt;
+(b -&gt; c) -&gt; p a b -&gt; p a c
+</span><span class="hs-identifier hs-var">second</span></span><span> </span><span class="annot"><span class="annottext">Scientific -&gt; GDuration
+</span><a href="Network.Google.Data.Time.html#GDuration"><span class="hs-identifier hs-var">GDuration</span></a></span><span> </span><span class="annot"><span class="annottext">(Either Text Scientific -&gt; Either Text GDuration)
+-&gt; (Text -&gt; Either Text Scientific)
+-&gt; Text
+-&gt; Either Text GDuration
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Parser Scientific -&gt; Text -&gt; Either Text Scientific
+forall a. Parser a -&gt; Text -&gt; Either Text a
+</span><a href="Network.Google.Data.Time.html#parseText"><span class="hs-identifier hs-var">parseText</span></a></span><span> </span><span class="annot"><span class="annottext">Parser Scientific
+</span><a href="Network.Google.Data.Time.html#durationParser"><span class="hs-identifier hs-var">durationParser</span></a></span><span>
+</span><span id="line-97"></span><span>
+</span><span id="line-98"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679234138"><span id="local-6989586621679234140"><span id="local-6989586621679234142"><span class="annot"><span class="hs-identifier hs-type">ToJSON</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#Time%27"><span class="hs-identifier hs-type">Time'</span></a></span></span></span></span><span>     </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679234136"><span class="annot"><span class="annottext">toJSON :: Time' -&gt; Value
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">String</span></span><span> </span><span class="annot"><span class="annottext">(Text -&gt; Value) -&gt; (Time' -&gt; Text) -&gt; Time' -&gt; Value
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Time' -&gt; Text
+forall a. ToHttpApiData a =&gt; a -&gt; Text
+</span><span class="hs-identifier hs-var">toQueryParam</span></span><span>
+</span><span id="line-99"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679234127"><span id="local-6989586621679234129"><span id="local-6989586621679234131"><span class="annot"><span class="hs-identifier hs-type">ToJSON</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#Date%27"><span class="hs-identifier hs-type">Date'</span></a></span></span></span></span><span>     </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679234126"><span class="annot"><span class="annottext">toJSON :: Date' -&gt; Value
+</span><a href="#local-6989586621679234126"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">String</span></span><span> </span><span class="annot"><span class="annottext">(Text -&gt; Value) -&gt; (Date' -&gt; Text) -&gt; Date' -&gt; Value
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Date' -&gt; Text
+forall a. ToHttpApiData a =&gt; a -&gt; Text
+</span><span class="hs-identifier hs-var">toQueryParam</span></span><span>
+</span><span id="line-100"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679234119"><span id="local-6989586621679234121"><span id="local-6989586621679234123"><span class="annot"><span class="hs-identifier hs-type">ToJSON</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#DateTime%27"><span class="hs-identifier hs-type">DateTime'</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679234118"><span class="annot"><span class="annottext">toJSON :: DateTime' -&gt; Value
+</span><a href="#local-6989586621679234118"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">UTCTime -&gt; Value
+forall a. ToJSON a =&gt; a -&gt; Value
+</span><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><span class="annottext">(UTCTime -&gt; Value) -&gt; (DateTime' -&gt; UTCTime) -&gt; DateTime' -&gt; Value
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">DateTime' -&gt; UTCTime
+</span><a href="Network.Google.Data.Time.html#unDateTime"><span class="hs-identifier hs-var hs-var">unDateTime</span></a></span><span>
+</span><span id="line-101"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679234111"><span id="local-6989586621679234113"><span id="local-6989586621679234115"><span class="annot"><span class="hs-identifier hs-type">ToJSON</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#GDuration"><span class="hs-identifier hs-type">GDuration</span></a></span></span></span></span><span>  </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679234110"><span class="annot"><span class="annottext">toJSON :: GDuration -&gt; Value
+</span><a href="#local-6989586621679234110"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">String</span></span><span> </span><span class="annot"><span class="annottext">(Text -&gt; Value) -&gt; (GDuration -&gt; Text) -&gt; GDuration -&gt; Value
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">GDuration -&gt; Text
+forall a. ToHttpApiData a =&gt; a -&gt; Text
+</span><span class="hs-identifier hs-var">toQueryParam</span></span><span>
+</span><span id="line-102"></span><span>
+</span><span id="line-103"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679234107"><span class="annot"><span class="hs-identifier hs-type">FromJSON</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#Time%27"><span class="hs-identifier hs-type">Time'</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-104"></span><span>    </span><span id="local-6989586621679234105"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser Time'
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(TimeOfDay -&gt; Time') -&gt; Parser TimeOfDay -&gt; Parser Time'
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">TimeOfDay -&gt; Time'
+</span><a href="Network.Google.Data.Time.html#Time%27"><span class="hs-identifier hs-var">Time'</span></a></span><span> </span><span class="annot"><span class="annottext">(Parser TimeOfDay -&gt; Parser Time')
+-&gt; (Value -&gt; Parser TimeOfDay) -&gt; Value -&gt; Parser Time'
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; (Text -&gt; Parser TimeOfDay) -&gt; Value -&gt; Parser TimeOfDay
+forall a. String -&gt; (Text -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">withText</span></span><span> </span><span class="annot"><span class="hs-string">&quot;time&quot;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Parser TimeOfDay -&gt; Text -&gt; Parser TimeOfDay
+forall a. Parser a -&gt; Text -&gt; Parser a
+</span><a href="Network.Google.Data.Time.html#run"><span class="hs-identifier hs-var">run</span></a></span><span> </span><span class="annot"><span class="annottext">Parser TimeOfDay
+</span><a href="Network.Google.Data.Time.html#timeParser"><span class="hs-identifier hs-var">timeParser</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-105"></span><span>
+</span><span id="line-106"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679234099"><span class="annot"><span class="hs-identifier hs-type">FromJSON</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#Date%27"><span class="hs-identifier hs-type">Date'</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-107"></span><span>    </span><span id="local-6989586621679234098"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser Date'
+</span><a href="#local-6989586621679234098"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Day -&gt; Date') -&gt; Parser Day -&gt; Parser Date'
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">Day -&gt; Date'
+</span><a href="Network.Google.Data.Time.html#Date%27"><span class="hs-identifier hs-var">Date'</span></a></span><span> </span><span class="annot"><span class="annottext">(Parser Day -&gt; Parser Date')
+-&gt; (Value -&gt; Parser Day) -&gt; Value -&gt; Parser Date'
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; (Text -&gt; Parser Day) -&gt; Value -&gt; Parser Day
+forall a. String -&gt; (Text -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">withText</span></span><span> </span><span class="annot"><span class="hs-string">&quot;date&quot;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Parser Day -&gt; Text -&gt; Parser Day
+forall a. Parser a -&gt; Text -&gt; Parser a
+</span><a href="Network.Google.Data.Time.html#run"><span class="hs-identifier hs-var">run</span></a></span><span> </span><span class="annot"><span class="annottext">Parser Day
+</span><a href="Network.Google.Data.Time.html#dayParser"><span class="hs-identifier hs-var">dayParser</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-108"></span><span>
+</span><span id="line-109"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679234094"><span class="annot"><span class="hs-identifier hs-type">FromJSON</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#DateTime%27"><span class="hs-identifier hs-type">DateTime'</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-110"></span><span>    </span><span id="local-6989586621679234093"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser DateTime'
+</span><a href="#local-6989586621679234093"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(UTCTime -&gt; DateTime') -&gt; Parser UTCTime -&gt; Parser DateTime'
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">UTCTime -&gt; DateTime'
+</span><a href="Network.Google.Data.Time.html#DateTime%27"><span class="hs-identifier hs-var">DateTime'</span></a></span><span> </span><span class="annot"><span class="annottext">(Parser UTCTime -&gt; Parser DateTime')
+-&gt; (Value -&gt; Parser UTCTime) -&gt; Value -&gt; Parser DateTime'
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser UTCTime
+forall a. FromJSON a =&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">parseJSON</span></span><span>
+</span><span id="line-111"></span><span>
+</span><span id="line-112"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679234090"><span class="annot"><span class="hs-identifier hs-type">FromJSON</span></span><span> </span><span class="annot"><a href="Network.Google.Data.Time.html#GDuration"><span class="hs-identifier hs-type">GDuration</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-113"></span><span>    </span><span id="local-6989586621679234089"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser GDuration
+</span><a href="#local-6989586621679234089"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Scientific -&gt; GDuration) -&gt; Parser Scientific -&gt; Parser GDuration
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">Scientific -&gt; GDuration
+</span><a href="Network.Google.Data.Time.html#GDuration"><span class="hs-identifier hs-var">GDuration</span></a></span><span> </span><span class="annot"><span class="annottext">(Parser Scientific -&gt; Parser GDuration)
+-&gt; (Value -&gt; Parser Scientific) -&gt; Value -&gt; Parser GDuration
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; (Text -&gt; Parser Scientific) -&gt; Value -&gt; Parser Scientific
+forall a. String -&gt; (Text -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">withText</span></span><span> </span><span class="annot"><span class="hs-string">&quot;duration&quot;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Parser Scientific -&gt; Text -&gt; Parser Scientific
+forall a. Parser a -&gt; Text -&gt; Parser a
+</span><a href="Network.Google.Data.Time.html#run"><span class="hs-identifier hs-var">run</span></a></span><span> </span><span class="annot"><span class="annottext">Parser Scientific
+</span><a href="Network.Google.Data.Time.html#durationParser"><span class="hs-identifier hs-var">durationParser</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-114"></span><span>
+</span><span id="line-115"></span><span id="local-6989586621679234628"><span class="annot"><a href="Network.Google.Data.Time.html#parseText"><span class="hs-identifier hs-type">parseText</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Parser</span></span><span> </span><span class="annot"><a href="#local-6989586621679234628"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><a href="#local-6989586621679234628"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-116"></span><span id="parseText"><span class="annot"><span class="annottext">parseText :: Parser a -&gt; Text -&gt; Either Text a
+</span><a href="Network.Google.Data.Time.html#parseText"><span class="hs-identifier hs-var hs-var">parseText</span></a></span></span><span> </span><span id="local-6989586621679234088"><span class="annot"><span class="annottext">p :: Parser a
+</span><a href="#local-6989586621679234088"><span class="hs-identifier hs-var">p</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(String -&gt; Text) -&gt; Either String a -&gt; Either Text a
+forall (p :: * -&gt; * -&gt; *) a b c.
+Bifunctor p =&gt;
+(a -&gt; b) -&gt; p a c -&gt; p b c
+</span><span class="hs-identifier hs-var">first</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Text
+</span><span class="hs-identifier hs-var">Text.pack</span></span><span> </span><span class="annot"><span class="annottext">(Either String a -&gt; Either Text a)
+-&gt; (Text -&gt; Either String a) -&gt; Text -&gt; Either Text a
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Parser a -&gt; Text -&gt; Either String a
+forall a. Parser a -&gt; Text -&gt; Either String a
+</span><span class="hs-identifier hs-var">parseOnly</span></span><span> </span><span class="annot"><span class="annottext">Parser a
+</span><a href="#local-6989586621679234088"><span class="hs-identifier hs-var">p</span></a></span><span>
+</span><span id="line-117"></span><span>
+</span><span id="line-118"></span><span class="hs-comment">-- | Parse a time of the form @HH:MM:SS@.</span><span>
+</span><span id="line-119"></span><span class="annot"><a href="Network.Google.Data.Time.html#timeParser"><span class="hs-identifier hs-type">timeParser</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">TimeOfDay</span></span><span>
+</span><span id="line-120"></span><span id="timeParser"><span class="annot"><span class="annottext">timeParser :: Parser TimeOfDay
+</span><a href="Network.Google.Data.Time.html#timeParser"><span class="hs-identifier hs-var hs-var">timeParser</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-121"></span><span>    </span><span id="local-6989586621679234086"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679234086"><span class="hs-identifier hs-var">h</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser Int
+</span><a href="Network.Google.Data.Time.html#twoDigits"><span class="hs-identifier hs-var">twoDigits</span></a></span><span> </span><span class="annot"><span class="annottext">Parser Int -&gt; Parser Text Char -&gt; Parser Int
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f a -&gt; f b -&gt; f a
+</span><span class="hs-operator hs-var">&lt;*</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Parser Text Char
+</span><span class="hs-identifier hs-var">char</span></span><span> </span><span class="annot"><span class="hs-char">':'</span></span><span>
+</span><span id="line-122"></span><span>    </span><span id="local-6989586621679234082"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679234082"><span class="hs-identifier hs-var">m</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser Int
+</span><a href="Network.Google.Data.Time.html#twoDigits"><span class="hs-identifier hs-var">twoDigits</span></a></span><span> </span><span class="annot"><span class="annottext">Parser Int -&gt; Parser Text Char -&gt; Parser Int
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f a -&gt; f b -&gt; f a
+</span><span class="hs-operator hs-var">&lt;*</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Parser Text Char
+</span><span class="hs-identifier hs-var">char</span></span><span> </span><span class="annot"><span class="hs-char">':'</span></span><span>
+</span><span id="line-123"></span><span>    </span><span id="local-6989586621679234081"><span class="annot"><span class="annottext">Fixed E12
+</span><a href="#local-6989586621679234081"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser Int
+</span><a href="Network.Google.Data.Time.html#twoDigits"><span class="hs-identifier hs-var">twoDigits</span></a></span><span> </span><span class="annot"><span class="annottext">Parser Int -&gt; (Int -&gt; Fixed E12) -&gt; Parser Text (Fixed E12)
+forall (f :: * -&gt; *) a b. Functor f =&gt; f a -&gt; (a -&gt; b) -&gt; f b
+</span><span class="hs-operator hs-var">&lt;&amp;&gt;</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Fixed E12
+forall a b. (Integral a, Num b) =&gt; a -&gt; b
+</span><span class="hs-identifier hs-var">fromIntegral</span></span><span>
+</span><span id="line-124"></span><span>    </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679234086"><span class="hs-identifier hs-var">h</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&lt;</span></span><span> </span><span class="annot"><span class="hs-number">24</span></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679234082"><span class="hs-identifier hs-var">m</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&lt;</span></span><span> </span><span class="annot"><span class="hs-number">60</span></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">Fixed E12
+</span><a href="#local-6989586621679234081"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">Fixed E12 -&gt; Fixed E12 -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&lt;</span></span><span> </span><span class="annot"><span class="hs-number">61</span></span><span>
+</span><span id="line-125"></span><span>        </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">TimeOfDay -&gt; Parser TimeOfDay
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Fixed E12 -&gt; TimeOfDay
+</span><span class="hs-identifier hs-var">TimeOfDay</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679234086"><span class="hs-identifier hs-var">h</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679234082"><span class="hs-identifier hs-var">m</span></a></span><span> </span><span class="annot"><span class="annottext">Fixed E12
+</span><a href="#local-6989586621679234081"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-126"></span><span>        </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">String -&gt; Parser TimeOfDay
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="hs-string">&quot;invalid time&quot;</span></span><span>
+</span><span id="line-127"></span><span>
+</span><span id="line-128"></span><span class="hs-comment">-- | Parse a date of the form @YYYY-MM-DD@.</span><span>
+</span><span id="line-129"></span><span class="annot"><a href="Network.Google.Data.Time.html#dayParser"><span class="hs-identifier hs-type">dayParser</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Day</span></span><span>
+</span><span id="line-130"></span><span id="dayParser"><span class="annot"><span class="annottext">dayParser :: Parser Day
+</span><a href="Network.Google.Data.Time.html#dayParser"><span class="hs-identifier hs-var hs-var">dayParser</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-131"></span><span>    </span><span id="local-6989586621679234076"><span class="annot"><span class="annottext">Integer
+</span><a href="#local-6989586621679234076"><span class="hs-identifier hs-var">y</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser Integer
+forall a. Integral a =&gt; Parser a
+</span><span class="hs-identifier hs-var">decimal</span></span><span>   </span><span class="annot"><span class="annottext">Parser Integer -&gt; Parser Text Char -&gt; Parser Integer
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f a -&gt; f b -&gt; f a
+</span><span class="hs-operator hs-var">&lt;*</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Parser Text Char
+</span><span class="hs-identifier hs-var">char</span></span><span> </span><span class="annot"><span class="hs-char">'-'</span></span><span>
+</span><span id="line-132"></span><span>    </span><span id="local-6989586621679234074"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679234074"><span class="hs-identifier hs-var">m</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser Int
+</span><a href="Network.Google.Data.Time.html#twoDigits"><span class="hs-identifier hs-var">twoDigits</span></a></span><span> </span><span class="annot"><span class="annottext">Parser Int -&gt; Parser Text Char -&gt; Parser Int
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f a -&gt; f b -&gt; f a
+</span><span class="hs-operator hs-var">&lt;*</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Parser Text Char
+</span><span class="hs-identifier hs-var">char</span></span><span> </span><span class="annot"><span class="hs-char">'-'</span></span><span>
+</span><span id="line-133"></span><span>    </span><span id="local-6989586621679234073"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679234073"><span class="hs-identifier hs-var">d</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser Int
+</span><a href="Network.Google.Data.Time.html#twoDigits"><span class="hs-identifier hs-var">twoDigits</span></a></span><span>
+</span><span id="line-134"></span><span>    </span><span class="annot"><span class="annottext">Parser Day -&gt; (Day -&gt; Parser Day) -&gt; Maybe Day -&gt; Parser Day
+forall b a. b -&gt; (a -&gt; b) -&gt; Maybe a -&gt; b
+</span><span class="hs-identifier hs-var">maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Parser Day
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="hs-string">&quot;invalid date&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Day -&gt; Parser Day
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Integer -&gt; Int -&gt; Int -&gt; Maybe Day
+</span><span class="hs-identifier hs-var">fromGregorianValid</span></span><span> </span><span class="annot"><span class="annottext">Integer
+</span><a href="#local-6989586621679234076"><span class="hs-identifier hs-var">y</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679234074"><span class="hs-identifier hs-var">m</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679234073"><span class="hs-identifier hs-var">d</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-135"></span><span>
+</span><span id="line-136"></span><span class="annot"><a href="Network.Google.Data.Time.html#durationParser"><span class="hs-identifier hs-type">durationParser</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Scientific</span></span><span>
+</span><span id="line-137"></span><span id="durationParser"><span class="annot"><span class="annottext">durationParser :: Parser Scientific
+</span><a href="Network.Google.Data.Time.html#durationParser"><span class="hs-identifier hs-var hs-var">durationParser</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Double -&gt; Scientific
+forall a. RealFloat a =&gt; a -&gt; Scientific
+</span><span class="hs-identifier hs-var">Sci.fromFloatDigits</span></span><span> </span><span class="annot"><span class="annottext">(Double -&gt; Scientific) -&gt; Parser Text Double -&gt; Parser Scientific
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Parser Text Double
+</span><span class="hs-identifier hs-var">double</span></span><span> </span><span class="annot"><span class="annottext">Parser Text Double -&gt; Parser Text Char -&gt; Parser Text Double
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f a -&gt; f b -&gt; f a
+</span><span class="hs-operator hs-var">&lt;*</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Parser Text Char
+</span><span class="hs-identifier hs-var">char</span></span><span> </span><span class="annot"><span class="hs-char">'s'</span></span><span class="hs-special">)</span><span>
+</span><span id="line-138"></span><span>
+</span><span id="line-139"></span><span class="hs-comment">-- | Parse a two-digit integer (e.g. day of month, hour).</span><span>
+</span><span id="line-140"></span><span class="annot"><a href="Network.Google.Data.Time.html#twoDigits"><span class="hs-identifier hs-type">twoDigits</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-141"></span><span id="twoDigits"><span class="annot"><span class="annottext">twoDigits :: Parser Int
+</span><a href="Network.Google.Data.Time.html#twoDigits"><span class="hs-identifier hs-var hs-var">twoDigits</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-142"></span><span>    </span><span id="local-6989586621679234067"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679234067"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser Text Char
+</span><span class="hs-identifier hs-var">digit</span></span><span>
+</span><span id="line-143"></span><span>    </span><span id="local-6989586621679234065"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679234065"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser Text Char
+</span><span class="hs-identifier hs-var">digit</span></span><span>
+</span><span id="line-144"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679234064"><span class="annot"><span class="annottext">c2d :: Char -&gt; Int
+</span><a href="#local-6989586621679234064"><span class="hs-identifier hs-var hs-var">c2d</span></a></span></span><span> </span><span id="local-6989586621679234063"><span class="annot"><span class="annottext">c :: Char
+</span><a href="#local-6989586621679234063"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Int
+</span><span class="hs-identifier hs-var">ord</span></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679234063"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Bits a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">.&amp;.</span></span><span> </span><span class="annot"><span class="hs-number">15</span></span><span>
+</span><span id="line-145"></span><span>    </span><span class="annot"><span class="annottext">Int -&gt; Parser Int
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Parser Int) -&gt; Int -&gt; Parser Int
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$!</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Int
+</span><a href="#local-6989586621679234064"><span class="hs-identifier hs-var">c2d</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679234067"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">*</span></span><span> </span><span class="annot"><span class="hs-number">10</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Int
+</span><a href="#local-6989586621679234064"><span class="hs-identifier hs-var">c2d</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679234065"><span class="hs-identifier hs-var">b</span></a></span><span>
+</span><span id="line-146"></span><span>
+</span><span id="line-147"></span><span class="hs-comment">-- | Run an attoparsec parser as an aeson parser.</span><span>
+</span><span id="line-148"></span><span id="local-6989586621679234548"><span class="annot"><a href="Network.Google.Data.Time.html#run"><span class="hs-identifier hs-type">run</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Parser</span></span><span> </span><span class="annot"><a href="#local-6989586621679234548"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Aeson.Parser</span></span><span> </span><span class="annot"><a href="#local-6989586621679234548"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-149"></span><span id="run"><span class="annot"><span class="annottext">run :: Parser a -&gt; Text -&gt; Parser a
+</span><a href="Network.Google.Data.Time.html#run"><span class="hs-identifier hs-var hs-var">run</span></a></span></span><span> </span><span id="local-6989586621679234059"><span class="annot"><span class="annottext">p :: Parser a
+</span><a href="#local-6989586621679234059"><span class="hs-identifier hs-var">p</span></a></span></span><span> </span><span id="local-6989586621679234058"><span class="annot"><span class="annottext">t :: Text
+</span><a href="#local-6989586621679234058"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-150"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Parser a -&gt; Text -&gt; Either String a
+forall a. Parser a -&gt; Text -&gt; Either String a
+</span><span class="hs-identifier hs-var">parseOnly</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Parser a
+</span><a href="#local-6989586621679234059"><span class="hs-identifier hs-var">p</span></a></span><span> </span><span class="annot"><span class="annottext">Parser a -&gt; Parser Text () -&gt; Parser a
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f a -&gt; f b -&gt; f a
+</span><span class="hs-operator hs-var">&lt;*</span></span><span> </span><span class="annot"><span class="annottext">Parser Text ()
+forall t. Chunk t =&gt; Parser t ()
+</span><span class="hs-identifier hs-var">endOfInput</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679234058"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-151"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Left</span></span><span> </span><span id="local-6989586621679234056"><span class="annot"><span class="annottext">err :: String
+</span><a href="#local-6989586621679234056"><span class="hs-identifier hs-var">err</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String -&gt; Parser a
+forall (m :: * -&gt; *) a. MonadFail m =&gt; String -&gt; m a
+</span><span class="hs-identifier hs-var">fail</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Parser a) -&gt; String -&gt; Parser a
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="hs-string">&quot;could not parse date: &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679234056"><span class="hs-identifier hs-var">err</span></a></span><span>
+</span><span id="line-152"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span id="local-6989586621679234055"><span class="annot"><span class="annottext">r :: a
+</span><a href="#local-6989586621679234055"><span class="hs-identifier hs-var">r</span></a></span></span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679234055"><span class="hs-identifier hs-var">r</span></a></span><span>
+</span><span id="line-153"></span></pre></body></html>

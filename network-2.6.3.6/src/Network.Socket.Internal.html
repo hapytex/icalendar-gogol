@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LINE 1 &quot;Network/Socket/Internal.hsc&quot; #-}</span><span>
+</span><span id="line-1"></span><span class="hs-pragma">{-# LANGUAGE CPP #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE ForeignFunctionInterface #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-orphans #-}</span><span>
+</span><span id="line-4"></span><span class="hs-comment">-----------------------------------------------------------------------------</span><span>
+</span><span id="line-5"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-6"></span><span class="hs-comment">-- Module      :  Network.Socket.Internal</span><span>
+</span><span id="line-7"></span><span class="hs-comment">-- Copyright   :  (c) The University of Glasgow 2001</span><span>
+</span><span id="line-8"></span><span class="hs-comment">-- License     :  BSD-style (see the file libraries/network/LICENSE)</span><span>
+</span><span id="line-9"></span><span class="hs-comment">--</span><span>
+</span><span id="line-10"></span><span class="hs-comment">-- Maintainer  :  libraries@haskell.org</span><span>
+</span><span id="line-11"></span><span class="hs-comment">-- Stability   :  provisional</span><span>
+</span><span id="line-12"></span><span class="hs-comment">-- Portability :  portable</span><span>
+</span><span id="line-13"></span><span class="hs-comment">--</span><span>
+</span><span id="line-14"></span><span class="hs-comment">-- A module containing semi-public 'Network.Socket' internals.</span><span>
+</span><span id="line-15"></span><span class="hs-comment">-- Modules which extend the 'Network.Socket' module will need to use</span><span>
+</span><span id="line-16"></span><span class="hs-comment">-- this module while ideally most users will be able to make do with</span><span>
+</span><span id="line-17"></span><span class="hs-comment">-- the public interface.</span><span>
+</span><span id="line-18"></span><span class="hs-comment">--</span><span>
+</span><span id="line-19"></span><span class="hs-comment">-----------------------------------------------------------------------------</span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span>
+</span><span id="line-22"></span><span>
+</span><span id="line-23"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Network.Socket.Internal</span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-special">(</span><span>
+</span><span id="line-25"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Socket addresses</span></span><span>
+</span><span id="line-26"></span><span>      </span><span class="annot"><a href="Network.Socket.Types.html#HostAddress"><span class="hs-identifier">HostAddress</span></a></span><span>
+</span><span id="line-27"></span><span>
+</span><span id="line-28"></span><span class="hs-pragma">{-# LINE 28 &quot;Network/Socket/Internal.hsc&quot; #-}</span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="hs-identifier">HostAddress6</span><span>
+</span><span id="line-29"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Types.html#FlowInfo"><span class="hs-identifier">FlowInfo</span></a></span><span>
+</span><span id="line-30"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Types.html#ScopeID"><span class="hs-identifier">ScopeID</span></a></span><span>
+</span><span id="line-31"></span><span>
+</span><span id="line-32"></span><span class="hs-pragma">{-# LINE 32 &quot;Network/Socket/Internal.hsc&quot; #-}</span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="hs-identifier">PortNumber</span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Types.html#SockAddr"><span class="hs-identifier">SockAddr</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Types.html#peekSockAddr"><span class="hs-identifier">peekSockAddr</span></a></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Types.html#pokeSockAddr"><span class="hs-identifier">pokeSockAddr</span></a></span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Types.html#sizeOfSockAddr"><span class="hs-identifier">sizeOfSockAddr</span></a></span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Types.html#sizeOfSockAddrByFamily"><span class="hs-identifier">sizeOfSockAddrByFamily</span></a></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Types.html#withSockAddr"><span class="hs-identifier">withSockAddr</span></a></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Types.html#withNewSockAddr"><span class="hs-identifier">withNewSockAddr</span></a></span><span>
+</span><span id="line-41"></span><span>
+</span><span id="line-42"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Protocol families</span></span><span>
+</span><span id="line-43"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Types.html#Family"><span class="hs-identifier">Family</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-44"></span><span>
+</span><span id="line-45"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Socket error functions</span></span><span>
+</span><span id="line-46"></span><span>
+</span><span id="line-47"></span><span class="hs-pragma">{-# LINE 49 &quot;Network/Socket/Internal.hsc&quot; #-}</span><span>
+</span><span id="line-49"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Internal.html#throwSocketError"><span class="hs-identifier">throwSocketError</span></a></span><span>
+</span><span id="line-50"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorCode"><span class="hs-identifier">throwSocketErrorCode</span></a></span><span>
+</span><span id="line-51"></span><span>
+</span><span id="line-52"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Guards for socket operations that may fail</span></span><span>
+</span><span id="line-53"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1_"><span class="hs-identifier">throwSocketErrorIfMinus1_</span></a></span><span>
+</span><span id="line-54"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1Retry"><span class="hs-identifier">throwSocketErrorIfMinus1Retry</span></a></span><span>
+</span><span id="line-55"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1Retry_"><span class="hs-identifier">throwSocketErrorIfMinus1Retry_</span></a></span><span>
+</span><span id="line-56"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1RetryMayBlock"><span class="hs-identifier">throwSocketErrorIfMinus1RetryMayBlock</span></a></span><span>
+</span><span id="line-57"></span><span>
+</span><span id="line-58"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Guards that wait and retry if the operation would block</span></span><span>
+</span><span id="line-59"></span><span>    </span><span class="hs-comment">-- | These guards are based on 'throwSocketErrorIfMinus1RetryMayBlock'.</span><span>
+</span><span id="line-60"></span><span>    </span><span class="hs-comment">-- They wait for socket readiness if the action fails with @EWOULDBLOCK@</span><span>
+</span><span id="line-61"></span><span>    </span><span class="hs-comment">-- or similar.</span><span>
+</span><span id="line-62"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorWaitRead"><span class="hs-identifier">throwSocketErrorWaitRead</span></a></span><span>
+</span><span id="line-63"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorWaitWrite"><span class="hs-identifier">throwSocketErrorWaitWrite</span></a></span><span>
+</span><span id="line-64"></span><span>
+</span><span id="line-65"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Initialization</span></span><span>
+</span><span id="line-66"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Internal.html#withSocketsDo"><span class="hs-identifier">withSocketsDo</span></a></span><span>
+</span><span id="line-67"></span><span>
+</span><span id="line-68"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Low-level helpers</span></span><span>
+</span><span id="line-69"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Network.Socket.Types.html#zeroMemory"><span class="hs-identifier">zeroMemory</span></a></span><span>
+</span><span id="line-70"></span><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-71"></span><span>
+</span><span id="line-72"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Foreign.C.Error</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">throwErrno</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">throwErrnoIfMinus1Retry</span></span><span class="hs-special">,</span><span>
+</span><span id="line-73"></span><span>                        </span><span class="annot"><span class="hs-identifier">throwErrnoIfMinus1RetryMayBlock</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">throwErrnoIfMinus1_</span></span><span class="hs-special">,</span><span>
+</span><span id="line-74"></span><span>                        </span><span class="annot"><span class="hs-identifier">Errno</span></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">errnoToIOError</span></span><span class="hs-special">)</span><span>
+</span><span id="line-75"></span><span>
+</span><span id="line-76"></span><span class="hs-pragma">{-# LINE 79 &quot;Network/Socket/Internal.hsc&quot; #-}</span><span>
+</span><span id="line-79"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Foreign.C.Types</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">CInt</span></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-80"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">GHC.Conc</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">threadWaitRead</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">threadWaitWrite</span></span><span class="hs-special">)</span><span>
+</span><span id="line-81"></span><span>
+</span><span id="line-82"></span><span>
+</span><span id="line-83"></span><span class="hs-pragma">{-# LINE 94 &quot;Network/Socket/Internal.hsc&quot; #-}</span><span>
+</span><span id="line-94"></span><span>
+</span><span id="line-95"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Network.Socket.Types.html"><span class="hs-identifier">Network.Socket.Types</span></a></span><span>
+</span><span id="line-96"></span><span>
+</span><span id="line-97"></span><span class="hs-comment">-- ---------------------------------------------------------------------</span><span>
+</span><span id="line-98"></span><span class="hs-comment">-- Guards for socket operations that may fail</span><span>
+</span><span id="line-99"></span><span>
+</span><span id="line-100"></span><span class="hs-comment">-- | Throw an 'IOError' corresponding to the current socket error.</span><span>
+</span><span id="line-101"></span><span id="local-6989586621679071746"><span class="annot"><a href="Network.Socket.Internal.html#throwSocketError"><span class="hs-identifier hs-type">throwSocketError</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>  </span><span class="hs-comment">-- ^ textual description of the error location</span><span>
+</span><span id="line-102"></span><span>                 </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="annot"><a href="#local-6989586621679071746"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-103"></span><span>
+</span><span id="line-104"></span><span class="hs-comment">-- | Like 'throwSocketError', but the error code is supplied as an argument.</span><span>
+</span><span id="line-105"></span><span class="hs-comment">--</span><span>
+</span><span id="line-106"></span><span class="hs-comment">-- On Windows, do not use errno.  Use a system error code instead.</span><span>
+</span><span id="line-107"></span><span id="local-6989586621679071745"><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorCode"><span class="hs-identifier hs-type">throwSocketErrorCode</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">CInt</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="annot"><a href="#local-6989586621679071745"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-108"></span><span>
+</span><span id="line-109"></span><span class="hs-comment">-- | Throw an 'IOError' corresponding to the current socket error if</span><span>
+</span><span id="line-110"></span><span class="hs-comment">-- the IO action returns a result of @-1@.  Discards the result of the</span><span>
+</span><span id="line-111"></span><span class="hs-comment">-- IO action after error handling.</span><span>
+</span><span id="line-112"></span><span id="local-6989586621679071744"><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1_"><span class="hs-identifier hs-type">throwSocketErrorIfMinus1_</span></a></span><span>
+</span><span id="line-113"></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Eq</span></span><span> </span><span class="annot"><a href="#local-6989586621679071744"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Num</span></span><span> </span><span class="annot"><a href="#local-6989586621679071744"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-114"></span><span>    </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>  </span><span class="hs-comment">-- ^ textual description of the location</span><span>
+</span><span id="line-115"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="annot"><a href="#local-6989586621679071744"><span class="hs-identifier hs-type">a</span></a></span><span>    </span><span class="hs-comment">-- ^ the 'IO' operation to be executed</span><span>
+</span><span id="line-116"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span></span><span>
+</span><span id="line-117"></span><span>
+</span><span id="line-118"></span><span class="hs-pragma">{-# SPECIALIZE</span><span> </span><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1_"><span class="hs-pragma hs-type">throwSocketErrorIfMinus1_</span></a></span><span> </span><span class="hs-pragma">::</span><span> </span><span class="annot"><span class="hs-pragma hs-type">String</span></span><span> </span><span class="hs-pragma">-&gt;</span><span> </span><span class="annot"><span class="hs-pragma hs-type">IO</span></span><span> </span><span class="annot"><span class="hs-pragma hs-type">CInt</span></span><span> </span><span class="hs-pragma">-&gt;</span><span> </span><span class="annot"><span class="hs-pragma hs-type">IO</span></span><span> </span><span class="hs-pragma">(</span><span class="hs-pragma">)</span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-119"></span><span>
+</span><span id="line-120"></span><span class="hs-comment">-- | Throw an 'IOError' corresponding to the current socket error if</span><span>
+</span><span id="line-121"></span><span class="hs-comment">-- the IO action returns a result of @-1@, but retries in case of an</span><span>
+</span><span id="line-122"></span><span class="hs-comment">-- interrupted operation.</span><span>
+</span><span id="line-123"></span><span id="local-6989586621679071809"><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1Retry"><span class="hs-identifier hs-type">throwSocketErrorIfMinus1Retry</span></a></span><span>
+</span><span id="line-124"></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Eq</span></span><span> </span><span class="annot"><a href="#local-6989586621679071809"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Num</span></span><span> </span><span class="annot"><a href="#local-6989586621679071809"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-125"></span><span>    </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>  </span><span class="hs-comment">-- ^ textual description of the location</span><span>
+</span><span id="line-126"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="annot"><a href="#local-6989586621679071809"><span class="hs-identifier hs-type">a</span></a></span><span>    </span><span class="hs-comment">-- ^ the 'IO' operation to be executed</span><span>
+</span><span id="line-127"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="annot"><a href="#local-6989586621679071809"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-128"></span><span>
+</span><span id="line-129"></span><span class="hs-pragma">{-# SPECIALIZE</span><span> </span><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1Retry"><span class="hs-pragma hs-type">throwSocketErrorIfMinus1Retry</span></a></span><span> </span><span class="hs-pragma">::</span><span> </span><span class="annot"><span class="hs-pragma hs-type">String</span></span><span> </span><span class="hs-pragma">-&gt;</span><span> </span><span class="annot"><span class="hs-pragma hs-type">IO</span></span><span> </span><span class="annot"><span class="hs-pragma hs-type">CInt</span></span><span> </span><span class="hs-pragma">-&gt;</span><span> </span><span class="annot"><span class="hs-pragma hs-type">IO</span></span><span> </span><span class="annot"><span class="hs-pragma hs-type">CInt</span></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-130"></span><span>
+</span><span id="line-131"></span><span class="hs-comment">-- | Throw an 'IOError' corresponding to the current socket error if</span><span>
+</span><span id="line-132"></span><span class="hs-comment">-- the IO action returns a result of @-1@, but retries in case of an</span><span>
+</span><span id="line-133"></span><span class="hs-comment">-- interrupted operation. Discards the result of the IO action after</span><span>
+</span><span id="line-134"></span><span class="hs-comment">-- error handling.</span><span>
+</span><span id="line-135"></span><span id="local-6989586621679071743"><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1Retry_"><span class="hs-identifier hs-type">throwSocketErrorIfMinus1Retry_</span></a></span><span>
+</span><span id="line-136"></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Eq</span></span><span> </span><span class="annot"><a href="#local-6989586621679071743"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Num</span></span><span> </span><span class="annot"><a href="#local-6989586621679071743"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-137"></span><span>    </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>  </span><span class="hs-comment">-- ^ textual description of the location</span><span>
+</span><span id="line-138"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="annot"><a href="#local-6989586621679071743"><span class="hs-identifier hs-type">a</span></a></span><span>    </span><span class="hs-comment">-- ^ the 'IO' operation to be executed</span><span>
+</span><span id="line-139"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span></span><span>
+</span><span id="line-140"></span><span id="throwSocketErrorIfMinus1Retry_"><span class="annot"><span class="annottext">throwSocketErrorIfMinus1Retry_ :: String -&gt; IO a -&gt; IO ()
+</span><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1Retry_"><span class="hs-identifier hs-var hs-var">throwSocketErrorIfMinus1Retry_</span></a></span></span><span> </span><span id="local-6989586621679071742"><span class="annot"><span class="annottext">loc :: String
+</span><a href="#local-6989586621679071742"><span class="hs-identifier hs-var">loc</span></a></span></span><span> </span><span id="local-6989586621679071741"><span class="annot"><span class="annottext">m :: IO a
+</span><a href="#local-6989586621679071741"><span class="hs-identifier hs-var">m</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-141"></span><span>    </span><span class="annot"><span class="annottext">String -&gt; IO a -&gt; IO a
+forall a. (Eq a, Num a) =&gt; String -&gt; IO a -&gt; IO a
+</span><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1Retry"><span class="hs-identifier hs-var">throwSocketErrorIfMinus1Retry</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679071742"><span class="hs-identifier hs-var">loc</span></a></span><span> </span><span class="annot"><span class="annottext">IO a
+</span><a href="#local-6989586621679071741"><span class="hs-identifier hs-var">m</span></a></span><span> </span><span class="annot"><span class="annottext">IO a -&gt; IO () -&gt; IO ()
+forall (m :: * -&gt; *) a b. Monad m =&gt; m a -&gt; m b -&gt; m b
+</span><span class="hs-operator hs-var">&gt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">() -&gt; IO ()
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-142"></span><span class="hs-pragma">{-# SPECIALIZE</span><span> </span><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1Retry_"><span class="hs-pragma hs-type">throwSocketErrorIfMinus1Retry_</span></a></span><span> </span><span class="hs-pragma">::</span><span> </span><span class="annot"><span class="hs-pragma hs-type">String</span></span><span> </span><span class="hs-pragma">-&gt;</span><span> </span><span class="annot"><span class="hs-pragma hs-type">IO</span></span><span> </span><span class="annot"><span class="hs-pragma hs-type">CInt</span></span><span> </span><span class="hs-pragma">-&gt;</span><span> </span><span class="annot"><span class="hs-pragma hs-type">IO</span></span><span> </span><span class="hs-pragma">(</span><span class="hs-pragma">)</span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-143"></span><span>
+</span><span id="line-144"></span><span class="hs-comment">-- | Throw an 'IOError' corresponding to the current socket error if</span><span>
+</span><span id="line-145"></span><span class="hs-comment">-- the IO action returns a result of @-1@, but retries in case of an</span><span>
+</span><span id="line-146"></span><span class="hs-comment">-- interrupted operation.  Checks for operations that would block and</span><span>
+</span><span id="line-147"></span><span class="hs-comment">-- executes an alternative action before retrying in that case.</span><span>
+</span><span id="line-148"></span><span id="local-6989586621679071785"><span id="local-6989586621679071786"><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1RetryMayBlock"><span class="hs-identifier hs-type">throwSocketErrorIfMinus1RetryMayBlock</span></a></span><span>
+</span><span id="line-149"></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Eq</span></span><span> </span><span class="annot"><a href="#local-6989586621679071786"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Num</span></span><span> </span><span class="annot"><a href="#local-6989586621679071786"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-150"></span><span>    </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>  </span><span class="hs-comment">-- ^ textual description of the location</span><span>
+</span><span id="line-151"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="annot"><a href="#local-6989586621679071785"><span class="hs-identifier hs-type">b</span></a></span><span>    </span><span class="hs-comment">-- ^ action to execute before retrying if an</span><span>
+</span><span id="line-152"></span><span>               </span><span class="hs-comment">--   immediate retry would block</span><span>
+</span><span id="line-153"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="annot"><a href="#local-6989586621679071786"><span class="hs-identifier hs-type">a</span></a></span><span>    </span><span class="hs-comment">-- ^ the 'IO' operation to be executed</span><span>
+</span><span id="line-154"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="annot"><a href="#local-6989586621679071786"><span class="hs-identifier hs-type">a</span></a></span></span></span><span>
+</span><span id="line-155"></span><span>
+</span><span id="line-156"></span><span id="local-6989586621679071740"><span class="hs-pragma">{-# SPECIALIZE</span><span> </span><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1RetryMayBlock"><span class="hs-pragma hs-type">throwSocketErrorIfMinus1RetryMayBlock</span></a></span><span>
+</span><span id="line-157"></span><span>        </span><span class="hs-pragma">::</span><span> </span><span class="annot"><span class="hs-pragma hs-type">String</span></span><span> </span><span class="hs-pragma">-&gt;</span><span> </span><span class="annot"><span class="hs-pragma hs-type">IO</span></span><span> </span><span class="annot"><a href="#local-6989586621679071740"><span class="hs-pragma hs-type">b</span></a></span><span> </span><span class="hs-pragma">-&gt;</span><span> </span><span class="annot"><span class="hs-pragma hs-type">IO</span></span><span> </span><span class="annot"><span class="hs-pragma hs-type">CInt</span></span><span> </span><span class="hs-pragma">-&gt;</span><span> </span><span class="annot"><span class="hs-pragma hs-type">IO</span></span><span> </span><span class="annot"><span class="hs-pragma hs-type">CInt</span></span><span> </span><span class="hs-pragma">#-}</span></span><span>
+</span><span id="line-158"></span><span>
+</span><span id="line-159"></span><span>
+</span><span id="line-160"></span><span class="hs-pragma">{-# LINE 160 &quot;Network/Socket/Internal.hsc&quot; #-}</span><span>
+</span><span id="line-160"></span><span>
+</span><span id="line-161"></span><span id="throwSocketErrorIfMinus1RetryMayBlock"><span class="annot"><span class="annottext">throwSocketErrorIfMinus1RetryMayBlock :: String -&gt; IO b -&gt; IO a -&gt; IO a
+</span><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1RetryMayBlock"><span class="hs-identifier hs-var hs-var">throwSocketErrorIfMinus1RetryMayBlock</span></a></span></span><span> </span><span id="local-6989586621679071739"><span class="annot"><span class="annottext">name :: String
+</span><a href="#local-6989586621679071739"><span class="hs-identifier hs-var">name</span></a></span></span><span> </span><span id="local-6989586621679071738"><span class="annot"><span class="annottext">on_block :: IO b
+</span><a href="#local-6989586621679071738"><span class="hs-identifier hs-var">on_block</span></a></span></span><span> </span><span id="local-6989586621679071737"><span class="annot"><span class="annottext">act :: IO a
+</span><a href="#local-6989586621679071737"><span class="hs-identifier hs-var">act</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-162"></span><span>    </span><span class="annot"><span class="annottext">String -&gt; IO a -&gt; IO b -&gt; IO a
+forall a b. (Eq a, Num a) =&gt; String -&gt; IO a -&gt; IO b -&gt; IO a
+</span><span class="hs-identifier hs-var">throwErrnoIfMinus1RetryMayBlock</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679071739"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="annot"><span class="annottext">IO a
+</span><a href="#local-6989586621679071737"><span class="hs-identifier hs-var">act</span></a></span><span> </span><span class="annot"><span class="annottext">IO b
+</span><a href="#local-6989586621679071738"><span class="hs-identifier hs-var">on_block</span></a></span><span>
+</span><span id="line-163"></span><span>
+</span><span id="line-164"></span><span id="throwSocketErrorIfMinus1Retry"><span class="annot"><span class="annottext">throwSocketErrorIfMinus1Retry :: String -&gt; IO a -&gt; IO a
+</span><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1Retry"><span class="hs-identifier hs-var hs-var">throwSocketErrorIfMinus1Retry</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; IO a -&gt; IO a
+forall a. (Eq a, Num a) =&gt; String -&gt; IO a -&gt; IO a
+</span><span class="hs-identifier hs-var">throwErrnoIfMinus1Retry</span></span><span>
+</span><span id="line-165"></span><span>
+</span><span id="line-166"></span><span id="throwSocketErrorIfMinus1_"><span class="annot"><span class="annottext">throwSocketErrorIfMinus1_ :: String -&gt; IO a -&gt; IO ()
+</span><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1_"><span class="hs-identifier hs-var hs-var">throwSocketErrorIfMinus1_</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; IO a -&gt; IO ()
+forall a. (Eq a, Num a) =&gt; String -&gt; IO a -&gt; IO ()
+</span><span class="hs-identifier hs-var">throwErrnoIfMinus1_</span></span><span>
+</span><span id="line-167"></span><span>
+</span><span id="line-168"></span><span id="throwSocketError"><span class="annot"><span class="annottext">throwSocketError :: String -&gt; IO a
+</span><a href="Network.Socket.Internal.html#throwSocketError"><span class="hs-identifier hs-var hs-var">throwSocketError</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; IO a
+forall a. String -&gt; IO a
+</span><span class="hs-identifier hs-var">throwErrno</span></span><span>
+</span><span id="line-169"></span><span>
+</span><span id="line-170"></span><span id="throwSocketErrorCode"><span class="annot"><span class="annottext">throwSocketErrorCode :: String -&gt; CInt -&gt; IO a
+</span><a href="Network.Socket.Internal.html#throwSocketErrorCode"><span class="hs-identifier hs-var hs-var">throwSocketErrorCode</span></a></span></span><span> </span><span id="local-6989586621679071736"><span class="annot"><span class="annottext">loc :: String
+</span><a href="#local-6989586621679071736"><span class="hs-identifier hs-var">loc</span></a></span></span><span> </span><span id="local-6989586621679071735"><span class="annot"><span class="annottext">errno :: CInt
+</span><a href="#local-6989586621679071735"><span class="hs-identifier hs-var">errno</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-171"></span><span>    </span><span class="annot"><span class="annottext">IOError -&gt; IO a
+forall a. IOError -&gt; IO a
+</span><span class="hs-identifier hs-var">ioError</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Errno -&gt; Maybe Handle -&gt; Maybe String -&gt; IOError
+</span><span class="hs-identifier hs-var">errnoToIOError</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679071736"><span class="hs-identifier hs-var">loc</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">CInt -&gt; Errno
+</span><span class="hs-identifier hs-var">Errno</span></span><span> </span><span class="annot"><span class="annottext">CInt
+</span><a href="#local-6989586621679071735"><span class="hs-identifier hs-var">errno</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Maybe Handle
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="annot"><span class="annottext">Maybe String
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span class="hs-special">)</span><span>
+</span><span id="line-172"></span><span>
+</span><span id="line-173"></span><span>
+</span><span id="line-174"></span><span class="hs-pragma">{-# LINE 220 &quot;Network/Socket/Internal.hsc&quot; #-}</span><span>
+</span><span id="line-220"></span><span>
+</span><span id="line-221"></span><span class="hs-comment">-- | Like 'throwSocketErrorIfMinus1Retry', but if the action fails with</span><span>
+</span><span id="line-222"></span><span class="hs-comment">-- @EWOULDBLOCK@ or similar, wait for the socket to be read-ready,</span><span>
+</span><span id="line-223"></span><span class="hs-comment">-- and try again.</span><span>
+</span><span id="line-224"></span><span id="local-6989586621679071732"><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorWaitRead"><span class="hs-identifier hs-type">throwSocketErrorWaitRead</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Eq</span></span><span> </span><span class="annot"><a href="#local-6989586621679071732"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Num</span></span><span> </span><span class="annot"><a href="#local-6989586621679071732"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Network.Socket.Types.html#Socket"><span class="hs-identifier hs-type">Socket</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="annot"><a href="#local-6989586621679071732"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="annot"><a href="#local-6989586621679071732"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-225"></span><span id="throwSocketErrorWaitRead"><span class="annot"><span class="annottext">throwSocketErrorWaitRead :: Socket -&gt; String -&gt; IO a -&gt; IO a
+</span><a href="Network.Socket.Internal.html#throwSocketErrorWaitRead"><span class="hs-identifier hs-var hs-var">throwSocketErrorWaitRead</span></a></span></span><span> </span><span id="local-6989586621679071731"><span class="annot"><span class="annottext">sock :: Socket
+</span><a href="#local-6989586621679071731"><span class="hs-identifier hs-var">sock</span></a></span></span><span> </span><span id="local-6989586621679071730"><span class="annot"><span class="annottext">name :: String
+</span><a href="#local-6989586621679071730"><span class="hs-identifier hs-var">name</span></a></span></span><span> </span><span id="local-6989586621679071729"><span class="annot"><span class="annottext">io :: IO a
+</span><a href="#local-6989586621679071729"><span class="hs-identifier hs-var">io</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-226"></span><span>    </span><span class="annot"><span class="annottext">String -&gt; IO () -&gt; IO a -&gt; IO a
+forall a b. (Eq a, Num a) =&gt; String -&gt; IO b -&gt; IO a -&gt; IO a
+</span><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1RetryMayBlock"><span class="hs-identifier hs-var">throwSocketErrorIfMinus1RetryMayBlock</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679071730"><span class="hs-identifier hs-var">name</span></a></span><span>
+</span><span id="line-227"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Fd -&gt; IO ()
+</span><span class="hs-identifier hs-var">threadWaitRead</span></span><span> </span><span class="annot"><span class="annottext">(Fd -&gt; IO ()) -&gt; Fd -&gt; IO ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">CInt -&gt; Fd
+forall a b. (Integral a, Num b) =&gt; a -&gt; b
+</span><span class="hs-identifier hs-var">fromIntegral</span></span><span> </span><span class="annot"><span class="annottext">(CInt -&gt; Fd) -&gt; CInt -&gt; Fd
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Socket -&gt; CInt
+</span><a href="Network.Socket.Types.html#sockFd"><span class="hs-identifier hs-var">sockFd</span></a></span><span> </span><span class="annot"><span class="annottext">Socket
+</span><a href="#local-6989586621679071731"><span class="hs-identifier hs-var">sock</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-228"></span><span>        </span><span class="annot"><span class="annottext">IO a
+</span><a href="#local-6989586621679071729"><span class="hs-identifier hs-var">io</span></a></span><span>
+</span><span id="line-229"></span><span>
+</span><span id="line-230"></span><span class="hs-comment">-- | Like 'throwSocketErrorIfMinus1Retry', but if the action fails with</span><span>
+</span><span id="line-231"></span><span class="hs-comment">-- @EWOULDBLOCK@ or similar, wait for the socket to be write-ready,</span><span>
+</span><span id="line-232"></span><span class="hs-comment">-- and try again.</span><span>
+</span><span id="line-233"></span><span id="local-6989586621679071727"><span class="annot"><a href="Network.Socket.Internal.html#throwSocketErrorWaitWrite"><span class="hs-identifier hs-type">throwSocketErrorWaitWrite</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Eq</span></span><span> </span><span class="annot"><a href="#local-6989586621679071727"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Num</span></span><span> </span><span class="annot"><a href="#local-6989586621679071727"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Network.Socket.Types.html#Socket"><span class="hs-identifier hs-type">Socket</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="annot"><a href="#local-6989586621679071727"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="annot"><a href="#local-6989586621679071727"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-234"></span><span id="throwSocketErrorWaitWrite"><span class="annot"><span class="annottext">throwSocketErrorWaitWrite :: Socket -&gt; String -&gt; IO a -&gt; IO a
+</span><a href="Network.Socket.Internal.html#throwSocketErrorWaitWrite"><span class="hs-identifier hs-var hs-var">throwSocketErrorWaitWrite</span></a></span></span><span> </span><span id="local-6989586621679071726"><span class="annot"><span class="annottext">sock :: Socket
+</span><a href="#local-6989586621679071726"><span class="hs-identifier hs-var">sock</span></a></span></span><span> </span><span id="local-6989586621679071725"><span class="annot"><span class="annottext">name :: String
+</span><a href="#local-6989586621679071725"><span class="hs-identifier hs-var">name</span></a></span></span><span> </span><span id="local-6989586621679071724"><span class="annot"><span class="annottext">io :: IO a
+</span><a href="#local-6989586621679071724"><span class="hs-identifier hs-var">io</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-235"></span><span>    </span><span class="annot"><span class="annottext">String -&gt; IO () -&gt; IO a -&gt; IO a
+forall a b. (Eq a, Num a) =&gt; String -&gt; IO b -&gt; IO a -&gt; IO a
+</span><a href="Network.Socket.Internal.html#throwSocketErrorIfMinus1RetryMayBlock"><span class="hs-identifier hs-var">throwSocketErrorIfMinus1RetryMayBlock</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679071725"><span class="hs-identifier hs-var">name</span></a></span><span>
+</span><span id="line-236"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Fd -&gt; IO ()
+</span><span class="hs-identifier hs-var">threadWaitWrite</span></span><span> </span><span class="annot"><span class="annottext">(Fd -&gt; IO ()) -&gt; Fd -&gt; IO ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">CInt -&gt; Fd
+forall a b. (Integral a, Num b) =&gt; a -&gt; b
+</span><span class="hs-identifier hs-var">fromIntegral</span></span><span> </span><span class="annot"><span class="annottext">(CInt -&gt; Fd) -&gt; CInt -&gt; Fd
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Socket -&gt; CInt
+</span><a href="Network.Socket.Types.html#sockFd"><span class="hs-identifier hs-var">sockFd</span></a></span><span> </span><span class="annot"><span class="annottext">Socket
+</span><a href="#local-6989586621679071726"><span class="hs-identifier hs-var">sock</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-237"></span><span>        </span><span class="annot"><span class="annottext">IO a
+</span><a href="#local-6989586621679071724"><span class="hs-identifier hs-var">io</span></a></span><span>
+</span><span id="line-238"></span><span>
+</span><span id="line-239"></span><span class="hs-comment">-- ---------------------------------------------------------------------------</span><span>
+</span><span id="line-240"></span><span class="hs-comment">-- WinSock support</span><span>
+</span><span id="line-241"></span><span>
+</span><span id="line-242"></span><span class="hs-comment">{-| With older versions of the @network@ library (version 2.6.0.2 or earlier)
+on Windows operating systems,
+the networking subsystem must be initialised using 'withSocketsDo' before
+any networking operations can be used. eg.
+
+&gt; main = withSocketsDo $ do {...}
+
+It is fine to nest calls to 'withSocketsDo', and to perform networking operations
+after 'withSocketsDo' has returned.
+
+In newer versions of the @network@ library (version v2.6.1.0 or later)
+it is only necessary to call
+'withSocketsDo' if you are calling the 'MkSocket' constructor directly.
+However, for compatibility with older versions on Windows, it is good practice
+to always call 'withSocketsDo' (it's very cheap).
+-}</span><span>
+</span><span id="line-258"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Network.Socket.Internal.html#withSocketsDo"><span class="hs-pragma hs-type">withSocketsDo</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-259"></span><span id="local-6989586621679071723"><span class="annot"><a href="Network.Socket.Internal.html#withSocketsDo"><span class="hs-identifier hs-type">withSocketsDo</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="annot"><a href="#local-6989586621679071723"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="annot"><a href="#local-6989586621679071723"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-260"></span><span>
+</span><span id="line-261"></span><span id="withSocketsDo"><span class="hs-pragma">{-# LINE 261 &quot;Network/Socket/Internal.hsc&quot; #-}</span></span><span>
+</span><span id="line-261"></span><span class="hs-identifier">withSocketsDo</span><span> </span><span class="hs-identifier">x</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">x</span><span>
+</span><span id="line-262"></span><span>
+</span><span id="line-263"></span><span class="hs-pragma">{-# LINE 277 &quot;Network/Socket/Internal.hsc&quot; #-}</span><span>
+</span><span id="line-277"></span></pre></body></html>
