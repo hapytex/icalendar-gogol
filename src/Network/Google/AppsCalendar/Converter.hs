@@ -36,14 +36,14 @@ import Network.Google.AppsCalendar.Types(
   , EventOrganizer, eventOrganizer, eoDisplayName, eoId, eoEmail, eoSelf
   , EventReminder, eventReminder, erMethod, erMinutes
   , EventReminders, eventReminders, erOverrides
-  , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eICalUId, eLocation, eOrganizer, eOriginalStartTime, eRecurrence, eSequence, eStatus, eStart, eSummary, eTransparency, eUpdated, eVisibility
-  , edtDate, edtDateTime, edtTimeZone
+  , eCreated, eDescription, eEnd, eEndTimeUnspecified, eHTMLLink, eICalUId, eLocation, eOrganizer, eOriginalStartTime, eRecurrence, eReminders, eSequence, eStatus, eStart
+  , eSummary, eTransparency, eUpdated, eVisibility, edtDate, edtDateTime, edtTimeZone
   )
 import Network.Google.Prelude(Day, UTCTime)
 import Network.URI(URI, uriToString)
 
 import Text.ICalendar.Types(
-    VEvent(veClass, veCreated, veDescription, veDTEndDuration, veDTStart, veGeo, veOrganizer, veExDate, veLastMod, veLocation, veRDate, veRRule, veSeq, veStatus, veSummary, veTransp, veUID, veUrl)
+    VEvent(veAlarms, veClass, veCreated, veDescription, veDTEndDuration, veDTStart, veGeo, veOrganizer, veExDate, veLastMod, veLocation, veRDate, veRRule, veSeq, veStatus, veSummary, veTransp, veUID, veUrl)
   , CalAddress
   , Class(Class)
   , ClassValue(Confidential, Public)
@@ -112,7 +112,7 @@ alarmsToEventReminders :: Foldable f => f VAlarm -> EventReminders
 alarmsToEventReminders s = set erOverrides (foldr ((:) . alarmToReminder) [] s) eventReminders
 
 organizerToEventOrganizer :: Organizer -> EventOrganizer
-organizerToEventOrganizer (Organizer email cn dir sentBy _ _) = set eoId tcn (set eoDisplayName tcn (set eoSelf (isOrganizerSelf sentBy email) (set eoEmail (Just (_textURI email)) eventOrganizer)))
+organizerToEventOrganizer (Organizer email cn _ sentBy _ _) = set eoId tcn (set eoDisplayName tcn (set eoSelf (isOrganizerSelf sentBy email) (set eoEmail (Just (_textURI email)) eventOrganizer)))
     where tcn = toStrict <$> cn
 
 isOrganizerSelf :: Maybe CalAddress -> CalAddress -> Bool
@@ -216,6 +216,9 @@ setSequence = _setSimple eSequence (sequenceToInt . veSeq)
 setId :: VEvent -> Event -> Event
 setId = _setSimple eICalUId (Just . encodeBase32 . toStrict . uidValue . veUID)
 
+setReminders :: VEvent -> Event -> Event
+setReminders = _setSimple eReminders (Just . alarmsToEventReminders . veAlarms)
+
 -- | Convert the given 'VEvent' object to an 'Event' object.
 convertToEvent
   :: VEvent  -- ^ The given 'VEvent' to convert.
@@ -230,6 +233,8 @@ convertToEvent ev = foldr ($ ev) event [
   , setLocation
   , setOrganizer
   , setOriginalStartTime
+  , setRecurrence
+  , setReminders
   , setSequence
   , setStart
   , setStatus
@@ -237,5 +242,4 @@ convertToEvent ev = foldr ($ ev) event [
   , setTransparency
   , setUpdated
   , setVisibility
-  , setRecurrence
   ]
