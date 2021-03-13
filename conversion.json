@@ -1,0 +1,44 @@
+{
+  "nodes": [
+      {"name", "eSummary"}
+    , {"name", "eOriginalStartTime"}
+    , {"name", "eCreator"}
+    , {"name", "eStatus"}
+    , {"name", "eGuestsCanModify"}
+    , {"name", "eEtag"}
+    , {"name", "eAttachments"}
+    , {"name", "eLocked"}
+    , {"name", "eLocation"}
+    , {"name", "eAttendees"}
+    , {"name", "eReminders"}
+    , {"name", "eKind"}
+    , {"name", "eCreated"}
+    , {"name", "eTransparency"}
+    , {"name", "eRecurringEventId"}
+    , {"name", "eStart"}
+    , {"name", "ePrivateCopy"}
+    , {"name", "eEndTimeUnspecified"}
+    , {"name", "eConferenceData"}
+    , {"name", "eExtendedProperties"}
+    , {"name", "eVisibility"}
+    , {"name", "eGuestsCanInviteOthers"}
+    , {"name", "eRecurrence"}
+    , {"name", "eGadget"}
+    , {"name", "eSequence"}
+    , {"name", "eICalUId"}
+    , {"name", "eEnd"}
+    , {"name", "eAttendeesOmitted"}
+    , {"name", "eSource"}
+    , {"name", "eId"}
+    , {"name", "eHTMLLink"}
+    , {"name", "eUpdated"}
+    , {"name", "eColorId"}
+    , {"name", "eAnyoneCanAddSelf"}
+    , {"name", "eGuestsCanSeeOtherGuests"}
+    , {"name", "eHangoutLink"}
+    , {"name", "eDescription"}
+    , {"name", "eOrganizer"}
+  ],
+  "links": [
+  ]
+}
